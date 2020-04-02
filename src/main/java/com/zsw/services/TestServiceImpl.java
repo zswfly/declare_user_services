@@ -1,5 +1,8 @@
 package com.zsw.services;
 
+import com.zsw.dao.UserMapper;
+import com.zsw.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -7,8 +10,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TestServiceImpl implements TestService{
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    public boolean isUser(String userName, String passWord) {
-        return true;
+    public User isUser(String userName, String passWord) {
+        return userMapper.getUser(userName,passWord);
     }
 }

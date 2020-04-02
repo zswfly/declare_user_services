@@ -18,6 +18,6 @@ public class TestController {
     @RequestMapping("/isUser")
     @ResponseBody
     public String isUser(String userName, String passWord) {
-        return testService.isUser(userName,passWord)?"yes":"no";
+        return testService.isUser(userName,passWord)==null?"no":"yes";
     }
 }
