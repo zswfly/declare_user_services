@@ -15,7 +15,7 @@ public class TestServiceImpl implements TestService{
     private UserMapper userMapper;
 
     @Override
-    public User isUser(String userName, String passWord) {
-        return userMapper.getUser(userName,passWord);
+    public User isUser(String loginName, String loginPWD) {
+        return userMapper.getUser(loginName,loginPWD);
     }
 }

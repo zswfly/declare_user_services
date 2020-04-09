@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class User implements Serializable {
-    private String id;
+    private Integer id;
 
     private String userName;
 
-    private String passWord;
+    private String loginName;
+
+    private String loginPwd;
+
+    private Integer status;
 
     private Date createTime;
 
@@ -20,12 +24,12 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -36,12 +40,28 @@ public class User implements Serializable {
         this.userName = userName == null ? null : userName.trim();
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getLoginName() {
+        return loginName;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord == null ? null : passWord.trim();
+    public void setLoginName(String loginName) {
+        this.loginName = loginName == null ? null : loginName.trim();
+    }
+
+    public String getLoginPwd() {
+        return loginPwd;
+    }
+
+    public void setLoginPwd(String loginPwd) {
+        this.loginPwd = loginPwd == null ? null : loginPwd.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getCreateTime() {
@@ -84,7 +104,9 @@ public class User implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", userName=").append(userName);
-        sb.append(", passWord=").append(passWord);
+        sb.append(", loginName=").append(loginName);
+        sb.append(", loginPwd=").append(loginPwd);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", createUser=").append(createUser);
         sb.append(", updateTime=").append(updateTime);

@@ -2,7 +2,6 @@ package com.zsw.dao;
 
 import com.zsw.entity.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,9 +9,15 @@ import java.util.List;
 @Mapper
 @Component
 public interface UserMapper {
+    int deleteByPrimaryKey(Integer id);
+
     int insert(User record);
+
+    User selectByPrimaryKey(Integer id);
 
     List<User> selectAll();
 
-    User getUser(@Param("userName") String userName, @Param("passWord")String passWord);
+    int updateByPrimaryKey(User record);
+
+    User getUser(String loginName,String loginPWD);
 }
