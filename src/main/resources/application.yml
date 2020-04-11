@@ -14,8 +14,15 @@ spring:
     username: root
     password: root
   jpa:
-    show-sql: true
-
+      database: MYSQL
+      show-sql: true
+      hibernate:
+      ddl-auto: update   #validate | update | create | create-drop
+  naming:
+      strategy: org.hibernate.cfg.DefaultNamingStrategy
+  properties:
+      hibernate:
+      dialect: org.hibernate.dialect.MySQL5Dialect  #Hibernate方言
 eureka:
   client:
     serviceUrl:

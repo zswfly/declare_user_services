@@ -38,18 +38,18 @@
         </javaTypeResolver>
 
         <!--生成Model类存放位置，即实体类存放路径 -->
-        <javaModelGenerator targetPackage="com.zsw.entity" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.zsw.entitys" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
         <!-- 生成mapper.xml文件，mapper.xml存放路径 -->
-        <sqlMapGenerator targetPackage="mybatis.mapper" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="mybatis.mappers" targetProject="src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <!-- 生成mapper.xml对应得接口，也就是dao层 -->
-        <javaClientGenerator targetPackage="com.zsw.dao" targetProject="src/main/java" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="com.zsw.daos" targetProject="src/main/java" type="XMLMAPPER">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
         <!--以下就是需自动生成mapper.xml文件等表，配置哪些表，就自动生成哪些表那些文件。-->

@@ -1,7 +1,7 @@
 package com.zsw.services;
 
-import com.zsw.dao.UserMapper;
-import com.zsw.entity.User;
+import com.zsw.daos.UserMapper;
+import com.zsw.entitys.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

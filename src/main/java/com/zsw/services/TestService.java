@@ -1,6 +1,6 @@
 package com.zsw.services;
 
-import com.zsw.entity.User;
+import com.zsw.entitys.User;
 
 /**
  * Created by zhangshaowei on 2020/4/2.

@@ -1,7 +1,8 @@
-package com.zsw.dao;
+package com.zsw.daos;
 
-import com.zsw.entity.User;
+import com.zsw.entitys.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    User getUser(String loginName,String loginPWD);
+    User getUser(@Param("loginName") String loginName, @Param("loginPWD") String loginPWD);
 }

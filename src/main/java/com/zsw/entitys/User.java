@@ -1,4 +1,4 @@
-package com.zsw.entity;
+package com.zsw.entitys;
 
 import java.io.Serializable;
 import java.util.Date;
