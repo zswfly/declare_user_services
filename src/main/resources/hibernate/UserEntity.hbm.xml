@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.zsw.entitys.UserEntity" table="user" schema="user">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+        </id>
+        <property name="userName">
+            <column name="user_name" sql-type="varchar(20)" length="20"/>
+        </property>
+        <property name="loginPwd">
+            <column name="login_pwd" sql-type="varchar(32)" length="32"/>
+        </property>
+        <property name="status">
+            <column name="status" sql-type="int(2)"/>
+        </property>
+        <property name="createTime">
+            <column name="create_time" sql-type="datetime"/>
+        </property>
+        <property name="createUser">
+            <column name="create_user" sql-type="int(11)"/>
+        </property>
+        <property name="updateTime">
+            <column name="update_time" sql-type="datetime"/>
+        </property>
+        <property name="updateUser">
+            <column name="update_user" sql-type="int(11)"/>
+        </property>
+        <property name="phone">
+            <column name="phone" sql-type="varchar(20)" length="20"/>
+        </property>
+        <property name="email">
+            <column name="email" sql-type="varchar(20)" length="20"/>
+        </property>
+        <property name="avatar">
+            <column name="avatar" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

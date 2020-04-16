@@ -8,11 +8,15 @@ public class User implements Serializable {
 
     private String userName;
 
-    private String loginName;
+    private String phone;
+
+    private String email;
 
     private String loginPwd;
 
     private Integer status;
+
+    private String avatar;
 
     private Date createTime;
 
@@ -40,12 +44,20 @@ public class User implements Serializable {
         this.userName = userName == null ? null : userName.trim();
     }
 
-    public String getLoginName() {
-        return loginName;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName == null ? null : loginName.trim();
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
     }
 
     public String getLoginPwd() {
@@ -62,6 +74,14 @@ public class User implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar == null ? null : avatar.trim();
     }
 
     public Date getCreateTime() {
@@ -104,9 +124,11 @@ public class User implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", userName=").append(userName);
-        sb.append(", loginName=").append(loginName);
+        sb.append(", phone=").append(phone);
+        sb.append(", email=").append(email);
         sb.append(", loginPwd=").append(loginPwd);
         sb.append(", status=").append(status);
+        sb.append(", avatar=").append(avatar);
         sb.append(", createTime=").append(createTime);
         sb.append(", createUser=").append(createUser);
         sb.append(", updateTime=").append(updateTime);

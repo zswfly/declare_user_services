@@ -13,21 +13,34 @@ spring:
     url: jdbc:mysql://localhost:3306/user?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: root
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    filters: stat
+    minEvictableIdleTimeMillis: 300000      # 配置一个连接在池中最小生存的时间，单位是毫秒
+    poolPreparedStatements: true
   jpa:
       database: MYSQL
       show-sql: true
+      format_sql : true
       hibernate:
-      ddl-auto: update   #validate | update | create | create-drop
+        ddl-auto: update   #validate | update | create | create-drop
+        dialect: org.hibernate.dialect.MySQL5Dialect  #Hibernate方言
+        current_session_context_class : thread
   naming:
       strategy: org.hibernate.cfg.DefaultNamingStrategy
   properties:
       hibernate:
-      dialect: org.hibernate.dialect.MySQL5Dialect  #Hibernate方言
+        dialect: org.hibernate.dialect.MySQL5Dialect  #Hibernate方言
+        current_session_context_class : thread
+        ddl-auto: update   #validate | update | create | create-drop
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 mybatis:
-  type-aliases-package: com.zsw.dao
-  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.zsw.daos
+  mapper-locations: classpath:mybatis/mappers/*.xml
 
