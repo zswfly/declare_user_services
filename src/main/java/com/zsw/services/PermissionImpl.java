@@ -41,9 +41,9 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
 
         List<PermissionEntity> listEntity = this.dbService.getAll(PermissionEntity.class);
 
-        for (PermissionEntity entity:listEntity) {
+/*        for (PermissionEntity entity:listEntity) {
             entity.setStatus(0);
-        }
+        }*/
 
         for (InitPermission vo : listVO) {
             int flag = 0;
@@ -51,9 +51,8 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
             for (PermissionEntity entity:listEntity) {
                 if(StringUtils.isNotBlank(vo.getCode())
                         && vo.getCode().equals(entity.getCode())){
-
                     flag = 1;
-                    entity.setStatus(1);
+                    //entity.setStatus(1);
 
                 }
             }

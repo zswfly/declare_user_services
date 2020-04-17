@@ -1,5 +1,7 @@
 package com.zsw.controllers;
 
+import com.zsw.controller.BaseController;
+import com.zsw.controller.IUserPermissionController;
 import com.zsw.entitys.user.InitPermission;
 import com.zsw.entitys.user.UserPermission;
 import com.zsw.services.IPermissionService;
@@ -20,7 +22,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(UserStaticURLUtil.permissionController)
-public class PermissionController {
+public class PermissionController extends BaseController implements IUserPermissionController{
     @Autowired
     IPermissionService permissionService;
 

@@ -1,5 +1,6 @@
 package com.zsw;
 
+import com.zsw.interceptor.PermissionInterceptor;
 import javafx.application.Application;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 @SpringBootApplication(scanBasePackages = "com.zsw.**")
 @EnableEurekaClient
@@ -42,4 +44,7 @@ public class UserServicesApplication extends SpringBootServletInitializer{
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
+
+
+
 }

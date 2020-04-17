@@ -2,6 +2,7 @@ package com.zsw.services;
 
 import com.zsw.daos.UserMapper;
 import com.zsw.entitys.UserEntity;
+import com.zsw.entitys.user.LoginTemp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,7 +30,12 @@ public class UserServiceImpl implements IUserService,Serializable{
         return this.dbService.get(param);
     }
 
-
+    @Override
+    public UserEntity resetPassWord(UserEntity param,String resetPassWord) throws Exception {
+        UserEntity entity = this.dbService.get(param);
+        if (entity != null) entity.setLoginPwd(resetPassWord);
+        return entity;
+    }
 
 
 }

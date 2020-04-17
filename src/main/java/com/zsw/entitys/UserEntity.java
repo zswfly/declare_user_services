@@ -9,10 +9,11 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "user", schema = "user", catalog = "")
 public class UserEntity extends IDEntity{
+
     private int id;
     private String userName;
     private String loginPwd;
-    private int status;
+    private int status;//0正常1失效
     private Timestamp createTime;
     private int createUser;
     private Timestamp updateTime;
@@ -20,6 +21,8 @@ public class UserEntity extends IDEntity{
     private String phone;
     private String email;
     private String avatar;
+
+
 
     @Id
     @Column(name = "id", nullable = false)
