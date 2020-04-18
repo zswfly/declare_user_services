@@ -6,7 +6,7 @@
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <!--<result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />-->
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="avatar" jdbcType="VARCHAR" property="avatar" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -14,5 +14,57 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
   </resultMap>
+
+  <resultMap id="BaseResultDtoMap" type="com.zsw.entitys.user.UserDto">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <!--<result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />-->
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+  </resultMap>
+
+  <select id="usersPage" resultMap="BaseResultDtoMap">
+    SELECT
+    u.*
+    FROM user u
+    LEFT JOIN department_user du ON du.user_id = u.id
+    WHERE 1 = 1
+
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND u.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
+      AND du.department_id = = #{paramMap.departmentId}
+    </if>
+    <if test="paramMap.phone != null and paramMap.phone != ''">
+    AND u.phone LIKE '%${paramMap.phone}%'
+    </if>
+    <if test="paramMap.email != null and paramMap.email != ''">
+      AND u.email LIKE '%${paramMap.email}%'
+    </if>
+    <if test="paramMap.userName != null and paramMap.userName != ''">
+      AND u.user_name LIKE '%${paramMap.userName}%'
+    </if>
+    <if test="paramMap.beginCreateTime !=null">
+      AND u.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      AND u.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.pageSize !=null and paramMap.pageSize > 0
+         and paramMap.currentPage !=null and paramMap.currentPage > 0">
+      LIMIT ${paramMap.userName} , ${paramMap.userName}
+    </if>
+
+
+
+  </select>
+
 
 </mapper>

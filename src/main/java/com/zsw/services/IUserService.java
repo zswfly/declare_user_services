@@ -1,7 +1,12 @@
 package com.zsw.services;
 
 import com.zsw.entitys.UserEntity;
-import com.zsw.entitys.user.LoginTemp;
+import com.zsw.entitys.user.UserDto;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangshaowei on 2020/4/16.
@@ -10,4 +15,9 @@ public interface IUserService  extends IBaseService{
 
     UserEntity getUser(UserEntity param) throws Exception;
     UserEntity resetPassWord(UserEntity param,String resetPassWord) throws Exception;
+    UserEntity newUser(UserDto userDto)throws Exception;
+    UserEntity updateUser(UserDto userDto) throws Exception;
+    void batchBan(List<Integer> ids, String type, Integer userId) throws Exception;
+    List<UserEntity> getUsersByIds(List<Integer> ids) throws Exception;
+    List<UserDto> usersPage(Map<String, Object> paramMap) throws Exception;
 }
