@@ -8,13 +8,11 @@ import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IUserService;
-import com.zsw.utils.CacheStaticURLUtil;
-import com.zsw.utils.CommonUtils;
-import com.zsw.utils.UserServiceStaticWord;
-import com.zsw.utils.UserStaticURLUtil;
+import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,27 +44,45 @@ public class UserController extends BaseController{
     @ResponseBody
     public String login(LoginTemp loginTemp) throws Exception {
         try{
-            UserEntity param = new UserEntity();
-            param.setPhone(loginTemp.getPhone());
+            UserEntity paramUserEntity = new UserEntity();
+            paramUserEntity.setPhone(loginTemp.getPhone());
             UserEntity result = null;
+
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+
             if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-                param.setLoginPwd(loginTemp.getPassWord());
-                result = this.userService.getUser(param);
-                result.setLoginPwd("");
+                paramUserEntity.setLoginPwd(loginTemp.getPassWord());
+                result = this.userService.getUser(paramUserEntity);
+                result.setLoginPwd(null);
             }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
 
-                // TODO: 2020/4/17    短信校验
-                "55".equals(loginTemp.getVerifyCode());
+                //验证码校验
+                Map<String, String > param = new HashMap<>();
+                param.put("phone",loginTemp.getPhone());
+                param.put("verifyCode",loginTemp.getVerifyCode());
+                param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_LOGIN);
+                ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
+                        "http://cache-services"
+                                + CacheStaticURLUtil.redisController
+                                + CacheStaticURLUtil.redisController_checkVerifyCode
+                        ,param,Boolean.class);
+                if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
+                    responseJson.setCode("200");
+                    responseJson.setMessage("验证码错误");
+                    return gson.toJson(responseJson);
+                }
 
-                result = this.userService.getUser(param);
+                result = this.userService.getUser(paramUserEntity);
                 result.setLoginPwd(null);
 
             }
-            ResponseJson responseJson = new ResponseJson();
-            responseJson.setCode("200");
+
             if(result == null){
+                responseJson.setCode("200");
                 responseJson.setMessage("账号不存在或密码错误");
             }else if(result.getStatus() == UserServiceStaticWord.User_Status_1){
+                responseJson.setCode("200");
                 responseJson.setMessage("账户禁用");
             }else{
                 Map<String,Object> data = new HashMap<>();
@@ -82,9 +97,10 @@ public class UserController extends BaseController{
                                 + CacheStaticURLUtil.redisController
                                 + CacheStaticURLUtil.redisController_setToken
                         ,tokenMap,Integer.class);
+                responseJson.setCode("200");
                 responseJson.setData(data);
             }
-            Gson gson = new Gson();
+
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
@@ -100,6 +116,23 @@ public class UserController extends BaseController{
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
+            //验证码校验
+            Map<String, String > param = new HashMap<>();
+            param.put("phone",loginTemp.getPhone());
+            param.put("verifyCode",loginTemp.getVerifyCode());
+            param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_REST_PASSWORD);
+            ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
+                    "http://cache-services"
+                            + CacheStaticURLUtil.redisController
+                            + CacheStaticURLUtil.redisController_checkVerifyCode
+                    ,param,Boolean.class);
+            if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
+                responseJson.setCode("200");
+                responseJson.setMessage("验证码错误");
+                return gson.toJson(responseJson);
+            }
+
+            //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
                 responseJson.setCode("200");
@@ -107,12 +140,12 @@ public class UserController extends BaseController{
                 return gson.toJson(responseJson);
             }
 
+
+            //重置密码
             UserEntity userEntity = new UserEntity();
             userEntity.setPhone(loginTemp.getPhone());
             UserEntity result =this.userService.resetPassWord(userEntity,loginTemp.getPassWord());
 
-            // TODO: 2020/4/17    短信校验
-            "55".equals(loginTemp.getVerifyCode());
 
             if(result == null){
                 responseJson.setCode("200");

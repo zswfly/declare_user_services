@@ -117,11 +117,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
-		<dependency>
+<!--		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper</artifactId>
 			<version>5.1.10</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>com.zsw</groupId>
@@ -143,14 +143,6 @@
 			<version>1.1.22</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-<!--
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.4.13.Final</version>
-		</dependency>
--->
 
 
 
