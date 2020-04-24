@@ -12,10 +12,7 @@
 
 
     <mapping class="com.zsw.entitys.PermissionEntity"/>
-    <mapping resource="hibernate/PermissionEntity.hbm.xml"/>
     <mapping class="com.zsw.entitys.UserEntity"/>
-    <mapping resource="hibernate/UserEntity.hbm.xml"/>
-    <mapping resource="hibernate/UserEntity.hbm.xml"/>
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hbm2ddl.auto">update</property> -->

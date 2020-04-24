@@ -15,8 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by zhangshaowei on 2020/4/13.
@@ -40,10 +42,8 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
     public Integer  initPermission(List<InitPermission> listVO) throws Exception {
 
         List<PermissionEntity> listEntity = this.dbService.getAll(PermissionEntity.class);
-
-/*        for (PermissionEntity entity:listEntity) {
-            entity.setStatus(0);
-        }*/
+        //List<PermissionEntity> listEntity = new ArrayList<>();
+        List<PermissionEntity> saveEntitys = new ArrayList<>();
 
         for (InitPermission vo : listVO) {
             int flag = 0;
@@ -60,15 +60,17 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
             if(flag == 0){
                 PermissionEntity permissionEntity = new PermissionEntity();
                 BeanUtils.copyProperties(vo,permissionEntity);
+                //permissionEntity.setId(null);
                 permissionEntity.setCreateUser(1);
                 permissionEntity.setCreateTime(new Timestamp(new Date().getTime()));
                 permissionEntity.setUpdateUser(1);
                 permissionEntity.setUpdateTime(new Timestamp(new Date().getTime()));
                 permissionEntity.setStatus(1);
-                this.dbService.save(permissionEntity);
+                saveEntitys.add(permissionEntity);
+
             }
         }
-
+        this.dbService.save(saveEntitys);
 
 
         return 1;

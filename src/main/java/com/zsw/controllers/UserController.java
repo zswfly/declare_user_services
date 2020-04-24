@@ -14,9 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -52,7 +50,8 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
 
             if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-                paramUserEntity.setLoginPwd(loginTemp.getPassWord());
+                paramUserEntity.setPhone(loginTemp.getPhone());
+                paramUserEntity.setLoginPwd(loginTemp.getPassword());
                 result = this.userService.getUser(paramUserEntity);
                 result.setLoginPwd(null);
             }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
@@ -63,7 +62,7 @@ public class UserController extends BaseController{
                 param.put("verifyCode",loginTemp.getVerifyCode());
                 param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_LOGIN);
                 ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
-                        "http://cache-services"
+                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                                 + CacheStaticURLUtil.redisController
                                 + CacheStaticURLUtil.redisController_checkVerifyCode
                         ,param,Boolean.class);
@@ -93,7 +92,7 @@ public class UserController extends BaseController{
                 tokenMap.put("userId",result.getId()+"");
                 tokenMap.put("token",token);
                 this.restTemplate.postForEntity(
-                        "http://cache-services"
+                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                                 + CacheStaticURLUtil.redisController
                                 + CacheStaticURLUtil.redisController_setToken
                         ,tokenMap,Integer.class);
@@ -122,7 +121,7 @@ public class UserController extends BaseController{
             param.put("verifyCode",loginTemp.getVerifyCode());
             param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_REST_PASSWORD);
             ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
-                    "http://cache-services"
+                    CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                             + CacheStaticURLUtil.redisController
                             + CacheStaticURLUtil.redisController_checkVerifyCode
                     ,param,Boolean.class);
@@ -144,7 +143,7 @@ public class UserController extends BaseController{
             //重置密码
             UserEntity userEntity = new UserEntity();
             userEntity.setPhone(loginTemp.getPhone());
-            UserEntity result =this.userService.resetPassWord(userEntity,loginTemp.getPassWord());
+            UserEntity result =this.userService.resetPassWord(userEntity,loginTemp.getPassword());
 
 
             if(result == null){
@@ -194,10 +193,10 @@ public class UserController extends BaseController{
         }
     }
 
-    @RequestMapping(value=UserStaticURLUtil.userController_getUser,
+    @RequestMapping(value=UserStaticURLUtil.userController_getUser+"/{userId}",
             method= RequestMethod.POST)
     @ResponseBody
-    public String getUser(Integer userId) throws Exception {
+    public String getUser(@PathVariable Integer userId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -257,10 +256,11 @@ public class UserController extends BaseController{
     }
 
     @RequestMapping(value=UserStaticURLUtil.userController_batchBan,
-            method= RequestMethod.POST)
+            method= RequestMethod.PUT)
     @ResponseBody
-    @Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户" )
-    public String batchBan(List<Integer> ids,String type,Integer userId) throws Exception {
+    @Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
+        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
+    public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer userId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -278,9 +278,10 @@ public class UserController extends BaseController{
     }
 
     @RequestMapping(value=UserStaticURLUtil.userController_usersPage,
-            method= RequestMethod.POST)
+            method= RequestMethod.GET)
     @ResponseBody
-    @Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户" )
+    @Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户"
+            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
     public String usersPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -322,9 +323,13 @@ public class UserController extends BaseController{
             paramMap.put("start", (currentPage-1)*pageSize);
             paramMap.put("pageSize", pageSize);
 
-            List<UserDto> items = this.userService.usersPage(paramMap);
 
-            responseJson.setData(items);
+            Map<String,Object> data = new HashMap<>();
+            List<UserDto> items = this.userService.usersPage(paramMap);
+            data.put("items",items);
+            data.put("total",items==null?0:items.size());
+
+            responseJson.setData(data);
 
             responseJson.setCode("200");
             responseJson.setMessage("搜索成功");
@@ -341,8 +346,8 @@ public class UserController extends BaseController{
     private String resetPassWordCheck(LoginTemp loginTemp) throws Exception{
         if(loginTemp == null)return "空信息";
 
-        if(StringUtils.isBlank(loginTemp.getPassWord())
-                ||loginTemp.getPassWord().length() < 8
+        if(StringUtils.isBlank(loginTemp.getPassword())
+                ||loginTemp.getPassword().length() < 8
                 ) return "密码少于8位";
 
         return null;

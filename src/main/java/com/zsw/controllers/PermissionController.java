@@ -6,6 +6,7 @@ import com.zsw.entitys.user.InitPermission;
 import com.zsw.entitys.user.UserPermission;
 import com.zsw.services.IPermissionService;
 import com.zsw.utils.CacheStaticURLUtil;
+import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.UserStaticURLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,7 +52,7 @@ public class PermissionController extends BaseController implements IUserPermiss
             }
         }
         this.restTemplate.postForEntity(
-                "http://cache-services"
+                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                         + CacheStaticURLUtil.redisController
                         + CacheStaticURLUtil.redisController_initPermission
                 ,userPermissions,Integer.class);
