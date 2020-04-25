@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -27,8 +28,9 @@ public class TestController extends BaseController {
     @RequestMapping(value="/test", method= RequestMethod.POST)
     @ResponseBody
     @Permission(code="user.test.test",name = "测试",description = "test")
-    public void test() throws Exception {
+    public void test(HttpServletRequest request) throws Exception {
 
+        System.out.print(1);
     }
 
     @RequestMapping(value= CommonStaticWord.System_Url+"/test2", method= RequestMethod.POST)

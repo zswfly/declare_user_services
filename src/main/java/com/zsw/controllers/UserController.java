@@ -5,6 +5,7 @@ import com.zsw.annotations.Permission;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
+import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IUserService;
@@ -40,20 +41,21 @@ public class UserController extends BaseController{
     @RequestMapping(value=UserStaticURLUtil.userController_login,
             method= RequestMethod.POST)
     @ResponseBody
-    public String login(LoginTemp loginTemp) throws Exception {
+    public Result<HashMap<String, Object>> login(LoginTemp loginTemp) throws Exception {
+        Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try{
             UserEntity paramUserEntity = new UserEntity();
+            //电话号码设置为参数
             paramUserEntity.setPhone(loginTemp.getPhone());
-            UserEntity result = null;
+            UserEntity userEntity = null;
 
-            ResponseJson responseJson = new ResponseJson();
+            //ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-                paramUserEntity.setPhone(loginTemp.getPhone());
                 paramUserEntity.setLoginPwd(loginTemp.getPassword());
-                result = this.userService.getUser(paramUserEntity);
-                result.setLoginPwd(null);
+                userEntity = this.userService.getUser(paramUserEntity);
+                userEntity.setLoginPwd(null);
             }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
 
                 //验证码校验
@@ -67,97 +69,138 @@ public class UserController extends BaseController{
                                 + CacheStaticURLUtil.redisController_checkVerifyCode
                         ,param,Boolean.class);
                 if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                    responseJson.setCode("200");
-                    responseJson.setMessage("验证码错误");
-                    return gson.toJson(responseJson);
+
+//                    responseJson.setCode("200");
+//                    responseJson.setMessage("验证码错误");
+//                    return gson.toJson(responseJson);
+                    result.setCode(ResponseCode.Code_0);
+                    result.setMessage("验证码错误");
+                    return result;
                 }
 
-                result = this.userService.getUser(paramUserEntity);
-                result.setLoginPwd(null);
+                userEntity = this.userService.getUser(paramUserEntity);
+                userEntity.setLoginPwd(null);
 
             }
 
             if(result == null){
-                responseJson.setCode("200");
-                responseJson.setMessage("账号不存在或密码错误");
-            }else if(result.getStatus() == UserServiceStaticWord.User_Status_1){
-                responseJson.setCode("200");
-                responseJson.setMessage("账户禁用");
+//                responseJson.setCode("200");
+//                responseJson.setMessage("账号不存在或密码错误");
+                result.setCode(ResponseCode.Code_0);
+                result.setMessage("账号不存在或密码错误");
+            }else if(userEntity.getStatus() == UserServiceStaticWord.User_Status_1){
+//                responseJson.setCode("200");
+//                responseJson.setMessage("账户禁用");
+                result.setCode(ResponseCode.Code_0);
+                result.setMessage("账户禁用");
             }else{
-                Map<String,Object> data = new HashMap<>();
-                data.put("user",result);
-                UUID token = UUID.randomUUID();
-                data.put("token",token);
-                Map<String,Object> tokenMap = new HashMap<>();
-                tokenMap.put("userId",result.getId()+"");
-                tokenMap.put("token",token);
-                this.restTemplate.postForEntity(
-                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                                + CacheStaticURLUtil.redisController
-                                + CacheStaticURLUtil.redisController_setToken
-                        ,tokenMap,Integer.class);
-                responseJson.setCode("200");
-                responseJson.setData(data);
+                HashMap<String,Object> data = new HashMap<>();
+                data.put("user",userEntity);
+//                UUID token = UUID.randomUUID();
+//                data.put("token",token);
+//                Map<String,Object> tokenMap = new HashMap<>();
+//                tokenMap.put("userId",result.getId()+"");
+//                tokenMap.put("token",token);
+//                this.restTemplate.postForEntity(
+//                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
+//                                + CacheStaticURLUtil.redisController
+//                                + CacheStaticURLUtil.redisController_setToken
+//                        ,tokenMap,Integer.class);
+
+
+
+//                responseJson.setCode("200");
+//                responseJson.setData(data);
+
+                data.put("userId",userEntity.getId());
+
+                result.setData(data);
+                result.setCode(ResponseCode.Code_1);
             }
 
-            return gson.toJson(responseJson);
+//            return gson.toJson(responseJson);
+            return result;
         }catch (Exception e){
             e.printStackTrace();
-            return CommonUtils.ErrorResposeJson();
+            result.setCode(ResponseCode.Code_0);
+            result.setMessage("系统错误");
+            return result;
+            //return CommonUtils.ErrorResposeJson();
         }
 
     }
     @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
             method= RequestMethod.POST)
     @ResponseBody
-    public String resetPassWord(LoginTemp loginTemp) throws Exception {
+    public Result<HashMap<String, Object>> resetPassWord(LoginTemp loginTemp) throws Exception {
+        Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try {
-            ResponseJson responseJson = new ResponseJson();
+            //ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             //验证码校验
-            Map<String, String > param = new HashMap<>();
-            param.put("phone",loginTemp.getPhone());
-            param.put("verifyCode",loginTemp.getVerifyCode());
-            param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_REST_PASSWORD);
+            Map<String, String > paramMap = new HashMap<>();
+            paramMap.put("phone",loginTemp.getPhone());
+            paramMap.put("verifyCode",loginTemp.getVerifyCode());
+            paramMap.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_REST_PASSWORD);
             ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
                     CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                             + CacheStaticURLUtil.redisController
                             + CacheStaticURLUtil.redisController_checkVerifyCode
-                    ,param,Boolean.class);
+                    ,paramMap,Boolean.class);
             if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                responseJson.setCode("200");
-                responseJson.setMessage("验证码错误");
-                return gson.toJson(responseJson);
+//                responseJson.setCode("200");
+//                responseJson.setMessage("验证码错误");
+//                return gson.toJson(responseJson);
+                result.setCode(ResponseCode.Code_0);
+                result.setMessage("验证码错误");
+                return result;
             }
 
             //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
-                responseJson.setCode("200");
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
+//                responseJson.setCode("200");
+//                responseJson.setMessage(check);
+//                return gson.toJson(responseJson);
+                result.setCode(ResponseCode.Code_0);
+                result.setMessage(check);
+                return result;
             }
 
 
             //重置密码
-            UserEntity userEntity = new UserEntity();
-            userEntity.setPhone(loginTemp.getPhone());
-            UserEntity result =this.userService.resetPassWord(userEntity,loginTemp.getPassword());
+            UserEntity paramEntity = new UserEntity();
+            paramEntity.setPhone(loginTemp.getPhone());
+            UserEntity userEntity =this.userService.resetPassWord(paramEntity,loginTemp.getPassword());
 
 
-            if(result == null){
-                responseJson.setCode("200");
-                responseJson.setMessage("手机号不存在");
+            if(userEntity == null){
+//                responseJson.setCode("200");
+//                responseJson.setMessage("手机号不存在");
+                result.setCode(ResponseCode.Code_0);
+                result.setMessage("账户不存在");
             }else{
-                responseJson.setCode("200");
-                responseJson.setMessage("重置成功");
+//                responseJson.setCode("200");
+//                responseJson.setMessage("重置成功");
+                HashMap<String,Object> data = new HashMap<>();
+                data.put("user",userEntity);
+                data.put("userId",userEntity.getId());
+                result.setData(data);
+                result.setCode(ResponseCode.Code_1);
+                result.setMessage("重置成功");
+
             }
 
-            return gson.toJson(responseJson);
+            //return gson.toJson(responseJson);
+            return result;
         }catch (Exception e){
             e.printStackTrace();
-            return CommonUtils.ErrorResposeJson();
+            //return CommonUtils.ErrorResposeJson();
+            e.printStackTrace();
+            result.setCode(ResponseCode.Code_0);
+            result.setMessage("系统错误");
+            return result;
         }
 
     }

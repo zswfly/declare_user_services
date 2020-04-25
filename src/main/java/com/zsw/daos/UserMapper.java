@@ -1,6 +1,5 @@
 package com.zsw.daos;
 
-import com.zsw.entitys.User;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.entitys.user.UserPermission;
 import org.apache.ibatis.annotations.Mapper;
