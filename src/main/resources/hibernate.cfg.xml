@@ -13,8 +13,9 @@
 
     <mapping class="com.zsw.entitys.PermissionEntity"/>
     <mapping class="com.zsw.entitys.UserEntity"/>
+      <mapping class="com.zsw.entitys.CompanyEntity"/>
 
-    <!-- DB schema will be updated if needed -->
+      <!-- DB schema will be updated if needed -->
     <!-- <property name="hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>

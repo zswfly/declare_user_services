@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsw.daos.CompanyMapper" >
+  <!--<resultMap id="BaseResultMap" type="com.zsw.entitys.Company" >-->
+    <!--<id column="id" property="id" jdbcType="INTEGER" />-->
+    <!--<result column="name" property="name" jdbcType="VARCHAR" />-->
+    <!--<result column="status" property="status" jdbcType="INTEGER" />-->
+    <!--<result column="url" property="url" jdbcType="VARCHAR" />-->
+    <!--<result column="mnemonic_code" property="mnemonicCode" jdbcType="VARCHAR" />-->
+    <!--<result column="contact" property="contact" jdbcType="VARCHAR" />-->
+    <!--<result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />-->
+    <!--<result column="contact_address" property="contactAddress" jdbcType="VARCHAR" />-->
+    <!--<result column="size" property="size" jdbcType="INTEGER" />-->
+    <!--<result column="creator_id" property="creatorId" jdbcType="INTEGER" />-->
+    <!--<result column="contract_start_at" property="contractStartAt" jdbcType="DATE" />-->
+    <!--<result column="contract_end_at" property="contractEndAt" jdbcType="DATE" />-->
+    <!--<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />-->
+    <!--<result column="create_user" property="createUser" jdbcType="INTEGER" />-->
+    <!--<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />-->
+    <!--<result column="update_user" property="updateUser" jdbcType="INTEGER" />-->
+  <!--</resultMap>-->
+  <resultMap id="SimpleCompanyDtoMap" type="com.zsw.entitys.user.SimpleCompanyDto" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="listSimpleCompanyDto" resultMap="SimpleCompanyDtoMap">
+
+    SELECT
+    c.id,
+    c.`name`
+    c.url,
+    c.`status`
+    FROM company c
+    LEFT JOIN department d ON d.company_id = c.id
+    LEFT JOIN department_user du ON du.department_id = d.id
+    LEFT JOIN `user` u ON  u.id = du.user_id
+    WHERE 1=1
+    <if test="paramMap.userId != null and paramMap.userId > 0">
+      AND u.id == #{paramMap.userId}
+    </if>
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND c.id == #{paramMap.companyId}
+    </if>
+  </select>
+
+
+  <select id="getSimpleCompanyDto" resultMap="SimpleCompanyDtoMap">
+    SELECT
+    c.id,
+    c.`name`
+    c.url,
+    c.`status`
+    FROM company c
+    WHERE 1=1
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND c.id == #{paramMap.companyId}
+    </if>
+
+  </select>
+
+</mapper>

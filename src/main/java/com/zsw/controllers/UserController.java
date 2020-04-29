@@ -8,6 +8,7 @@ import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
+import com.zsw.services.ICompanyService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
@@ -22,7 +23,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by zhangshaowei on 2020/4/16.
@@ -37,6 +37,8 @@ public class UserController extends BaseController{
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    ICompanyService companyService;
 
     @RequestMapping(value=UserStaticURLUtil.userController_login,
             method= RequestMethod.POST)
@@ -59,7 +61,7 @@ public class UserController extends BaseController{
             }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
 
                 //验证码校验
-                Map<String, String > param = new HashMap<>();
+                Map<String, Object > param = new HashMap<>();
                 param.put("phone",loginTemp.getPhone());
                 param.put("verifyCode",loginTemp.getVerifyCode());
                 param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_LOGIN);
@@ -70,9 +72,6 @@ public class UserController extends BaseController{
                         ,param,Boolean.class);
                 if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
 
-//                    responseJson.setCode("200");
-//                    responseJson.setMessage("验证码错误");
-//                    return gson.toJson(responseJson);
                     result.setCode(ResponseCode.Code_0);
                     result.setMessage("验证码错误");
                     return result;
@@ -83,49 +82,29 @@ public class UserController extends BaseController{
 
             }
 
-            if(result == null){
-//                responseJson.setCode("200");
-//                responseJson.setMessage("账号不存在或密码错误");
+            if(userEntity == null){
                 result.setCode(ResponseCode.Code_0);
                 result.setMessage("账号不存在或密码错误");
-            }else if(userEntity.getStatus() == UserServiceStaticWord.User_Status_1){
-//                responseJson.setCode("200");
-//                responseJson.setMessage("账户禁用");
+            }else if(userEntity.getStatus() == CommonStaticWord.Ban_Status_1){
                 result.setCode(ResponseCode.Code_0);
                 result.setMessage("账户禁用");
             }else{
                 HashMap<String,Object> data = new HashMap<>();
-                data.put("user",userEntity);
-//                UUID token = UUID.randomUUID();
-//                data.put("token",token);
-//                Map<String,Object> tokenMap = new HashMap<>();
-//                tokenMap.put("userId",result.getId()+"");
-//                tokenMap.put("token",token);
-//                this.restTemplate.postForEntity(
-//                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-//                                + CacheStaticURLUtil.redisController
-//                                + CacheStaticURLUtil.redisController_setToken
-//                        ,tokenMap,Integer.class);
-
-
-
-//                responseJson.setCode("200");
-//                responseJson.setData(data);
-
+                Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
+                listSimpleCompanyDtoParams.put("userId",userEntity.getId().toString());
+                data.put("companys",this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams));
+                //不用返回user对象
+                //data.put("user",userEntity);
                 data.put("userId",userEntity.getId());
-
                 result.setData(data);
                 result.setCode(ResponseCode.Code_1);
             }
-
-//            return gson.toJson(responseJson);
             return result;
         }catch (Exception e){
             e.printStackTrace();
             result.setCode(ResponseCode.Code_0);
             result.setMessage("系统错误");
             return result;
-            //return CommonUtils.ErrorResposeJson();
         }
 
     }
@@ -135,7 +114,6 @@ public class UserController extends BaseController{
     public Result<HashMap<String, Object>> resetPassWord(LoginTemp loginTemp) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try {
-            //ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             //验证码校验
@@ -149,9 +127,6 @@ public class UserController extends BaseController{
                             + CacheStaticURLUtil.redisController_checkVerifyCode
                     ,paramMap,Boolean.class);
             if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-//                responseJson.setCode("200");
-//                responseJson.setMessage("验证码错误");
-//                return gson.toJson(responseJson);
                 result.setCode(ResponseCode.Code_0);
                 result.setMessage("验证码错误");
                 return result;
@@ -160,9 +135,6 @@ public class UserController extends BaseController{
             //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
-//                responseJson.setCode("200");
-//                responseJson.setMessage(check);
-//                return gson.toJson(responseJson);
                 result.setCode(ResponseCode.Code_0);
                 result.setMessage(check);
                 return result;
@@ -176,17 +148,9 @@ public class UserController extends BaseController{
 
 
             if(userEntity == null){
-//                responseJson.setCode("200");
-//                responseJson.setMessage("手机号不存在");
                 result.setCode(ResponseCode.Code_0);
                 result.setMessage("账户不存在");
             }else{
-//                responseJson.setCode("200");
-//                responseJson.setMessage("重置成功");
-                HashMap<String,Object> data = new HashMap<>();
-                data.put("user",userEntity);
-                data.put("userId",userEntity.getId());
-                result.setData(data);
                 result.setCode(ResponseCode.Code_1);
                 result.setMessage("重置成功");
 
@@ -196,7 +160,6 @@ public class UserController extends BaseController{
             return result;
         }catch (Exception e){
             e.printStackTrace();
-            //return CommonUtils.ErrorResposeJson();
             e.printStackTrace();
             result.setCode(ResponseCode.Code_0);
             result.setMessage("系统错误");
@@ -303,12 +266,12 @@ public class UserController extends BaseController{
     @ResponseBody
     @Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
         ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
-    public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer userId) throws Exception {
+    public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
-            this.userService.batchBan(ids,type,userId);
+            this.userService.batchBan(ids,type,currentUserId);
 
             responseJson.setCode("200");
             responseJson.setMessage("更新成功");

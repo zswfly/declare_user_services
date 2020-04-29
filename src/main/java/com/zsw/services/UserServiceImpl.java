@@ -82,11 +82,11 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public void batchBan(List<Integer> ids, String type, Integer userId) throws Exception{
+    public void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception{
         int falg = type == UserServiceStaticWord.User_Status_ban?1:0;
         List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
         for (UserEntity item : list){
-            if(item.getId() != userId){
+            if(item.getId() != currentUserId){
                 item.setStatus(falg);
             }
         }
