@@ -4,6 +4,7 @@ import com.zsw.daos.PermissionMapper;
 import com.zsw.entitys.PermissionEntity;
 import com.zsw.entitys.user.InitPermission;
 import com.zsw.entitys.user.UserPermission;
+import com.zsw.utils.CommonStaticWord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,11 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
     public Integer  initPermission(List<InitPermission> listVO) throws Exception {
 
         List<PermissionEntity> listEntity = this.dbService.getAll(PermissionEntity.class);
-        //List<PermissionEntity> listEntity = new ArrayList<>();
         List<PermissionEntity> saveEntitys = new ArrayList<>();
+
+        for (PermissionEntity entity:listEntity) {
+            entity.setStatus(CommonStaticWord.Ban_Status_1);
+        }
 
         for (InitPermission vo : listVO) {
             int flag = 0;
@@ -52,8 +56,7 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
                 if(StringUtils.isNotBlank(vo.getCode())
                         && vo.getCode().equals(entity.getCode())){
                     flag = 1;
-                    //entity.setStatus(1);
-
+                    entity.setStatus(CommonStaticWord.Normal_Status_0);
                 }
             }
 

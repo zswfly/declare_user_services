@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "company", schema = "user", catalog = "")
-public class CompanyEntity {
+public class CompanyEntity extends IDEntity{
     private int id;
     private String name;
     private int status;

@@ -57,9 +57,9 @@
     <if test="paramMap.endCreateTime !=null">
       AND u.create_time >= Date(#{paramMap.beginCreateTime})
     </if>
-    <if test="paramMap.pageSize !=null and paramMap.pageSize > 0
-         and paramMap.currentPage !=null and paramMap.currentPage > 0">
-      LIMIT ${paramMap.userName} , ${paramMap.userName}
+    <if test="paramMap.start !=null and paramMap.start >= 0
+         and paramMap.pageSize !=null and paramMap.pageSize > 0">
+      LIMIT ${paramMap.start} , ${paramMap.pageSize}
     </if>
 
 
