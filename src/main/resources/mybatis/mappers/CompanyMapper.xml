@@ -58,10 +58,10 @@
     LEFT JOIN `user` u ON  u.id = du.user_id
     WHERE 1=1
     <if test="paramMap.userId != null and paramMap.userId > 0">
-      AND u.id == #{paramMap.userId}
+      AND u.id = #{paramMap.userId}
     </if>
     <if test="paramMap.companyId != null and paramMap.companyId > 0">
-      AND c.id == #{paramMap.companyId}
+      AND c.id = #{paramMap.companyId}
     </if>
     <if test="paramMap.start !=null and paramMap.start >= 0
          and paramMap.pageSize !=null and paramMap.pageSize > 0">
@@ -80,7 +80,7 @@
     FROM company c
     WHERE 1=1
     <if test="paramMap.companyId != null and paramMap.companyId > 0">
-      AND c.id == #{paramMap.companyId}
+      AND c.id = #{paramMap.companyId}
     </if>
 
   </select>

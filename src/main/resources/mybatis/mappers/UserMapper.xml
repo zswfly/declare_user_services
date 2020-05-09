@@ -40,7 +40,7 @@
       AND u.`status` = #{paramMap.status}
     </if>
     <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
-      AND du.department_id == #{paramMap.departmentId}
+      AND du.department_id = #{paramMap.departmentId}
     </if>
     <if test="paramMap.phone != null and paramMap.phone != ''">
     AND u.phone LIKE '%${paramMap.phone}%'
