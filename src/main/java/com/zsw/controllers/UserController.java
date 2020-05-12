@@ -111,9 +111,9 @@ public class UserController extends BaseController{
     @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
             method= RequestMethod.POST)
     @ResponseBody
-    public Result<HashMap<String, Object>> resetPassWord(LoginTemp loginTemp) throws Exception {
-        Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
+    public String resetPassWord(LoginTemp loginTemp) throws Exception {
         try {
+            ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             //验证码校验
@@ -127,17 +127,17 @@ public class UserController extends BaseController{
                             + CacheStaticURLUtil.redisController_checkVerifyCode
                     ,paramMap,Boolean.class);
             if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                result.setCode(ResponseCode.Code_0);
-                result.setMessage("验证码错误");
-                return result;
+                responseJson.setCode("200");
+                responseJson.setMessage("验证码错误");
+                return gson.toJson(responseJson);
             }
 
             //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
-                result.setCode(ResponseCode.Code_0);
-                result.setMessage(check);
-                return result;
+                responseJson.setCode("200");
+                responseJson.setMessage(check);
+                return gson.toJson(responseJson);
             }
 
 
@@ -148,22 +148,18 @@ public class UserController extends BaseController{
 
 
             if(userEntity == null){
-                result.setCode(ResponseCode.Code_0);
-                result.setMessage("账户不存在");
+                responseJson.setCode("200");
+                responseJson.setMessage("账户不存在");
             }else{
-                result.setCode(ResponseCode.Code_1);
-                result.setMessage("重置成功");
+                responseJson.setCode("200");
+                responseJson.setMessage("重置成功");
 
             }
 
-            //return gson.toJson(responseJson);
-            return result;
+            return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
-            e.printStackTrace();
-            result.setCode(ResponseCode.Code_0);
-            result.setMessage("系统错误");
-            return result;
+            return CommonUtils.ErrorResposeJson();
         }
 
     }
@@ -296,7 +292,7 @@ public class UserController extends BaseController{
 
             String status = request.getParameter("status");
             if(status !=null && StringUtils.isNotBlank(status)) {
-                paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, 0)));
+                paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
             }
             String departmentId = request.getParameter("departmentId");
             if(departmentId !=null && StringUtils.isNotBlank(departmentId)) {
@@ -334,9 +330,7 @@ public class UserController extends BaseController{
             List<UserDto> items = this.userService.usersPage(paramMap);
             data.put("items",items);
             data.put("total",items==null?0:items.size());
-
             responseJson.setData(data);
-
             responseJson.setCode("200");
             responseJson.setMessage("搜索成功");
 

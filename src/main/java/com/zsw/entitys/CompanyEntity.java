@@ -30,6 +30,7 @@ public class CompanyEntity extends IDEntity{
     private int creatorId;
     private Date contractStartAt;
     private Date contractEndAt;
+    private int managerId;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -206,7 +207,19 @@ public class CompanyEntity extends IDEntity{
         this.creatorId = creatorId;
     }
 
-//    @Basic
+
+    @Basic
+    @Max(9999999999L)
+    @Column(name = "manager_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+    public int getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
+    }
+
+    //    @Basic
 //    @Column(name = "contract_start_at", nullable = true)
     @Basic
     @Column(name = "contract_start_at", nullable = true, unique = false, insertable = true, updatable = true)

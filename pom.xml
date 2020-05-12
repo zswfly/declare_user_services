@@ -198,7 +198,7 @@
 				<executions>
 					<execution>
 						<id>Generate MyBatis Artifacts</id>
-						<phase>package</phase>
+						<phase>deploy</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -206,9 +206,9 @@
 				</executions>
 				<configuration>
 					<!--允许移动生成的文件 -->
-					<verbose>true</verbose>
+					<verbose>false</verbose>
 					<!-- 是否覆盖 -->
-					<overwrite>true</overwrite>
+					<overwrite>false</overwrite>
 					<!-- 自动生成的配置文件路径。启动插件时，插件会根据这里配置的路径去找到generatorConfig.xml配置文件，
                     根据配置文件里的配置，去自动生成Mapper接口（可以理解为Dao层）、实体类、Mapper.xml文件
                     -->
