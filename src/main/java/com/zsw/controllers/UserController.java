@@ -90,9 +90,7 @@ public class UserController extends BaseController{
                 result.setMessage("账户禁用");
             }else{
                 HashMap<String,Object> data = new HashMap<>();
-                Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
-                listSimpleCompanyDtoParams.put("userId",userEntity.getId().toString());
-                data.put("companys",this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams));
+
                 //不用返回user对象
                 //data.put("user",userEntity);
                 data.put("userId",userEntity.getId());

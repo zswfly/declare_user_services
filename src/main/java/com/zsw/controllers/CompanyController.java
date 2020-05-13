@@ -160,8 +160,32 @@ public class CompanyController {
         }
     }
 
-
-
+    @RequestMapping(value=UserStaticURLUtil.companyController_getUserCompanys,
+            method= RequestMethod.GET)
+    @ResponseBody
+    public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+            Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
+            listSimpleCompanyDtoParams.put("userId",currentUserId);
+            List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
+            if(simpleCompanyDtoList == null || simpleCompanyDtoList.size() < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setMessage("该用户没有公司数据");
+            }else{
+                HashMap<String,Object> data = new HashMap<>();
+                data.put("items",simpleCompanyDtoList);
+                responseJson.setData(data);
+                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setMessage("成功");
+            }
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
 
 
 

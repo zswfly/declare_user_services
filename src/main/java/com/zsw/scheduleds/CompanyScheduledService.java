@@ -26,12 +26,12 @@ public class CompanyScheduledService {
     @Autowired
     private ICompanyService companyService;
 
-    @Scheduled(cron = "0 * * * * *")
-    //@Scheduled(cron = "0 0 3 * * *")
+    //@Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void checkCompanyContract() {
         try {
-            System.out.println("1111111111111111________Scheduled Task-------------------------------------------------------------------");
+            System.out.println("CompanyScheduledService.checkCompanyContract 1111111111111111________Scheduled Task-------------------------------------------------------------------");
             Integer start = 0;
             Integer pageSize = 1;
             //Integer pageSize = 30;
