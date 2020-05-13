@@ -47,12 +47,12 @@ public class CompanyController {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try {
             if (companyId == null) {
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("选择公司为空");
                 return result;
             }
             if (currentUserId == null) {
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("用户没有登录");
                 return result;
             }
@@ -60,15 +60,15 @@ public class CompanyController {
             listSimpleCompanyDtoParam.put("companyId",companyId);
             List<SimpleCompanyDto> listSimpleCompanyDto = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParam);
             if (listSimpleCompanyDto == null  ) {
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("当前用户没有该公司权限");
                 return result;
             } else if(listSimpleCompanyDto.size() != 1){
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("数据错误,请联系工作人员");
                 return result;
             }else if(listSimpleCompanyDto.get(0).getStatus() == CommonStaticWord.Ban_Status_1){
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("该公司已禁用或已过使用期限");
                 return result;
             }else{
@@ -76,12 +76,12 @@ public class CompanyController {
                 data.put("userId",currentUserId);
                 data.put("hostUrl",listSimpleCompanyDto.get(0).getUrl() );
                 result.setData(data);
-                result.setCode(ResponseCode.Code_1);
+                result.setCode(ResponseCode.Code_200);
                 return result;
             }
         }catch (Exception e){
             e.printStackTrace();
-            result.setCode(ResponseCode.Code_0);
+            result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
         }
@@ -135,7 +135,7 @@ public class CompanyController {
             data.put("items",items);
             data.put("total",items==null?0:items.size());
             responseJson.setData(data);
-            responseJson.setCode("200");
+            responseJson.setCode(ResponseCode.Code_String_200);
             responseJson.setMessage("搜索成功");
 
             return gson.toJson(responseJson);

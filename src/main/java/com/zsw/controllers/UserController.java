@@ -72,7 +72,7 @@ public class UserController extends BaseController{
                         ,param,Boolean.class);
                 if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
 
-                    result.setCode(ResponseCode.Code_0);
+                    result.setCode(ResponseCode.Code_Bussiness_Error);
                     result.setMessage("验证码错误");
                     return result;
                 }
@@ -83,10 +83,10 @@ public class UserController extends BaseController{
             }
 
             if(userEntity == null){
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("账号不存在或密码错误");
             }else if(userEntity.getStatus() == CommonStaticWord.Ban_Status_1){
-                result.setCode(ResponseCode.Code_0);
+                result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("账户禁用");
             }else{
                 HashMap<String,Object> data = new HashMap<>();
@@ -97,12 +97,12 @@ public class UserController extends BaseController{
                 //data.put("user",userEntity);
                 data.put("userId",userEntity.getId());
                 result.setData(data);
-                result.setCode(ResponseCode.Code_1);
+                result.setCode(ResponseCode.Code_200);
             }
             return result;
         }catch (Exception e){
             e.printStackTrace();
-            result.setCode(ResponseCode.Code_0);
+            result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
         }
@@ -127,7 +127,7 @@ public class UserController extends BaseController{
                             + CacheStaticURLUtil.redisController_checkVerifyCode
                     ,paramMap,Boolean.class);
             if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("验证码错误");
                 return gson.toJson(responseJson);
             }
@@ -135,7 +135,7 @@ public class UserController extends BaseController{
             //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -148,10 +148,10 @@ public class UserController extends BaseController{
 
 
             if(userEntity == null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("账户不存在");
             }else{
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_String_200);
                 responseJson.setMessage("重置成功");
 
             }
@@ -173,7 +173,7 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
             String check = newOrUpdateUserCheck(userDto);
             if(check != null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -181,10 +181,10 @@ public class UserController extends BaseController{
             UserEntity result = this.userService.newUser(userDto);
 
             if(result == null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("操作失败");
             }else{
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_String_200);
                 responseJson.setMessage("新增成功");
             }
 
@@ -208,10 +208,10 @@ public class UserController extends BaseController{
             userEntity = this.userService.getUser(userEntity);
 
             if(userEntity == null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("没有用户");
             }else{
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_String_200);
                 userEntity.setLoginPwd(null);
                 responseJson.setData(userEntity);
             }
@@ -234,7 +234,7 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
             String check = newOrUpdateUserCheck(userDto);
             if(check != null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -242,11 +242,11 @@ public class UserController extends BaseController{
             UserEntity userEntity = this.userService.updateUser(userDto);
 
             if(userEntity == null){
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("更新失败");
             }else{
 
-                responseJson.setCode("200");
+                responseJson.setCode(ResponseCode.Code_String_200);
                 responseJson.setMessage("更新成功");
             }
 
@@ -269,7 +269,7 @@ public class UserController extends BaseController{
 
             this.userService.batchBan(ids,type,currentUserId);
 
-            responseJson.setCode("200");
+            responseJson.setCode(ResponseCode.Code_String_200);
             responseJson.setMessage("更新成功");
 
             return gson.toJson(responseJson);
@@ -331,7 +331,7 @@ public class UserController extends BaseController{
             data.put("items",items);
             data.put("total",items==null?0:items.size());
             responseJson.setData(data);
-            responseJson.setCode("200");
+            responseJson.setCode(ResponseCode.Code_String_200);
             responseJson.setMessage("搜索成功");
 
             return gson.toJson(responseJson);
