@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-@Component
 public interface CompanyMapper {
     List<CompanyEntity> listCompanyEntity(@Param("paramMap") Map<String,Object> paramMap);
     CompanyEntity getCompanyEntity(@Param("paramMap") Map<String,Object> paramMap);

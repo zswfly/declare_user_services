@@ -78,8 +78,8 @@
       <![CDATA[ AND c.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
     </if>
 
-    <if test="paramMap.size != null and paramMap.size > 0">
-      AND c.`size` = #{paramMap.size}
+    <if test="paramMap.companySize != null and paramMap.companySize > 0">
+      AND c.`size` = #{paramMap.companySize}
     </if>
 
     <if test="paramMap.creatorId != null and paramMap.creatorId > 0">

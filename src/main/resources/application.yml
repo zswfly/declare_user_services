@@ -36,6 +36,8 @@ spring:
         current_session_context_class : thread
         ddl-auto: update   #validate | update | create | create-drop
 
+
+
 eureka:
   client:
     serviceUrl:
@@ -44,3 +46,8 @@ mybatis:
   type-aliases-package: com.zsw.daos
   mapper-locations: classpath:mybatis/mappers/*.xml
 
+logging:
+  level:
+    com:
+      zsw:
+        daos: debug

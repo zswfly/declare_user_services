@@ -116,7 +116,7 @@ public class CompanyController {
 
             String size = request.getParameter("size");
             if(size !=null && StringUtils.isNotBlank(size)) {
-                paramMap.put("size", Integer.valueOf(NumberUtils.toInt(size, 0)));
+                paramMap.put("companySize", Integer.valueOf(NumberUtils.toInt(size, 0)));
             }
 
             String creatorId = request.getParameter("creatorId");
@@ -168,12 +168,15 @@ public class CompanyController {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
             Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
-            listSimpleCompanyDtoParams.put("userId",currentUserId);
+            listSimpleCompanyDtoParams.put("userId",currentUserId+"");
             List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
             if(simpleCompanyDtoList == null || simpleCompanyDtoList.size() < 1){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
                 responseJson.setMessage("该用户没有公司数据");
             }else{
+                for(SimpleCompanyDto dto : simpleCompanyDtoList){
+                    dto.setUrl(null);
+                }
                 HashMap<String,Object> data = new HashMap<>();
                 data.put("items",simpleCompanyDtoList);
                 responseJson.setData(data);
