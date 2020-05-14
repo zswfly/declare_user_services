@@ -55,6 +55,7 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
 
             if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
+                paramUserEntity.setPhone(loginTemp.getPhone());
                 paramUserEntity.setLoginPwd(loginTemp.getPassword());
                 userEntity = this.userService.getUser(paramUserEntity);
                 userEntity.setLoginPwd(null);
