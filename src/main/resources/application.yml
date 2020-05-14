@@ -50,7 +50,7 @@ mybatis:
 
 logging:
   config: classpath:logback.xml
-  path: ~/log
+  path: /Users/zhangshaowei/log
 　level:
 　　　com:
         zsw:
