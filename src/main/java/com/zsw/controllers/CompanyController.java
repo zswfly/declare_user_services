@@ -135,7 +135,7 @@ public class CompanyController {
             data.put("items",items);
             data.put("total",items==null?0:items.size());
             responseJson.setData(data);
-            responseJson.setCode(ResponseCode.Code_String_200);
+            responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("搜索成功");
 
             return gson.toJson(responseJson);
@@ -171,7 +171,7 @@ public class CompanyController {
             listSimpleCompanyDtoParams.put("userId",currentUserId+"");
             List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
             if(simpleCompanyDtoList == null || simpleCompanyDtoList.size() < 1){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("该用户没有公司数据");
             }else{
                 for(SimpleCompanyDto dto : simpleCompanyDtoList){
@@ -180,7 +180,7 @@ public class CompanyController {
                 HashMap<String,Object> data = new HashMap<>();
                 data.put("items",simpleCompanyDtoList);
                 responseJson.setData(data);
-                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setCode(ResponseCode.Code_200);
                 responseJson.setMessage("成功");
             }
             return gson.toJson(responseJson);

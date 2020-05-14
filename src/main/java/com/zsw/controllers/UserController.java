@@ -125,7 +125,7 @@ public class UserController extends BaseController{
                             + CacheStaticURLUtil.redisController_checkVerifyCode
                     ,paramMap,Boolean.class);
             if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("验证码错误");
                 return gson.toJson(responseJson);
             }
@@ -133,7 +133,7 @@ public class UserController extends BaseController{
             //参数校验
             String check = resetPassWordCheck(loginTemp);
             if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -146,10 +146,10 @@ public class UserController extends BaseController{
 
 
             if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("账户不存在");
             }else{
-                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setCode(ResponseCode.Code_200);
                 responseJson.setMessage("重置成功");
 
             }
@@ -171,7 +171,7 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
             String check = newOrUpdateUserCheck(userDto);
             if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -179,10 +179,10 @@ public class UserController extends BaseController{
             UserEntity result = this.userService.newUser(userDto);
 
             if(result == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("操作失败");
             }else{
-                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setCode(ResponseCode.Code_200);
                 responseJson.setMessage("新增成功");
             }
 
@@ -194,7 +194,7 @@ public class UserController extends BaseController{
     }
 
     @RequestMapping(value=UserStaticURLUtil.userController_getUser+"/{userId}",
-            method= RequestMethod.POST)
+            method= RequestMethod.GET)
     @ResponseBody
     public String getUser(@PathVariable Integer userId) throws Exception {
         try {
@@ -206,10 +206,10 @@ public class UserController extends BaseController{
             userEntity = this.userService.getUser(userEntity);
 
             if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("没有用户");
             }else{
-                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setCode(ResponseCode.Code_200);
                 userEntity.setLoginPwd(null);
                 responseJson.setData(userEntity);
             }
@@ -232,7 +232,7 @@ public class UserController extends BaseController{
             Gson gson = new Gson();
             String check = newOrUpdateUserCheck(userDto);
             if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
                 return gson.toJson(responseJson);
             }
@@ -240,11 +240,11 @@ public class UserController extends BaseController{
             UserEntity userEntity = this.userService.updateUser(userDto);
 
             if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error_String);
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("更新失败");
             }else{
 
-                responseJson.setCode(ResponseCode.Code_String_200);
+                responseJson.setCode(ResponseCode.Code_200);
                 responseJson.setMessage("更新成功");
             }
 
@@ -267,7 +267,7 @@ public class UserController extends BaseController{
 
             this.userService.batchBan(ids,type,currentUserId);
 
-            responseJson.setCode(ResponseCode.Code_String_200);
+            responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("更新成功");
 
             return gson.toJson(responseJson);
@@ -329,7 +329,7 @@ public class UserController extends BaseController{
             data.put("items",items);
             data.put("total",items==null?0:items.size());
             responseJson.setData(data);
-            responseJson.setCode(ResponseCode.Code_String_200);
+            responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("搜索成功");
 
             return gson.toJson(responseJson);
