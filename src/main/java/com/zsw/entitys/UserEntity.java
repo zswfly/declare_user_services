@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -11,7 +12,9 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "user", schema = "user", catalog = "")
-public class UserEntity extends IDEntity{
+public class UserEntity extends IDEntity {
+
+
     private Integer id;
     private String userName;
     private String loginPwd;

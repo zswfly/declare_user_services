@@ -48,7 +48,7 @@ public class UserController extends BaseController{
         try{
             UserEntity paramUserEntity = new UserEntity();
             //电话号码设置为参数
-            paramUserEntity.setPhone(loginTemp.getPhone());
+
             UserEntity userEntity = null;
 
             //ResponseJson responseJson = new ResponseJson();
@@ -58,7 +58,6 @@ public class UserController extends BaseController{
                 paramUserEntity.setPhone(loginTemp.getPhone());
                 paramUserEntity.setLoginPwd(loginTemp.getPassword());
                 userEntity = this.userService.getUser(paramUserEntity);
-                userEntity.setLoginPwd(null);
             }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
 
                 //验证码校验
@@ -77,10 +76,8 @@ public class UserController extends BaseController{
                     result.setMessage("验证码错误");
                     return result;
                 }
-
+                paramUserEntity.setPhone(loginTemp.getPhone());
                 userEntity = this.userService.getUser(paramUserEntity);
-                userEntity.setLoginPwd(null);
-
             }
 
             if(userEntity == null){
@@ -91,7 +88,7 @@ public class UserController extends BaseController{
                 result.setMessage("账户禁用");
             }else{
                 HashMap<String,Object> data = new HashMap<>();
-
+                userEntity.setLoginPwd(null);
                 //不用返回user对象
                 //data.put("user",userEntity);
                 data.put("userId",userEntity.getId());
@@ -259,8 +256,8 @@ public class UserController extends BaseController{
     @RequestMapping(value=UserStaticURLUtil.userController_batchBan,
             method= RequestMethod.PUT)
     @ResponseBody
-    @Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
-        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
+    //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
     public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -281,8 +278,8 @@ public class UserController extends BaseController{
     @RequestMapping(value=UserStaticURLUtil.userController_usersPage,
             method= RequestMethod.GET)
     @ResponseBody
-    @Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户"
-            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
+    //@Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户"
+    //        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
     public String usersPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();

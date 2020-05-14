@@ -1,9 +1,10 @@
 server:
   port: 8763
-
 spring:
   application:
     name: user-services
+  profiles:
+    active: dev
   devtools:
     restart:
       enabled: true
@@ -46,8 +47,13 @@ mybatis:
   type-aliases-package: com.zsw.daos
   mapper-locations: classpath:mybatis/mappers/*.xml
 
+
 logging:
-  level:
-    com:
-      zsw:
-        daos: debug
+  config: classpath:logback.xml
+  path: ~/log
+　level:
+　　　com:
+        zsw:
+            daos: debug
+　　　org:
+　　　　　　mybatis: debug

@@ -2,6 +2,8 @@ package com.zsw;
 
 import com.zsw.interceptor.PermissionInterceptor;
 import javafx.application.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,8 +34,19 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 @EnableScheduling
 public class UserServicesApplication extends SpringBootServletInitializer{
 
+
+
+
+
     public static void main(String[] args) {
+        Logger logger =LoggerFactory.getLogger(UserServicesApplication.class);
+        logger.trace("这是 info 级别");
+        logger.debug("这是 debug 级别");
+        logger.info("这是 info 级别");
+        logger.warn("这是 warn 级别");
+        logger.error("这是 error 级别");
         SpringApplication.run(UserServicesApplication.class, args);
+
     }
 
     @Override
