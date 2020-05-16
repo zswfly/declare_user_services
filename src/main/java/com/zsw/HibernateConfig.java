@@ -22,7 +22,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({ "com.zsw" })
-@PropertySource(value = { "classpath:application.yml" })
+//@PropertySource(value = { "classpath:application.yml" })
 public class HibernateConfig {
 
     @Autowired

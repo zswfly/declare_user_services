@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Created by zhangshaowei on 2020/4/16.
  */
-@Controller
+@RestController
 @RequestMapping(UserStaticURLUtil.userController)
 public class UserController extends BaseController{
 
@@ -42,7 +42,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_login,
             method= RequestMethod.POST)
-    @ResponseBody
     public Result<HashMap<String, Object>> login(LoginTemp loginTemp) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try{
@@ -106,7 +105,6 @@ public class UserController extends BaseController{
     }
     @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
             method= RequestMethod.POST)
-    @ResponseBody
     public String resetPassWord(LoginTemp loginTemp) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -162,7 +160,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_newUser,
             method= RequestMethod.POST)
-    @ResponseBody
     public String newUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -193,7 +190,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_getUser+"/{userId}",
             method= RequestMethod.GET)
-    @ResponseBody
     public String getUser(@PathVariable Integer userId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -223,7 +219,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_updateUser,
             method= RequestMethod.POST)
-    @ResponseBody
     public String updateUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -255,7 +250,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_batchBan,
             method= RequestMethod.PUT)
-    @ResponseBody
     //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
     public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer currentUserId) throws Exception {
@@ -277,7 +271,6 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_usersPage,
             method= RequestMethod.GET)
-    @ResponseBody
     //@Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户"
     //        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
     public String usersPage(NativeWebRequest request) throws Exception {

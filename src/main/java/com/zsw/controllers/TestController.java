@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by zhangshaowei on 2020/4/17.
  */
-@Controller
+@RestController
 @RequestMapping("/test")
 public class TestController extends BaseController {
 
@@ -29,7 +30,6 @@ public class TestController extends BaseController {
     Logger logger = LoggerFactory.getLogger(TestController.class);
 
     @RequestMapping(value="/test", method= RequestMethod.POST)
-    @ResponseBody
     //@Permission(code="user.test.test",name = "测试",description = "test")
     public void test(HttpServletRequest request) throws Exception {
         logger.trace("这是 test info 级别");
@@ -42,7 +42,6 @@ public class TestController extends BaseController {
     }
 
     @RequestMapping(value= CommonStaticWord.System_Url+"/test2", method= RequestMethod.POST)
-    @ResponseBody
     public String test2(List<Integer> ids) throws Exception {
         Gson gson = new Gson();
         return gson.toJson(this.userService.getUsersByIds(ids));

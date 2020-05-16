@@ -39,12 +39,6 @@ public class UserServicesApplication extends SpringBootServletInitializer{
 
 
     public static void main(String[] args) {
-        Logger logger =LoggerFactory.getLogger(UserServicesApplication.class);
-        logger.trace("这是 info 级别");
-        logger.debug("这是 debug 级别");
-        logger.info("这是 info 级别");
-        logger.warn("这是 warn 级别");
-        logger.error("这是 error 级别");
         SpringApplication.run(UserServicesApplication.class, args);
 
     }

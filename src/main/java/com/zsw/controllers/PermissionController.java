@@ -10,10 +10,7 @@ import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.UserStaticURLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -21,7 +18,7 @@ import java.util.*;
 /**
  * Created by zhangshaowei on 2020/4/13.
  */
-@Controller
+@RestController
 @RequestMapping(UserStaticURLUtil.permissionController)
 public class PermissionController extends BaseController implements IUserPermissionController{
     @Autowired
@@ -33,7 +30,6 @@ public class PermissionController extends BaseController implements IUserPermiss
 
     @RequestMapping(value=UserStaticURLUtil.permissionController_initPermission,
             method= RequestMethod.POST)
-    @ResponseBody
     public void initPermission(@RequestBody List<InitPermission> initPermissionList) throws Exception{
 
         //1.跟新权限数据

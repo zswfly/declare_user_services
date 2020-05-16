@@ -15,10 +15,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -29,7 +26,7 @@ import java.util.Map;
 /**
  * Created by zhangshaowei on 2020/4/29.
  */
-@Controller
+@RestController
 @RequestMapping(UserStaticURLUtil.companyController)
 public class CompanyController {
 
@@ -42,7 +39,6 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_selectUserCompany,
             method= RequestMethod.GET)
-    @ResponseBody
     public Result<HashMap<String, Object>> selectUserCompany(Integer companyId, @RequestHeader("userId") Integer currentUserId) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try {
@@ -89,7 +85,6 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_companysPage,
             method= RequestMethod.GET)
-    @ResponseBody
     public String companysPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -147,7 +142,6 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_newCompany,
             method= RequestMethod.POST)
-    @ResponseBody
     public String newUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -162,7 +156,6 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_getUserCompanys,
             method= RequestMethod.GET)
-    @ResponseBody
     public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
