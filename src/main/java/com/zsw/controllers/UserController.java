@@ -164,7 +164,7 @@ public class UserController extends BaseController{
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = newOrUpdateUserCheck(userDto);
+            String check = newOrUpdateUserCheck(userDto,null);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -218,12 +218,21 @@ public class UserController extends BaseController{
 
 
     @RequestMapping(value=UserStaticURLUtil.userController_updateUser,
-            method= RequestMethod.POST)
+            method= RequestMethod.PUT)
     public String updateUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = newOrUpdateUserCheck(userDto);
+
+            Integer userDtoId = userDto.getId();
+
+            String check = newOrUpdateUserCheck(userDto,userDtoId);
+
+            if(userDtoId == null || userDtoId < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("用户id缺失");
+            }
+
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -343,7 +352,7 @@ public class UserController extends BaseController{
     }
 
 
-    private String newOrUpdateUserCheck(UserDto userDto ) throws Exception{
+    private String newOrUpdateUserCheck(UserDto userDto , Integer userDtoId) throws Exception{
         if(userDto == null)return "空信息";
 
         if (StringUtils.isBlank(userDto.getLoginPwd())
@@ -364,21 +373,44 @@ public class UserController extends BaseController{
                 ) return "用户名有误";
 
 
-        UserEntity userEntity = new UserEntity();
+        if(userDtoId == null){
+            UserEntity userEntity = new UserEntity();
 
-        userEntity.setPhone(userDto.getPhone());
-        if( this.userService.getUser(userEntity) != null
-                ) return "电话号码已存在";
+            userEntity.setPhone(userDto.getPhone());
+            if( this.userService.getUser(userEntity) != null
+                    ) return "电话号码已存在";
 
-        userEntity.setPhone(null);
-        userEntity.setEmail(userDto.getEmail());
-        if( this.userService.getUser(userEntity) != null
-                ) return "Email地址已被使用";
+            userEntity.setPhone(null);
+            userEntity.setEmail(userDto.getEmail());
+            if( this.userService.getUser(userEntity) != null
+                    ) return "Email地址已被使用";
 
-        userEntity.setEmail(null);
-        userEntity.setUserName(userDto.getUserName());
-        if( this.userService.getUser(userEntity) != null
-                ) return "名字已被使用";
+            userEntity.setEmail(null);
+            userEntity.setUserName(userDto.getUserName());
+            if( this.userService.getUser(userEntity) != null
+                    ) return "名字已被使用";
+        }else{
+            UserEntity userEntity = new UserEntity();
+            UserEntity result = null;
+
+            userEntity.setPhone(userDto.getPhone());
+            result = this.userService.getUser(userEntity);
+            if( result != null && result.getId() != userDtoId)
+                return "电话号码已存在";
+
+            userEntity.setPhone(null);
+            userEntity.setEmail(userDto.getEmail());
+            result = this.userService.getUser(userEntity);
+            if( result != null && result.getId() != userDtoId)
+                return "Email地址已被使用";
+
+            userEntity.setEmail(null);
+            userEntity.setUserName(userDto.getUserName());
+            result = this.userService.getUser(userEntity);
+            if( result != null && result.getId() != userDtoId)
+                return "名字已被使用";
+        }
+
 
         return null;
     }

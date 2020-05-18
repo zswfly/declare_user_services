@@ -150,7 +150,7 @@ public class UserEntity extends IDEntity {
     @Basic
     //@Column(name = "avatar", nullable = true, length = 50)
     @Length(max = 50)
-    @Column(name = "avatar", unique = false,  nullable = false, insertable = true, updatable = true, length = 50)
+    @Column(name = "avatar", unique = false,  nullable = true, insertable = true, updatable = true, length = 50)
     public String getAvatar() {
         return avatar;
     }
@@ -162,7 +162,7 @@ public class UserEntity extends IDEntity {
     @Basic
     //@Column(name = "remember_token", nullable = true, length = 100)
     @Length(max = 100)
-    @Column(name = "remember_token", unique = false,  nullable = false, insertable = true, updatable = true, length = 100)
+    @Column(name = "remember_token", unique = false,  nullable = true, insertable = true, updatable = true, length = 100)
     public String getRememberToken() {
         return rememberToken;
     }
