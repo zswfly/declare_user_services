@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,17 +262,25 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
     //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
-    public String batchBan(List<Integer> ids,String type,@RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String batchBan( @RequestParam Map<String, String> params ,
+                            /*@RequestParam("ids") Integer[] ids,String type,*/
+                            @RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-
-            this.userService.batchBan(ids,type,currentUserId);
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("更新成功");
-
-            return gson.toJson(responseJson);
+            String ids = params.get("ids");
+            String type = params.get("type");
+            if(ids == null || type == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
+                this.userService.batchBan(list,type,currentUserId);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
         }catch (Exception e){
             e.printStackTrace();
             return CommonUtils.ErrorResposeJson();
@@ -355,9 +364,7 @@ public class UserController extends BaseController{
     private String newOrUpdateUserCheck(UserDto userDto , Integer userDtoId) throws Exception{
         if(userDto == null)return "空信息";
 
-        if (StringUtils.isBlank(userDto.getLoginPwd())
-                ||userDto.getLoginPwd().length() < 8
-                ) return "密码少于8位";
+
 
         if (StringUtils.isBlank(userDto.getPhone())
                 ||!CommonUtils.isMobileNO(userDto.getPhone())
@@ -374,6 +381,10 @@ public class UserController extends BaseController{
 
 
         if(userDtoId == null){
+            if (StringUtils.isBlank(userDto.getLoginPwd())
+                    ||userDto.getLoginPwd().length() < 8
+                    ) return "密码少于8位";
+
             UserEntity userEntity = new UserEntity();
 
             userEntity.setPhone(userDto.getPhone());

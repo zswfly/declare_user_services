@@ -72,6 +72,7 @@ public class UserServiceImpl implements IUserService,Serializable{
         userEntity.setId(userDto.getId());
 
         userEntity = this.dbService.get(userEntity);
+        userDto.setLoginPwd(userEntity.getLoginPwd());
         BeanUtils.copyProperties(userDto,userEntity);
 
         userEntity.setUpdateUser(userDto.getId());
@@ -83,7 +84,7 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception{
-        int falg = type == UserServiceStaticWord.User_Status_ban?1:0;
+        int falg = UserServiceStaticWord.User_Status_ban.equals(type)?1:0;
         List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
         for (UserEntity item : list){
             if(item.getId() != currentUserId){
