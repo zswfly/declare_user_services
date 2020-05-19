@@ -21,4 +21,5 @@ public interface IUserService  extends IBaseService{
     List<UserEntity> getUsersByIds(List<Integer> ids) throws Exception;
     List<UserDto> usersPage(Map<String, Object> paramMap) throws Exception;
     Integer usersPageCount(Map<String, Object> paramMap) throws Exception;
+    void updateRememberToken(Integer userId,String rememberToken)throws Exception;
 }

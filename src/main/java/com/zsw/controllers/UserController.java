@@ -87,11 +87,27 @@ public class UserController extends BaseController{
                 result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("账户禁用");
             }else{
+                String rememberToken = CommonUtils.getVerifyCode_6number();
+
+                this.userService.updateRememberToken(userEntity.getId(),rememberToken);
+
+                Map<String, String > param = new HashMap<>();
+                param.put("rememberToken",rememberToken);
+                param.put("userId",userEntity.getId().toString());
+
+                this.restTemplate.postForEntity(
+                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
+                                + CacheStaticURLUtil.redisController
+                                + CacheStaticURLUtil.redisController_putUserToken
+                        ,param,null);
+
                 HashMap<String,Object> data = new HashMap<>();
                 userEntity.setLoginPwd(null);
                 //不用返回user对象
                 //data.put("user",userEntity);
                 data.put("userId",userEntity.getId());
+                data.put("rememberToken",rememberToken);
+
                 result.setData(data);
                 result.setCode(ResponseCode.Code_200);
             }
@@ -104,7 +120,59 @@ public class UserController extends BaseController{
         }
 
     }
-    @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
+
+    @RequestMapping(value=UserStaticURLUtil.userController_loginOut,
+            method= RequestMethod.POST)
+    public String loginOut(@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+            this.userService.updateRememberToken(currentUserId,null);
+
+            Map<String, String > param = new HashMap<>();
+            param.put("rememberToken","");
+            param.put("userId",currentUserId.toString());
+
+            this.restTemplate.postForEntity(
+                    CommonStaticWord.HTTP + CommonStaticWord.cacheServices
+                            + CacheStaticURLUtil.redisController
+                            + CacheStaticURLUtil.redisController_putUserToken
+                    ,param,null);
+            return gson.toJson(responseJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
+    @RequestMapping(value=UserStaticURLUtil.userController_checkRememberToken,
+            method= RequestMethod.POST)
+    public Boolean checkRememberToken( @RequestBody Map<String,String> args) throws Exception {
+        Integer userId = Integer.valueOf(NumberUtils.toInt(args.get("userId"), 0));
+        String rememberToken = args.get("rememberToken");
+        //验证码校验
+        Map<String, Object > param = new HashMap<>();
+        param.put("rememberToken",rememberToken);
+        param.put("userId",userId);
+        ResponseEntity<Boolean> checkUserTokenResult  = this.restTemplate.postForEntity(
+                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
+                        + CacheStaticURLUtil.redisController
+                        + CacheStaticURLUtil.redisController_checkUserToken
+                ,param,Boolean.class);
+        if(checkUserTokenResult != null
+                && checkUserTokenResult.getBody()
+                )return Boolean.TRUE;
+
+        UserEntity userEntityParam = new UserEntity();
+        userEntityParam.setId(userId);
+        UserEntity userEntity = this.userService.getUser(userEntityParam);
+        if(rememberToken != null
+                && userEntity != null
+                && rememberToken.equals(userEntity.getRememberToken())
+                )return Boolean.TRUE;
+        return Boolean.FALSE;
+    }
+
+        @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
             method= RequestMethod.POST)
     public String resetPassWord(LoginTemp loginTemp) throws Exception {
         try {
@@ -172,6 +240,7 @@ public class UserController extends BaseController{
                 return gson.toJson(responseJson);
             }
 
+            userDto.setId(null);
             UserEntity result = this.userService.newUser(userDto);
 
             if(result == null){
@@ -263,7 +332,6 @@ public class UserController extends BaseController{
     //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
     public String batchBan( @RequestParam Map<String, String> params ,
-                            /*@RequestParam("ids") Integer[] ids,String type,*/
                             @RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -348,7 +416,6 @@ public class UserController extends BaseController{
             return CommonUtils.ErrorResposeJson();
         }
     }
-
 
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private String resetPassWordCheck(LoginTemp loginTemp) throws Exception{

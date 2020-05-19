@@ -39,7 +39,7 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_selectUserCompany,
             method= RequestMethod.GET)
-    public Result<HashMap<String, Object>> selectUserCompany(Integer companyId, @RequestHeader("userId") Integer currentUserId) throws Exception {
+    public Result<HashMap<String, Object>> selectUserCompany(Integer companyId, @RequestHeader("userId") Integer currentUserId,@RequestHeader("rememberToken") String rememberToken) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try {
             if (companyId == null) {
@@ -50,6 +50,11 @@ public class CompanyController {
             if (currentUserId == null) {
                 result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("用户没有登录");
+                return result;
+            }
+            if (rememberToken == null || StringUtils.isEmpty(rememberToken)) {
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("rememberToken有问题");
                 return result;
             }
             Map<String, Object> listSimpleCompanyDtoParam = new HashMap<>();
@@ -70,6 +75,7 @@ public class CompanyController {
             }else{
                 HashMap<String,Object> data = new HashMap<>();
                 data.put("userId",currentUserId);
+                data.put("rememberToken",rememberToken);
                 data.put("hostUrl",listSimpleCompanyDto.get(0).getUrl() );
                 result.setData(data);
                 result.setCode(ResponseCode.Code_200);

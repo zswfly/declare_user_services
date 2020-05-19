@@ -33,6 +33,13 @@ public class UserServiceImpl implements IUserService,Serializable{
     private UserMapper userMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public void updateRememberToken(Integer userId, String rememberToken) throws Exception {
+        UserEntity userEntity = this.dbService.get(UserEntity.class,userId);
+        userEntity.setRememberToken(rememberToken);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public UserEntity getUser(UserEntity param) throws Exception{
         return this.dbService.get(param);
