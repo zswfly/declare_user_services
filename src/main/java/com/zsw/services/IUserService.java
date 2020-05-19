@@ -20,4 +20,5 @@ public interface IUserService  extends IBaseService{
     void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception;
     List<UserEntity> getUsersByIds(List<Integer> ids) throws Exception;
     List<UserDto> usersPage(Map<String, Object> paramMap) throws Exception;
+    Integer usersPageCount(Map<String, Object> paramMap) throws Exception;
 }

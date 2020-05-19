@@ -104,5 +104,11 @@ public class UserServiceImpl implements IUserService,Serializable{
         return this.userMapper.usersPage(paramMap);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public Integer usersPageCount(Map<String, Object> paramMap) throws Exception {
+        return this.userMapper.usersPageCount(paramMap);
+    }
+
 
 }

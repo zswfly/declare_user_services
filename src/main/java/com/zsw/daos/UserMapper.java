@@ -14,4 +14,5 @@ import java.util.Map;
 public interface UserMapper {
 
     List<UserDto> usersPage(@Param("paramMap") Map<String,Object> paramMap);
+    Integer usersPageCount(@Param("paramMap") Map<String,Object> paramMap);
 }

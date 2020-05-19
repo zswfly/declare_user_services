@@ -335,8 +335,9 @@ public class UserController extends BaseController{
 
             Map<String,Object> data = new HashMap<>();
             List<UserDto> items = this.userService.usersPage(paramMap);
+            Integer total = this.userService.usersPageCount(paramMap);
             data.put("items",items);
-            data.put("total",items==null?0:items.size());
+            data.put("total",total==null?0:total);
             responseJson.setData(data);
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("搜索成功");

@@ -65,6 +65,36 @@
 
 
   </select>
+  <select id="usersPageCount" resultType="Integer">
+    SELECT
+    COUNT(u.id)
+    FROM user u
+    LEFT JOIN department_user du ON du.user_id = u.id
+    WHERE 1 = 1
 
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND u.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
+      AND du.department_id = #{paramMap.departmentId}
+    </if>
+    <if test="paramMap.phone != null and paramMap.phone != ''">
+      AND u.phone LIKE '%${paramMap.phone}%'
+    </if>
+    <if test="paramMap.email != null and paramMap.email != ''">
+      AND u.email LIKE '%${paramMap.email}%'
+    </if>
+    <if test="paramMap.userName != null and paramMap.userName != ''">
+      AND u.user_name LIKE '%${paramMap.userName}%'
+    </if>
+    <if test="paramMap.beginCreateTime !=null">
+      AND u.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND u.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+
+  </select>
 
 </mapper>
