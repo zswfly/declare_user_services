@@ -159,6 +159,7 @@ public class UserController extends BaseController{
                         + CacheStaticURLUtil.redisController_checkUserToken
                 ,param,Boolean.class);
         if(checkUserTokenResult != null
+                && checkUserTokenResult.getBody() != null
                 && checkUserTokenResult.getBody()
                 )return Boolean.TRUE;
 
