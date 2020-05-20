@@ -60,6 +60,7 @@ public class CompanyController {
             }
             Map<String, Object> listSimpleCompanyDtoParam = new HashMap<>();
             listSimpleCompanyDtoParam.put("companyId",companyId);
+            listSimpleCompanyDtoParam.put("userId",currentUserId);
             List<SimpleCompanyDto> listSimpleCompanyDto = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParam);
             if (listSimpleCompanyDto == null  ) {
                 result.setCode(ResponseCode.Code_Bussiness_Error);
@@ -76,6 +77,7 @@ public class CompanyController {
             }else{
                 HashMap<String,Object> data = new HashMap<>();
                 data.put("userId",currentUserId);
+                data.put("companyId",companyId);
                 data.put("rememberToken",rememberToken);
                 data.put("hostUrl",listSimpleCompanyDto.get(0).getUrl() );
                 result.setData(data);

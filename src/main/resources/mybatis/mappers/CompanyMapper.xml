@@ -97,7 +97,6 @@
 
   <select id="getCompanyEntity" resultMap="CompanyEntityMap">
     SELECT
-    c.*
     --     c.id,
     --     c.`name`,
     --     c.url,
@@ -109,5 +108,17 @@
     </if>
 
   </select>
+
+    <select id="checkCompanyManagerIds" resultType="Intger">
+        SELECT c.manager_id
+        FROM company c
+        WHERE 1=1
+        <if test="userIds !=null ">
+            AND c.manager_id in
+            <foreach item="item" collection="userIds" separator="," open="(" close=")" index="">
+                #{item, jdbcType=NUMERIC}
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

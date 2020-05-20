@@ -238,7 +238,7 @@ public class UserController extends BaseController{
             method= RequestMethod.POST)
 //    @Permission(code = "user.userController.newUser",name = "新增用户",description ="新增用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_newUser)
-    public String newUser(UserDto userDto) throws Exception {
+    public String newUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -249,8 +249,8 @@ public class UserController extends BaseController{
                 return gson.toJson(responseJson);
             }
 
-            userDto.setId(null);
-            UserEntity result = this.userService.newUser(userDto);
+
+            UserEntity result = this.userService.newUser(userDto,currentUserId);
 
             if(result == null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
@@ -302,7 +302,7 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
 //    @Permission(code = "user.userController.updateUser",name = "更新用户",description ="更新用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
-    public String updateUser(UserDto userDto) throws Exception {
+    public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -322,7 +322,7 @@ public class UserController extends BaseController{
                 return gson.toJson(responseJson);
             }
 
-            UserEntity userEntity = this.userService.updateUser(userDto);
+            UserEntity userEntity = this.userService.updateUser(userDto,currentUserId);
 
             if(userEntity == null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
@@ -344,8 +344,7 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
     //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
-    public String batchBan( @RequestParam Map<String, String> params ,
-                            @RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();

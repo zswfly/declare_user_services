@@ -1,9 +1,11 @@
 package com.zsw.services;
 
+import com.zsw.daos.CompanyMapper;
 import com.zsw.daos.UserMapper;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
+import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.UserServiceStaticWord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangshaowei on 2020/4/16.
@@ -31,6 +31,9 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private CompanyMapper companyMapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
@@ -59,13 +62,14 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public UserEntity newUser(UserDto userDto)throws Exception {
+    public UserEntity newUser(UserDto userDto, Integer currentUserId)throws Exception {
+        userDto.setId(null);
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto,userEntity);
         userEntity.setStatus(0);
-        userEntity.setCreateUser(1);
+        userEntity.setCreateUser(currentUserId);
         userEntity.setCreateTime(new Timestamp(new Date().getTime()));
-        userEntity.setUpdateUser(1);
+        userEntity.setUpdateUser(currentUserId);
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
         return userEntity;
@@ -73,16 +77,30 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public UserEntity updateUser(UserDto userDto) throws Exception{
+    public UserEntity updateUser(UserDto userDto, Integer currentUserId) throws Exception{
         userDto.setLoginPwd(null);
         UserEntity userEntity = new UserEntity();
         userEntity.setId(userDto.getId());
 
         userEntity = this.dbService.get(userEntity);
+
+        if(userDto.getStatus() == CommonStaticWord.Ban_Status_1){
+            List<Integer> userIds = new ArrayList<>();
+            userIds.add(userDto.getId());
+            Map<String, Object > param = new HashMap<>();
+            param.put("userIds",userIds);
+            List<Integer> managerIds = this.companyMapper.checkCompanyManagerIds(param);
+            if((managerIds!=null && managerIds.contains(userDto.getId()))
+                    || userDto.getId() == currentUserId
+                    )userDto.setStatus(userEntity.getStatus());
+            //不能禁用manager用户 , 当前用户自己
+        }
+
         userDto.setLoginPwd(userEntity.getLoginPwd());
+
         BeanUtils.copyProperties(userDto,userEntity);
 
-        userEntity.setUpdateUser(userDto.getId());
+        userEntity.setUpdateUser(currentUserId);
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
 
         return userEntity;
@@ -91,11 +109,24 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception{
-        int falg = UserServiceStaticWord.User_Status_ban.equals(type)?1:0;
+        int falg =0;
+        List<Integer> managerIds = null;
+        if( UserServiceStaticWord.User_Status_ban.equals(type)){
+            falg = 1;
+            Map<String, Object > param = new HashMap<>();
+            param.put("userIds",ids);
+            managerIds = this.companyMapper.checkCompanyManagerIds(param);
+
+        }
+
         List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
+
         for (UserEntity item : list){
-            if(item.getId() != currentUserId){
+            if(item.getId() != currentUserId
+                    && (managerIds != null && !managerIds.contains(item.getId()))){
                 item.setStatus(falg);
+                item.setUpdateUser(currentUserId);
+                item.setUpdateTime(new Timestamp(new Date().getTime()));
             }
         }
     }
