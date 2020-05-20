@@ -138,6 +138,10 @@ public class UserController extends BaseController{
                             + CacheStaticURLUtil.redisController
                             + CacheStaticURLUtil.redisController_putUserToken
                     ,param,null);
+
+
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("登出成功");
             return gson.toJson(responseJson);
         } catch (Exception e) {
             e.printStackTrace();
