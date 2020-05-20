@@ -86,6 +86,8 @@
       AND c.creator_id = #{paramMap.creatorId}
     </if>
 
+      GROUP BY c.id
+
     <if test="paramMap.start !=null and paramMap.start >= 0
          and paramMap.pageSize !=null and paramMap.pageSize > 0">
       LIMIT ${paramMap.start} , ${paramMap.pageSize}
