@@ -123,6 +123,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_loginOut,
             method= RequestMethod.POST)
+//    @Permission(code = "user.userController.loginOut",name = "登出用户",description ="登出用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_loginOut)
     public String loginOut(@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -234,6 +236,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_newUser,
             method= RequestMethod.POST)
+//    @Permission(code = "user.userController.newUser",name = "新增用户",description ="新增用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_newUser)
     public String newUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -265,6 +269,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_getUser+"/{userId}",
             method= RequestMethod.GET)
+//    @Permission(code = "user.userController.getUser",name = "获取用户",description ="根据id获取用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
     public String getUser(@PathVariable Integer userId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -294,6 +300,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_updateUser,
             method= RequestMethod.PUT)
+//    @Permission(code = "user.userController.updateUser",name = "更新用户",description ="更新用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
     public String updateUser(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();

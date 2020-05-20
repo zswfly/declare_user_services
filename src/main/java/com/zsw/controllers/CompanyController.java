@@ -1,6 +1,7 @@
 package com.zsw.controllers;
 
 import com.google.gson.Gson;
+import com.zsw.annotations.Permission;
 import com.zsw.entitys.CompanyEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
@@ -91,6 +92,8 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_companysPage,
             method= RequestMethod.GET)
+//    @Permission(code = "user.companyController.companysPage",name = "搜索公司",description ="搜索公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_companysPage)
     public String companysPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -148,7 +151,7 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_newCompany,
             method= RequestMethod.POST)
-    public String newUser(UserDto userDto) throws Exception {
+    public String newCompany(UserDto userDto) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -162,6 +165,8 @@ public class CompanyController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_getUserCompanys,
             method= RequestMethod.GET)
+//    @Permission(code = "user.companyController.getUserCompanys",name = "获取当前用户的公司",description ="获取当前用户所属的所有公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_getUserCompanys)
     public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
