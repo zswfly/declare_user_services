@@ -11,12 +11,13 @@
     <property name="hibernate.current_session_context_class">thread</property>
 
 
-      <mapping class="com.zsw.entitys.PermissionEntity"/>
+    <mapping class="com.zsw.entitys.PermissionEntity"/>
     <mapping class="com.zsw.entitys.UserEntity"/>
-      <mapping class="com.zsw.entitys.CompanyEntity"/>
-      <mapping class="com.zsw.entitys.DepartmentEntity"/>
+    <mapping class="com.zsw.entitys.CompanyEntity"/>
+    <mapping class="com.zsw.entitys.DepartmentEntity"/>
+    <mapping class="com.zsw.entitys.DepartmentUserEntity"/>
 
-      <!-- DB schema will be updated if needed -->
+    <!-- DB schema will be updated if needed -->
     <!-- <property name="hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>

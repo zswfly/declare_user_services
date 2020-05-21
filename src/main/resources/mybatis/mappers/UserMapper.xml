@@ -34,13 +34,18 @@
     u.*
     FROM user u
     LEFT JOIN department_user du ON du.user_id = u.id
+    LEFT JOIN department d ON du.department_id = d.id
+    LEFT JOIN company c ON d.company_id = c.id
     WHERE 1 = 1
 
     <if test="paramMap.status != null and paramMap.status >= 0">
       AND u.`status` = #{paramMap.status}
     </if>
     <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
-      AND du.department_id = #{paramMap.departmentId}
+      AND d.id = #{paramMap.departmentId}
+    </if>
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND c.id = #{paramMap.companyId}
     </if>
     <if test="paramMap.phone != null and paramMap.phone != ''">
       AND u.phone LIKE '%${paramMap.phone}%'
@@ -62,7 +67,7 @@
       LIMIT ${paramMap.start} , ${paramMap.pageSize}
     </if>
 
-
+    GROUP BY u.id
 
   </select>
   <select id="usersPageCount" resultType="Integer">
@@ -70,13 +75,18 @@
     COUNT(u.id)
     FROM user u
     LEFT JOIN department_user du ON du.user_id = u.id
+    LEFT JOIN department d ON du.department_id = d.id
+    LEFT JOIN company c ON d.company_id = c.id
     WHERE 1 = 1
 
     <if test="paramMap.status != null and paramMap.status >= 0">
       AND u.`status` = #{paramMap.status}
     </if>
     <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
-      AND du.department_id = #{paramMap.departmentId}
+      AND d.id = #{paramMap.departmentId}
+    </if>
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND c.id = #{paramMap.companyId}
     </if>
     <if test="paramMap.phone != null and paramMap.phone != ''">
       AND u.phone LIKE '%${paramMap.phone}%'
@@ -94,6 +104,7 @@
       <![CDATA[ AND u.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
     </if>
 
+    GROUP BY u.id
 
   </select>
 

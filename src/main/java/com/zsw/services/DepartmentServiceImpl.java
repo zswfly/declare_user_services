@@ -2,6 +2,7 @@ package com.zsw.services;
 
 import com.zsw.daos.DepartmentMapper;
 import com.zsw.entitys.DepartmentEntity;
+import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.user.DepartmentDto;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.PinyinUtils;
@@ -88,5 +89,21 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     @Override
     public List<DepartmentEntity> listDepartmentEntity(Map<String, Object> paramMap) throws Exception {
         return this.departmentMapper.listDepartmentEntity(paramMap);
+    }
+
+    @Override
+    public void relationDepartmentUser(List<DepartmentUserEntity> listDepartmentUser, Integer currentUserId) throws Exception {
+        for(DepartmentUserEntity departmentUserEntity:listDepartmentUser ){
+            departmentUserEntity.setCreateUser(currentUserId);
+            departmentUserEntity.setCreateTime(new Timestamp(new Date().getTime()));
+            departmentUserEntity.setUpdateUser(currentUserId);
+            departmentUserEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+        }
+        this.dbService.save(listDepartmentUser);
+    }
+
+    @Override
+    public void deleteDepartmentUser(List<DepartmentUserEntity> listDepartmentUser, Integer currentUserId) throws Exception {
+        this.dbService.delete(listDepartmentUser);
     }
 }

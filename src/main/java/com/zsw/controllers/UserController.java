@@ -380,6 +380,11 @@ public class UserController extends BaseController{
             if(departmentId !=null && StringUtils.isNotBlank(departmentId)) {
                 paramMap.put("departmentId", Integer.valueOf(NumberUtils.toInt(departmentId, 0)));
             }
+            String companyId = request.getParameter("companyId");
+            if(companyId !=null && StringUtils.isNotBlank(companyId)) {
+                paramMap.put("companyId", Integer.valueOf(NumberUtils.toInt(companyId, 0)));
+            }
+
             String phone = request.getParameter("phone");
             if(phone !=null && StringUtils.isNotBlank(phone)) {
                 paramMap.put("phone", phone);

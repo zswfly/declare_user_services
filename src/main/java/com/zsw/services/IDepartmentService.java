@@ -1,6 +1,7 @@
 package com.zsw.services;
 
 import com.zsw.entitys.DepartmentEntity;
+import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.user.DepartmentDto;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public interface IDepartmentService extends IBaseService{
 
     Integer listDepartmentEntityCount( Map<String,Object> paramMap)throws Exception;
     List<DepartmentEntity> listDepartmentEntity(Map<String,Object> paramMap)throws Exception;
+
+    void relationDepartmentUser(List<DepartmentUserEntity> listDepartmentUser,Integer currentUserId)throws Exception;
+    void deleteDepartmentUser(List<DepartmentUserEntity> listDepartmentUser,Integer currentUserId)throws Exception;
 
 
 }

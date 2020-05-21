@@ -1,8 +1,10 @@
 package com.zsw.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.DepartmentEntity;
+import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.DepartmentDto;
 import com.zsw.services.ICompanyService;
@@ -83,7 +85,7 @@ public class DepartmentController extends BaseController {
 
 
     @RequestMapping(value=UserStaticURLUtil.departmentController_updateDepartment,
-            method= RequestMethod.DELETE)
+            method= RequestMethod.PUT)
     //    @Permission(code = "user.departmentController.updateDepartment",name = "更新部门",description ="更新部门"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_updateDepartment)
     public String updateDepartment(DepartmentDto departmentDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
@@ -194,9 +196,31 @@ public class DepartmentController extends BaseController {
         }
     }
 
+    @RequestMapping(value=UserStaticURLUtil.departmentController_relationDepartmentUser,
+            method= RequestMethod.POST)
+    //    @Permission(code = "user.departmentController.relationDepartmentUser",name = "关联用户与部门",description ="关联用户与部门"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_relationDepartmentUser)
+    public String relationDepartmentUser(String jsonDepartmentUser,@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+//            2.把jsonList转化为一个list对象
+//            String jsonList="[{'userid':'1881140130','username':'三哥','usersex':'男','banji':'计算机1班','phone':'18255052351'},"
+//                    + "{'userid':'1881140131','username':'蜂','usersex':'男','banji':'计算机1班','phone':'18355092351'},"
+//                    + "{'userid':'1881140132','username':'宝','usersex':'男','banji':'计算机1班','phone':'18955072351'}]";
+            List<DepartmentUserEntity> listDepartmentUser= gson.fromJson(jsonDepartmentUser, new TypeToken<List<DepartmentUserEntity>>() {}.getType());
 
+            this.departmentService.relationDepartmentUser(listDepartmentUser,currentUserId);
 
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("操作成功");
 
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
 
 
 
