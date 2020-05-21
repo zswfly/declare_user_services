@@ -40,7 +40,6 @@ public class UserEntity extends IDEntity {
     }
 
     @Basic
-    //@Column(name = "user_name", nullable = false, length = 20)
     @NotNull
     @Length(max = 80)
     @Column(name = "user_name", unique = false,  nullable = false, insertable = true, updatable = true, length = 80)

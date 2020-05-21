@@ -1,6 +1,10 @@
 package com.zsw.entitys;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -20,7 +24,8 @@ public class DepartmentEntity extends IDEntity{
     private String mnemonicCode;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="id", length=11, nullable=false, unique=true, insertable=true, updatable=false)
     public Integer getId() {
         return id;
     }
@@ -30,17 +35,19 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "name", nullable = false, length = 40)
+    @NotNull
+    @Length(max = 80)
+    @Column(name = "name", unique = false,  nullable = false, insertable = true, updatable = true, length = 80)
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
 
     @Basic
-    @Column(name = "company_id", nullable = false)
+    @Max(9999999999L)
+    @Column(name = "company_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
     public Integer getCompanyId() {
         return companyId;
     }
@@ -50,17 +57,20 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "status", nullable = true)
+    //@Column(name = "status", nullable = true)
+    @Length(max = 3)
+    @Column(name = "status", unique = false,  nullable = true, insertable = true, updatable = true, length = 3)
     public Integer getStatus() {
         return status;
     }
 
+
     public void setStatus(Integer status) {
         this.status = status;
     }
-
     @Basic
-    @Column(name = "create_time", nullable = false)
+    //@Column(name = "create_time", nullable = false)
+    @Column(name = "create_time", nullable = true, unique = false, insertable = true, updatable = false)
     public Timestamp getCreateTime() {
         return createTime;
     }
@@ -70,7 +80,10 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "create_user", nullable = false)
+    //@Column(name = "create_user", nullable = false)
+//    @NotNull
+//    @Min(1L)
+    @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = true)
     public Integer getCreateUser() {
         return createUser;
     }
@@ -80,7 +93,8 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "update_time", nullable = false)
+    //@Column(name = "update_time", nullable = false)
+    @Column(name = "update_time", nullable = true, unique = false, insertable = true, updatable = false)
     public Timestamp getUpdateTime() {
         return updateTime;
     }
@@ -90,7 +104,8 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "update_user", nullable = false)
+    //@Column(name = "update_user", nullable = false)
+    @Column(name = "update_user", length = 11, nullable = true, unique = false, insertable = true, updatable = true)
     public Integer getUpdateUser() {
         return updateUser;
     }
@@ -100,10 +115,13 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Column(name = "mnemonic_code", nullable = true, length = 100)
+    @NotNull
+    @Length(max = 255)
+    @Column(name = "mnemonic_code", unique = false,  nullable = false, insertable = true, updatable = true, length = 255)
     public String getMnemonicCode() {
         return mnemonicCode;
     }
+
 
     public void setMnemonicCode(String mnemonicCode) {
         this.mnemonicCode = mnemonicCode;
