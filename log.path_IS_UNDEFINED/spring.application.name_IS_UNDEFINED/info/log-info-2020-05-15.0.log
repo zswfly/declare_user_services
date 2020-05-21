@@ -1,2 +1,0 @@
-2020-05-15 01:19:11.882 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
-2020-05-15 01:19:13.146 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
