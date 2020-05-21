@@ -8,6 +8,7 @@ import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.PinyinUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * Created by zhangshaowei on 2020/5/21.
  */
+@Service
 public class DepartmentServiceImpl implements IDepartmentService,Serializable {
 
     private static final long serialVersionUID = -7251344524243762049L;
