@@ -197,7 +197,7 @@ public class DepartmentController extends BaseController {
     }
 
     @RequestMapping(value=UserStaticURLUtil.departmentController_relationDepartmentUser,
-            method= RequestMethod.POST)
+            method= RequestMethod.GET)
     //    @Permission(code = "user.departmentController.relationDepartmentUser",name = "关联用户与部门",description ="关联用户与部门"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_relationDepartmentUser)
     public String relationDepartmentUser(String jsonDepartmentUser,@RequestHeader("userId") Integer currentUserId) throws Exception {
@@ -221,7 +221,31 @@ public class DepartmentController extends BaseController {
             return CommonUtils.ErrorResposeJson();
         }
     }
+    @RequestMapping(value=UserStaticURLUtil.departmentController_deleteDepartmentUser,
+            method= RequestMethod.DELETE)
+    //    @Permission(code = "user.departmentController.deleteDepartmentUser",name = "取消关联用户与部门",description ="取消(删除)关联用户与部门"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_deleteDepartmentUser)
+    public String deleteDepartmentUser(String jsonDepartmentUser,@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+//            2.把jsonList转化为一个list对象
+//            String jsonList="[{'userid':'1881140130','username':'三哥','usersex':'男','banji':'计算机1班','phone':'18255052351'},"
+//                    + "{'userid':'1881140131','username':'蜂','usersex':'男','banji':'计算机1班','phone':'18355092351'},"
+//                    + "{'userid':'1881140132','username':'宝','usersex':'男','banji':'计算机1班','phone':'18955072351'}]";
+            List<DepartmentUserEntity> listDepartmentUser= gson.fromJson(jsonDepartmentUser, new TypeToken<List<DepartmentUserEntity>>() {}.getType());
 
+            this.departmentService.deleteDepartmentUser(listDepartmentUser,currentUserId);
+
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("操作成功");
+
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
 
 
 }
