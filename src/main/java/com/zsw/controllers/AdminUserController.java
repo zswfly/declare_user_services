@@ -1,5 +1,6 @@
 package com.zsw.controllers;
 
+import com.zsw.controller.BaseController;
 import com.zsw.utils.UserStaticURLUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(UserStaticURLUtil.adminUserController)
-public class AdminUserController {
+public class AdminUserController extends BaseController {
 }

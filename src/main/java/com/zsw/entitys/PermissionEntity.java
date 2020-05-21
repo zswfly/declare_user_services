@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * Created by zhangshaowei on 2020/4/24.
  */
 @Entity
-@Table(name = "permission", schema = "user", catalog = "")
+@Table(name = "permission", schema = "user")
 public class PermissionEntity extends IDEntity{
     private Integer id;
     private String name;

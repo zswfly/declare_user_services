@@ -2,9 +2,11 @@ package com.zsw.controllers;
 
 import com.google.gson.Gson;
 import com.zsw.annotations.Permission;
+import com.zsw.controller.BaseController;
 import com.zsw.entitys.CompanyEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
+import com.zsw.entitys.user.CompanyDto;
 import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
@@ -29,7 +31,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(UserStaticURLUtil.companyController)
-public class CompanyController {
+public class CompanyController extends BaseController {
 
     @Autowired
     ICompanyService companyService;
@@ -92,6 +94,102 @@ public class CompanyController {
         }
     }
 
+    @RequestMapping(value=UserStaticURLUtil.companyController_newCompany,
+            method= RequestMethod.POST)
+    //    @Permission(code = "user.companyController.newCompany",name = "新增公司",description ="新增公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_newCompany)
+    public String newCompany(CompanyDto companyDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+
+            this.companyService.newCompany(companyDto,currentUserId);
+
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("新增成功");
+
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
+
+//    @RequestMapping(value=UserStaticURLUtil.companyController_deleteCompany,
+//            method= RequestMethod.DELETE)
+//    //    @Permission(code = "user.companyController.deleteCompany",name = "删除公司",description ="删除(禁用)公司"
+////            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_deleteCompany)
+//    public String deleteCompany(Integer companyId,@RequestHeader("userId") Integer currentUserId) throws Exception {
+//        try {
+//            ResponseJson responseJson = new ResponseJson();
+//            Gson gson = new Gson();
+//
+//            this.companyService.deleteCompany(companyId,currentUserId);
+//
+//            responseJson.setCode(ResponseCode.Code_200);
+//            responseJson.setMessage("删除成功");
+//
+//            return gson.toJson(responseJson);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return CommonUtils.ErrorResposeJson();
+//        }
+//    }
+
+
+    @RequestMapping(value=UserStaticURLUtil.companyController_updateCompany,
+            method= RequestMethod.PUT)
+    //    @Permission(code = "user.companyController.updateCompany",name = "更新公司",description ="更新公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_updateCompany)
+    public String updateCompany(CompanyDto companyDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+
+            this.companyService.updateCompany(companyDto,currentUserId);
+
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("更新成功");
+
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
+
+
+    @RequestMapping(value=UserStaticURLUtil.companyController_getCompany+"/{companyId}",
+            method= RequestMethod.GET)
+//    @Permission(code = "user.companyController.getCompany",name = "获取公司",description ="根据id获取公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_getCompany)
+    public String getCompany(@PathVariable Integer companyId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+
+            CompanyEntity companyEntity = new CompanyEntity();
+            companyEntity.setId(companyId);
+            companyEntity = this.companyService.getCompany(companyEntity);
+
+            if(companyEntity == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("该id没公司");
+            }else{
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setData(companyEntity);
+            }
+
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            e.printStackTrace();
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
+
+
+
+
     @RequestMapping(value=UserStaticURLUtil.companyController_companysPage,
             method= RequestMethod.GET)
 //    @Permission(code = "user.companyController.companysPage",name = "搜索公司",description ="搜索公司"
@@ -109,6 +207,11 @@ public class CompanyController {
             String companyName = request.getParameter("companyName");
             if(companyName !=null && StringUtils.isNotBlank(companyName)) {
                 paramMap.put("companyName", companyName);
+            }
+
+            String mnemonicCode = request.getParameter("mnemonicCode");
+            if(mnemonicCode !=null && StringUtils.isNotBlank(mnemonicCode)) {
+                paramMap.put("mnemonicCode", mnemonicCode);
             }
 
             String beginCreateTime = request.getParameter("beginCreateTime");
@@ -138,8 +241,9 @@ public class CompanyController {
 
             Map<String,Object> data = new HashMap<>();
             List<CompanyEntity> items = this.companyService.listCompanyEntity(paramMap);
+            Integer total = this.companyService.listCompanyEntityCount(paramMap);
             data.put("items",items);
-            data.put("total",items==null?0:items.size());
+            data.put("total",total==null?0:total);
             responseJson.setData(data);
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("搜索成功");
@@ -151,19 +255,7 @@ public class CompanyController {
         }
     }
 
-    @RequestMapping(value=UserStaticURLUtil.companyController_newCompany,
-            method= RequestMethod.POST)
-    public String newCompany(UserDto userDto) throws Exception {
-        try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
 
-            return gson.toJson(responseJson);
-        }catch (Exception e){
-            e.printStackTrace();
-            return CommonUtils.ErrorResposeJson();
-        }
-    }
 
     @RequestMapping(value=UserStaticURLUtil.companyController_getUserCompanys,
             method= RequestMethod.GET)

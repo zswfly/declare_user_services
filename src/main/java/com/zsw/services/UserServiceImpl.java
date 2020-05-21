@@ -2,6 +2,7 @@ package com.zsw.services;
 
 import com.zsw.daos.CompanyMapper;
 import com.zsw.daos.UserMapper;
+import com.zsw.entitys.CompanyEntity;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
@@ -62,27 +63,30 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public UserEntity newUser(UserDto userDto, Integer currentUserId)throws Exception {
+    public void newUser(UserDto userDto, Integer currentUserId)throws Exception {
         userDto.setId(null);
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto,userEntity);
-        userEntity.setStatus(0);
+        userEntity.setStatus(CommonStaticWord.Normal_Status_0);
         userEntity.setCreateUser(currentUserId);
         userEntity.setCreateTime(new Timestamp(new Date().getTime()));
         userEntity.setUpdateUser(currentUserId);
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
-        return userEntity;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public UserEntity updateUser(UserDto userDto, Integer currentUserId) throws Exception{
         userDto.setLoginPwd(null);
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(userDto.getId());
+        if(userDto == null
+                || userDto.getId() == null
+                ){
+            throw new Exception("参数错误");
+        }
+        UserEntity userEntity = this.dbService.get(UserEntity.class,userDto.getId());
 
-        userEntity = this.dbService.get(userEntity);
+        if(userEntity == null) throw new Exception("没有该用户id");
 
         if(userDto.getStatus() == CommonStaticWord.Ban_Status_1){
             List<Integer> userIds = new ArrayList<>();

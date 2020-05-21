@@ -15,7 +15,7 @@ public interface IUserService  extends IBaseService{
 
     UserEntity getUser(UserEntity param) throws Exception;
     UserEntity resetPassWord(UserEntity param,String resetPassWord) throws Exception;
-    UserEntity newUser(UserDto userDto, Integer currentUserId)throws Exception;
+    void newUser(UserDto userDto, Integer currentUserId)throws Exception;
     UserEntity updateUser(UserDto userDto, Integer currentUserId) throws Exception;
     void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception;
     List<UserEntity> getUsersByIds(List<Integer> ids) throws Exception;

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsw.daos.DepartmentMapper" >
+  <resultMap id="DepartmentEntityMap" type="com.zsw.entitys.DepartmentEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="mnemonic_code" property="mnemonicCode" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="listCompanyEntity" resultMap="DepartmentEntityMap">
+
+    SELECT
+    d.*
+    FROM department d
+    WHERE 1=1
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND d.company_id = #{paramMap.companyId}
+    </if>
+    <if test="paramMap.departmentName != null and paramMap.departmentName != ''">
+      AND d.`name` LIKE '%${paramMap.departmentName}%'
+    </if>
+    <if test="paramMap.mnemonicCode != null and paramMap.mnemonicCode != ''">
+      AND d.mnemonic_code LIKE '%${paramMap.mnemonicCode}%'
+    </if>
+
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND d.`status` = #{paramMap.status}
+    </if>
+
+    <if test="paramMap.beginCreateTime !=null">
+      AND d.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND d.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+    GROUP BY d.id
+
+    <if test="paramMap.start !=null and paramMap.start >= 0
+         and paramMap.pageSize !=null and paramMap.pageSize > 0">
+      LIMIT ${paramMap.start} , ${paramMap.pageSize}
+    </if>
+  </select>
+
+
+
+  <select id="listDepartmentEntityCount" resultMap="Integer">
+
+    SELECT
+    COUNT(d.id)
+    FROM department d
+    WHERE 1=1
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND d.company_id = #{paramMap.companyId}
+    </if>
+    <if test="paramMap.departmentName != null and paramMap.departmentName != ''">
+      AND d.`name` LIKE '%${paramMap.departmentName}%'
+    </if>
+    <if test="paramMap.mnemonicCode != null and paramMap.mnemonicCode != ''">
+      AND d.mnemonic_code LIKE '%${paramMap.mnemonicCode}%'
+    </if>
+
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND d.`status` = #{paramMap.status}
+    </if>
+
+    <if test="paramMap.beginCreateTime !=null">
+      AND d.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND d.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+    GROUP BY d.id
+
+  </select>
+
+</mapper>

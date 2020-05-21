@@ -1,0 +1,2 @@
+2020-05-20 16:16:31.280 [SpringContextShutdownHook] WARN  com.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1589962591280, current=DOWN, previous=UP]
+2020-05-20 16:16:34.483 [DiscoveryClient-1] WARN  com.netflix.discovery.TimedSupervisorTask - task supervisor shutting down, can't accept the task

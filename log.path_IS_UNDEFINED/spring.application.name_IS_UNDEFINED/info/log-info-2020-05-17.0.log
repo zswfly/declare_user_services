@@ -1,0 +1,11 @@
+2020-05-17 00:32:41.416 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:32:42.701 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-17 00:33:17.677 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:33:18.754 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-17 00:40:34.793 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:41:25.078 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:42:27.285 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:43:02.166 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:45:04.016 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:46:21.865 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别
+2020-05-17 00:52:51.175 [main] INFO  com.zsw.UserServicesApplication - 这是 info 级别

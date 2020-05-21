@@ -50,10 +50,6 @@
 
     SELECT
     c.*
---     c.id,
---     c.`name`,
---     c.url,
---     c.`status`
     FROM company c
     LEFT JOIN department d ON d.company_id = c.id
     LEFT JOIN department_user du ON du.department_id = d.id
@@ -68,6 +64,10 @@
     <if test="paramMap.companyName != null and paramMap.companyName != ''">
       AND c.`name` LIKE '%${paramMap.companyName}%'
     </if>
+    <if test="paramMap.mnemonicCode != null and paramMap.mnemonicCode != ''">
+      AND c.mnemonic_code LIKE '%${paramMap.mnemonicCode}%'
+    </if>
+
     <if test="paramMap.status != null and paramMap.status >= 0">
       AND c.`status` = #{paramMap.status}
     </if>
@@ -93,6 +93,52 @@
       LIMIT ${paramMap.start} , ${paramMap.pageSize}
     </if>
   </select>
+
+
+
+    <select id="listCompanyEntityCount" resultMap="Integer">
+
+        SELECT
+        COUNT(c.id)
+        FROM company c
+        LEFT JOIN department d ON d.company_id = c.id
+        LEFT JOIN department_user du ON du.department_id = d.id
+        LEFT JOIN `user` u ON  u.id = du.user_id
+        WHERE 1=1
+        <if test="paramMap.userId != null and paramMap.userId > 0">
+            AND u.id = #{paramMap.userId}
+        </if>
+        <if test="paramMap.companyId != null and paramMap.companyId > 0">
+            AND c.id = #{paramMap.companyId}
+        </if>
+        <if test="paramMap.companyName != null and paramMap.companyName != ''">
+            AND c.`name` LIKE '%${paramMap.companyName}%'
+        </if>
+        <if test="paramMap.mnemonicCode != null and paramMap.mnemonicCode != ''">
+            AND c.mnemonic_code LIKE '%${paramMap.mnemonicCode}%'
+        </if>
+
+        <if test="paramMap.status != null and paramMap.status >= 0">
+            AND c.`status` = #{paramMap.status}
+        </if>
+        <if test="paramMap.beginCreateTime !=null">
+            AND c.create_time >= Date(#{paramMap.beginCreateTime})
+        </if>
+        <if test="paramMap.endCreateTime !=null">
+            <![CDATA[ AND c.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+        </if>
+
+        <if test="paramMap.companySize != null and paramMap.companySize > 0">
+            AND c.`size` = #{paramMap.companySize}
+        </if>
+
+        <if test="paramMap.creatorId != null and paramMap.creatorId > 0">
+            AND c.creator_id = #{paramMap.creatorId}
+        </if>
+
+        GROUP BY c.id
+
+    </select>
 
 
   <select id="getCompanyEntity" resultMap="CompanyEntityMap">

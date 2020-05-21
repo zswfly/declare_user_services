@@ -250,15 +250,10 @@ public class UserController extends BaseController{
             }
 
 
-            UserEntity result = this.userService.newUser(userDto,currentUserId);
+            this.userService.newUser(userDto,currentUserId);
 
-            if(result == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("操作失败");
-            }else{
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("新增成功");
-            }
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setMessage("新增成功");
 
             return gson.toJson(responseJson);
         }catch (Exception e){

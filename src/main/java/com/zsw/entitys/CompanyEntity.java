@@ -12,33 +12,33 @@ import java.sql.Timestamp;
  * Created by zhangshaowei on 2020/4/29.
  */
 @Entity
-@Table(name = "company", schema = "user", catalog = "")
+@Table(name = "company", schema = "user")
 public class CompanyEntity extends IDEntity{
-    private int id;
+    private Integer id;
     private String name;
-    private int status;
+    private Integer status;
     private Timestamp createTime;
-    private int createUser;
+    private Integer createUser;
     private Timestamp updateTime;
-    private int updateUser;
+    private Integer updateUser;
     private String url;
     private String mnemonicCode;
     private String contact;
     private String contactPhone;
     private String contactAddress;
-    private int size;
-    private int creatorId;
+    private Integer size;
+    private Integer creatorId;
     private Date contractStartAt;
     private Date contractEndAt;
-    private int managerId;
+    private Integer managerId;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="id", length=11, nullable=false, unique=true, insertable=true, updatable=false)
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -186,11 +186,11 @@ public class CompanyEntity extends IDEntity{
     @Basic
     @NotNull
     @Column(name = "size", unique = false,  nullable = false, insertable = true, updatable = true, length = 11)
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -199,11 +199,11 @@ public class CompanyEntity extends IDEntity{
     @Basic
     @Max(9999999999L)
     @Column(name = "creator_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-    public int getCreatorId() {
+    public Integer getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(int creatorId) {
+    public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
     }
 
@@ -211,11 +211,11 @@ public class CompanyEntity extends IDEntity{
     @Basic
     @Max(9999999999L)
     @Column(name = "manager_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-    public int getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(int managerId) {
+    public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
 
@@ -275,7 +275,7 @@ public class CompanyEntity extends IDEntity{
 
     @Override
     public int hashCode() {
-        int result = id;
+        Integer result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + status;
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);

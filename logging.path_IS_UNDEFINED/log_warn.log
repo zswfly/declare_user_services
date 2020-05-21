@@ -1,0 +1,6 @@
+2020-05-15 00:45:00.924 [main] WARN  com.zsw.UserServicesApplication - 这是 warn 级别
+2020-05-15 00:46:00.310 [main] WARN  com.zsw.UserServicesApplication - 这是 warn 级别
+2020-05-15 00:51:02.453 [main] WARN  com.zsw.UserServicesApplication - 这是 warn 级别
+2020-05-15 01:06:48.357 [SpringContextShutdownHook] WARN  com.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1589476008357, current=DOWN, previous=UP]
+2020-05-15 01:06:54.673 [main] WARN  com.zsw.UserServicesApplication - 这是 warn 级别
+2020-05-15 01:08:40.637 [main] WARN  com.zsw.UserServicesApplication - 这是 warn 级别
