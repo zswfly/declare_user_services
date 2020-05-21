@@ -53,7 +53,7 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
         <!--以下就是需自动生成mapper.xml文件等表，配置哪些表，就自动生成哪些表那些文件。-->
-        <table tableName="department" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        <table tableName="" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
             <generatedKey column="id" sqlStatement="Mysql" identity="true" />
         </table>
 

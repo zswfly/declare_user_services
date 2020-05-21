@@ -155,7 +155,7 @@
 
   </select>
 
-    <select id="checkCompanyManagerIds" resultType="Intger">
+    <select id="checkCompanyManagerIds" resultType="Integer">
         SELECT c.manager_id
         FROM company c
         WHERE 1=1
