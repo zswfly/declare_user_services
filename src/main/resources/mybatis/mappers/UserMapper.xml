@@ -62,12 +62,15 @@
     <if test="paramMap.endCreateTime !=null">
       <![CDATA[ AND u.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
     </if>
+
+    GROUP BY u.id
+
     <if test="paramMap.start !=null and paramMap.start >= 0
          and paramMap.pageSize !=null and paramMap.pageSize > 0">
       LIMIT ${paramMap.start} , ${paramMap.pageSize}
     </if>
 
-    GROUP BY u.id
+
 
   </select>
   <select id="usersPageCount" resultType="Integer">
