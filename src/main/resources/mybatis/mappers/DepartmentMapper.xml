@@ -53,7 +53,7 @@
   <select id="listDepartmentEntityCount" resultType="Integer">
 
     SELECT
-    COUNT(d.id)
+    COUNT(DISTINCT d.id)
     FROM department d
     WHERE 1=1
     <if test="paramMap.companyId != null and paramMap.companyId > 0">
@@ -77,7 +77,6 @@
       <![CDATA[ AND d.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
     </if>
 
-    GROUP BY d.id
 
   </select>
 

@@ -99,7 +99,7 @@
     <select id="listCompanyEntityCount" resultType="Integer">
 
         SELECT
-        COUNT(c.id)
+        COUNT(DISTINCT c.id)
         FROM company c
         LEFT JOIN department d ON d.company_id = c.id
         LEFT JOIN department_user du ON du.department_id = d.id
@@ -136,7 +136,6 @@
             AND c.creator_id = #{paramMap.creatorId}
         </if>
 
-        GROUP BY c.id
 
     </select>
 
