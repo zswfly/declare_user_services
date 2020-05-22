@@ -13,7 +13,7 @@
     <result column="update_user" property="updateUser" jdbcType="INTEGER" />
   </resultMap>
 
-  <select id="listCompanyEntity" resultMap="DepartmentEntityMap">
+  <select id="listDepartmentEntity" resultMap="DepartmentEntityMap">
 
     SELECT
     d.*
