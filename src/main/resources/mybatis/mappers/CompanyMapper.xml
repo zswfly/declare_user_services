@@ -96,7 +96,7 @@
 
 
 
-    <select id="listCompanyEntityCount" resultMap="Integer">
+    <select id="listCompanyEntityCount" resultType="Integer">
 
         SELECT
         COUNT(c.id)
