@@ -115,9 +115,8 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @NotNull
     @Length(max = 255)
-    @Column(name = "mnemonic_code", unique = false,  nullable = false, insertable = true, updatable = true, length = 255)
+    @Column(name = "mnemonic_code", unique = false,  nullable = true, insertable = true, updatable = true, length = 255)
     public String getMnemonicCode() {
         return mnemonicCode;
     }

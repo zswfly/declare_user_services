@@ -16,6 +16,8 @@ import com.zsw.utils.ResponseCode;
 import com.zsw.utils.UserStaticURLUtil;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,8 @@ public class CompanyController extends BaseController {
 
     @Autowired
     RestTemplate restTemplate;
+
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyController.class);
 
 
     @RequestMapping(value=UserStaticURLUtil.companyController_selectUserCompany,
@@ -88,6 +92,7 @@ public class CompanyController extends BaseController {
             }
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
@@ -111,6 +116,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -154,6 +160,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -183,6 +190,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -251,6 +259,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -284,6 +293,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }

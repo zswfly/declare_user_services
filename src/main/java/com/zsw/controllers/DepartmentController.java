@@ -9,13 +9,14 @@ import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.DepartmentDto;
 import com.zsw.services.ICompanyService;
 import com.zsw.services.IDepartmentService;
-import com.zsw.services.IUserService;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.CommonUtils;
 import com.zsw.utils.ResponseCode;
 import com.zsw.utils.UserStaticURLUtil;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -41,6 +42,10 @@ public class DepartmentController extends BaseController {
     @Autowired
     ICompanyService companyService;
 
+    private static final Logger LOG = LoggerFactory.getLogger(DepartmentController.class);
+
+
+
     @RequestMapping(value=UserStaticURLUtil.departmentController_newDepartment,
             method= RequestMethod.POST)
     //    @Permission(code = "user.departmentController.newDepartment",name = "新增部门",description ="新增部门"
@@ -58,6 +63,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -79,6 +85,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -101,6 +108,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -132,6 +140,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -192,6 +201,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -218,6 +228,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -243,6 +254,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }

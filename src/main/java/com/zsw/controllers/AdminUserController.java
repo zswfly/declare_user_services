@@ -2,7 +2,8 @@ package com.zsw.controllers;
 
 import com.zsw.controller.BaseController;
 import com.zsw.utils.UserStaticURLUtil;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,4 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(UserStaticURLUtil.adminUserController)
 public class AdminUserController extends BaseController {
+    private static final Logger LOG = LoggerFactory.getLogger(AdminUserController.class);
+
+
+
 }

@@ -1,7 +1,6 @@
 package com.zsw.controllers;
 
 import com.google.gson.Gson;
-import com.zsw.annotations.Permission;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
@@ -13,9 +12,10 @@ import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -40,6 +40,9 @@ public class UserController extends BaseController{
 
     @Autowired
     ICompanyService companyService;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
+
 
     @RequestMapping(value=UserStaticURLUtil.userController_login,
             method= RequestMethod.POST)
@@ -114,6 +117,7 @@ public class UserController extends BaseController{
             return result;
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
@@ -147,6 +151,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         } catch (Exception e) {
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -229,6 +234,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
 
@@ -258,6 +264,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -287,6 +294,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -331,6 +339,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -358,6 +367,7 @@ public class UserController extends BaseController{
             }
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -425,6 +435,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             e.printStackTrace();
+            LOG.error("error", e);
             return CommonUtils.ErrorResposeJson();
         }
     }

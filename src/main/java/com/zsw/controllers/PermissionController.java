@@ -8,9 +8,13 @@ import com.zsw.services.IPermissionService;
 import com.zsw.utils.CacheStaticURLUtil;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.UserStaticURLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -26,6 +30,9 @@ public class PermissionController extends BaseController implements IUserPermiss
 
     @Autowired
     RestTemplate restTemplate;
+
+    private static final Logger LOG = LoggerFactory.getLogger(PermissionController.class);
+
 
 
     @RequestMapping(value=UserStaticURLUtil.permissionController_initPermission,
