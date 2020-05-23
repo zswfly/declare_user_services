@@ -9,6 +9,8 @@ import com.zsw.utils.PinyinUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -32,6 +34,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     private DepartmentMapper departmentMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void newDepartment(DepartmentDto departmentDto, Integer currentUserId,Integer  currentCompanyId) throws Exception {
         DepartmentEntity departmentEntity = new DepartmentEntity();
         BeanUtils.copyProperties(departmentDto,departmentEntity);
@@ -46,6 +49,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public DepartmentEntity deleteDepartment(Integer departmentId, Integer currentUserId,Integer currentCompanyId) throws Exception {
         DepartmentEntity param = new DepartmentEntity();
         param.setId(departmentId);
@@ -56,6 +60,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public DepartmentEntity updateDepartment(DepartmentDto departmentDto, Integer currentUserId,Integer  currentCompanyId) throws Exception {
         if(departmentDto == null
                 || departmentDto.getId() == null){
@@ -79,21 +84,25 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public DepartmentEntity getDepartment(DepartmentEntity param) throws Exception {
         return this.dbService.get(param);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Integer listDepartmentEntityCount(Map<String, Object> paramMap) throws Exception {
         return this.departmentMapper.listDepartmentEntityCount(paramMap);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<DepartmentEntity> listDepartmentEntity(Map<String, Object> paramMap) throws Exception {
         return this.departmentMapper.listDepartmentEntity(paramMap);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void relationDepartmentUser(List<DepartmentUserEntity> listDepartmentUser, Integer currentUserId) throws Exception {
         for(DepartmentUserEntity departmentUserEntity:listDepartmentUser ){
             departmentUserEntity.setCreateUser(currentUserId);
@@ -105,6 +114,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void deleteDepartmentUser(List<DepartmentUserEntity> listDepartmentUser, Integer currentUserId) throws Exception {
         this.dbService.delete(listDepartmentUser);
     }
