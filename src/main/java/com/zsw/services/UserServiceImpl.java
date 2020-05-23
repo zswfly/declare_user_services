@@ -64,9 +64,10 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void newUser(UserDto userDto, Integer currentUserId)throws Exception {
-        userDto.setId(null);
+        //userDto.setId(null);
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto,userEntity);
+        userEntity.setId(null);
         userEntity.setStatus(CommonStaticWord.Normal_Status_0);
         userEntity.setCreateUser(currentUserId);
         userEntity.setCreateTime(new Timestamp(new Date().getTime()));
