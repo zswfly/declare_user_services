@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,21 +69,27 @@ public class DepartmentController extends BaseController {
         }
     }
 
-    @RequestMapping(value=UserStaticURLUtil.departmentController_deleteDepartment,
-            method= RequestMethod.DELETE)
-    //    @Permission(code = "user.departmentController.deleteDepartment",name = "删除部门",description ="删除(禁用)部门"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_deleteDepartment)
-    public String deleteDepartment(Integer departmentId,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+    @RequestMapping(value=UserStaticURLUtil.departmentController_updateStatusDepartment,
+            method= RequestMethod.PUT)
+    //    @Permission(code = "user.departmentController.updateStatusDepartment",name = "部门",description ="删除(禁用)部门"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_updateStatusDepartment)
+    public String updateStatusDepartment(@RequestParam Map<String, String> params ,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-
-            this.departmentService.deleteDepartment(departmentId,currentUserId,currentCompanyId);
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("删除成功");
-
-            return gson.toJson(responseJson);
+            String ids = params.get("ids");
+            String type = params.get("type");
+            if(ids == null || type == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
+                this.departmentService.updateStatusDepartment(list,type,currentUserId,currentCompanyId);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
         }catch (Exception e){
             e.printStackTrace();
             LOG.error("error", e);

@@ -51,13 +51,22 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public DepartmentEntity deleteDepartment(Integer departmentId, Integer currentUserId,Integer currentCompanyId) throws Exception {
-        DepartmentEntity param = new DepartmentEntity();
-        param.setId(departmentId);
-        param.setCompanyId(currentCompanyId);
-        DepartmentEntity departmentEntity = this.dbService.get(param);
-        departmentEntity.setStatus(CommonStaticWord.Ban_Status_1);
-        return departmentEntity;
+    public void updateStatusDepartment(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId) throws Exception {
+
+        List<DepartmentEntity> list =  this.dbService.findBy(DepartmentEntity.class,"id",ids);
+        Integer status = null;
+        if( CommonStaticWord.Status_ban.equals(type)){
+            status = CommonStaticWord.Ban_Status_1;
+        }else if(CommonStaticWord.Status_enable.equals(type)){
+            status = CommonStaticWord.Normal_Status_0;
+        }
+
+        for(DepartmentEntity item : list){
+            item.setStatus(status);
+            item.setUpdateUser(currentUserId);
+            item.setUpdateTime(new Timestamp(new Date().getTime()));
+        }
+
     }
 
     @Override

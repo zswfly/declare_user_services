@@ -14,7 +14,7 @@ public interface IDepartmentService extends IBaseService{
 
 
     void newDepartment(DepartmentDto departmentDto, Integer currentUserId,Integer currentCompanyId)throws Exception;;
-    DepartmentEntity deleteDepartment(Integer departmentId, Integer currentUserId,Integer currentCompanyId)throws Exception;;
+    void updateStatusDepartment(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId)throws Exception;;
     DepartmentEntity updateDepartment(DepartmentDto departmentDto , Integer currentUserId,Integer currentCompanyId)throws Exception;;
     DepartmentEntity getDepartment(DepartmentEntity param)throws Exception;
 
