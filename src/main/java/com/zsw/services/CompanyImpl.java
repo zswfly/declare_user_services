@@ -95,7 +95,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
     public void newCompany(CompanyDto companyDto, Integer currentUserId) throws Exception {
         CompanyEntity companyEntity = new CompanyEntity();
         BeanUtils.copyProperties(companyDto,companyEntity);
-        companyEntity.setMnemonicCode(PinyinUtils.getPingYin(companyEntity.getName()));
+        companyEntity.setMnemonicCode(PinyinUtils.getFirstSpell(companyEntity.getName()));
         companyEntity.setId(null);
         companyEntity.setCreatorId(currentUserId);
         companyEntity.setCreateUser(currentUserId);

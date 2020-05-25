@@ -40,7 +40,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         BeanUtils.copyProperties(departmentDto,departmentEntity);
         departmentEntity.setId(null);
         departmentEntity.setCompanyId(currentCompanyId);
-        departmentEntity.setMnemonicCode(PinyinUtils.getPingYin(departmentEntity.getName()));
+        departmentEntity.setMnemonicCode(PinyinUtils.getFirstSpell(departmentEntity.getName()));
         departmentEntity.setCreateUser(currentUserId);
         departmentEntity.setCreateTime(new Timestamp(new Date().getTime()));
         departmentEntity.setUpdateUser(currentUserId);
