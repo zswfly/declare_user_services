@@ -97,6 +97,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
         BeanUtils.copyProperties(companyDto,companyEntity);
         companyEntity.setMnemonicCode(PinyinUtils.getFirstSpell(companyEntity.getName()));
         companyEntity.setId(null);
+        companyEntity.setStatus(CommonStaticWord.Normal_Status_0);
         companyEntity.setCreatorId(currentUserId);
         companyEntity.setCreateUser(currentUserId);
         companyEntity.setCreateTime(new Timestamp(new Date().getTime()));
