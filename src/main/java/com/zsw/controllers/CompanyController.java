@@ -172,6 +172,7 @@ public class CompanyController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_getCompany)
     public String getCompany(@PathVariable Integer companyId) throws Exception {
         try {
+
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
