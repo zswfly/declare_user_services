@@ -6,6 +6,7 @@ import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.user.DepartmentDto;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.PinyinUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangshaowei on 2020/5/21.
@@ -127,5 +126,31 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void deleteDepartmentUser(List<DepartmentUserEntity> listDepartmentUser, Integer currentUserId) throws Exception {
         this.dbService.delete(listDepartmentUser);
+    }
+
+
+    @Override
+    public String checkDepartmentExist(DepartmentDto departmentDto, Integer currentCompanyId) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("companyId",currentCompanyId);
+        paramMap.put("departmentName",departmentDto.getName());
+        if(departmentDto.getId() != null && departmentDto.getId() >0 ){
+            paramMap.put("notDepartmentId",departmentDto.getId());
+        }
+        Map<String,String> result = this.departmentMapper.checkDepartmentExist(paramMap);
+        String departmentName = result.get("department_name");
+        StringBuilder stringBuilder = new StringBuilder();
+        if(result != null &&
+                (
+                        (StringUtils.isNotBlank(departmentName)&&StringUtils.isNotEmpty(departmentName))
+                )
+        ){
+            List<String> departmentNames = Arrays.asList(departmentName.split(","));
+            if(departmentNames.contains(departmentDto.getName())){
+                stringBuilder.append("当前部门名已存在;");
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }

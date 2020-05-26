@@ -27,16 +27,17 @@ public class TestController extends BaseController {
     @Autowired
     IUserService userService;
 
-    Logger logger = LoggerFactory.getLogger(TestController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestController.class);
+
 
     @RequestMapping(value="/test", method= RequestMethod.POST)
     //@Permission(code="user.test.test",name = "测试",description = "test")
     public void test(HttpServletRequest request) throws Exception {
-        logger.trace("这是 test info 级别");
-        logger.debug("这是 test debug 级别");
-        logger.info("这是 test info 级别");
-        logger.warn("这是 test warn 级别");
-        logger.error("这是 test error 级别");
+        LOG.trace("这是 test info 级别");
+        LOG.debug("这是 test debug 级别");
+        LOG.info("这是 test info 级别");
+        LOG.warn("这是 test warn 级别");
+        LOG.error("这是 test error 级别");
         int i = 1/0;
         System.out.print(1);
     }
@@ -45,5 +46,10 @@ public class TestController extends BaseController {
     public String test2(List<Integer> ids) throws Exception {
         Gson gson = new Gson();
         return gson.toJson(this.userService.getUsersByIds(ids));
+    }
+
+    @Override
+    public Logger getLOG(){
+        return this.LOG;
     }
 }

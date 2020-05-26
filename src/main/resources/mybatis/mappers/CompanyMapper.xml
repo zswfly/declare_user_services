@@ -65,7 +65,7 @@
       AND c.`name` LIKE '%${paramMap.companyName}%'
     </if>
     <if test="paramMap.mnemonicCode != null and paramMap.mnemonicCode != ''">
-      AND c.mnemonic_code LIKE '%${paramMap.mnemonicCode}%'
+      AND c.mnemonic_code LIKE '${paramMap.mnemonicCode}%'
     </if>
 
     <if test="paramMap.status != null and paramMap.status >= 0">

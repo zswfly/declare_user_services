@@ -8,6 +8,7 @@ spring:
       uri: http://localhost:8760/
       # 指定 config server 里的 {profile}
       profile: dev
+#      profile: test
       # 指定Git仓库分支
       label: master
       username: 123456

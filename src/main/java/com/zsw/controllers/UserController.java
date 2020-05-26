@@ -116,8 +116,7 @@ public class UserController extends BaseController{
             }
             return result;
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
@@ -150,8 +149,7 @@ public class UserController extends BaseController{
             responseJson.setMessage("登出成功");
             return gson.toJson(responseJson);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -233,8 +231,7 @@ public class UserController extends BaseController{
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
 
@@ -248,7 +245,7 @@ public class UserController extends BaseController{
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = newOrUpdateUserCheck(userDto,null);
+            String check = newOrUpdateUserCheck(userDto,currentCompanyId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -263,8 +260,7 @@ public class UserController extends BaseController{
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -293,8 +289,7 @@ public class UserController extends BaseController{
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -305,14 +300,14 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
 //    @Permission(code = "user.userController.updateUser",name = "更新用户",description ="更新用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
-    public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             Integer userDtoId = userDto.getId();
 
-            String check = newOrUpdateUserCheck(userDto,userDtoId);
+            String check = newOrUpdateUserCheck(userDto,currentCompanyId);
 
             if(userDtoId == null || userDtoId < 1){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
@@ -338,8 +333,7 @@ public class UserController extends BaseController{
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -366,8 +360,7 @@ public class UserController extends BaseController{
                 return gson.toJson(responseJson);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -383,36 +376,36 @@ public class UserController extends BaseController{
             Map<String,Object> paramMap = new HashMap<String, Object>();
 
             String status = request.getParameter("status");
-            if(status !=null && StringUtils.isNotBlank(status)) {
+            if(status !=null && StringUtils.isNotEmpty(status)) {
                 paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
             }
             String departmentId = request.getParameter("departmentId");
-            if(departmentId !=null && StringUtils.isNotBlank(departmentId)) {
+            if(departmentId !=null && StringUtils.isNotEmpty(departmentId)) {
                 paramMap.put("departmentId", Integer.valueOf(NumberUtils.toInt(departmentId, 0)));
             }
             String companyId = request.getParameter("companyId");
-            if(companyId !=null && StringUtils.isNotBlank(companyId)) {
+            if(companyId !=null && StringUtils.isNotEmpty(companyId)) {
                 paramMap.put("companyId", Integer.valueOf(NumberUtils.toInt(companyId, 0)));
             }
 
             String phone = request.getParameter("phone");
-            if(phone !=null && StringUtils.isNotBlank(phone)) {
+            if(phone !=null && StringUtils.isNotEmpty(phone)) {
                 paramMap.put("phone", phone);
             }
             String email = request.getParameter("email");
-            if(email !=null && StringUtils.isNotBlank(email)) {
+            if(email !=null && StringUtils.isNotEmpty(email)) {
                 paramMap.put("email", email);
             }
             String userName = request.getParameter("userName");
-            if(userName !=null && StringUtils.isNotBlank(userName)) {
+            if(userName !=null && StringUtils.isNotEmpty(userName)) {
                 paramMap.put("userName", userName);
             }
             String beginCreateTime = request.getParameter("beginCreateTime");
-            if(beginCreateTime !=null && StringUtils.isNotBlank(beginCreateTime)) {
+            if(beginCreateTime !=null && StringUtils.isNotEmpty(beginCreateTime)) {
                 paramMap.put("beginCreateTime", beginCreateTime);
             }
             String endCreateTime = request.getParameter("endCreateTime");
-            if(endCreateTime !=null && StringUtils.isNotBlank(endCreateTime)) {
+            if(endCreateTime !=null && StringUtils.isNotEmpty(endCreateTime)) {
                 paramMap.put("endCreateTime", endCreateTime);
             }
 
@@ -434,8 +427,7 @@ public class UserController extends BaseController{
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -444,7 +436,12 @@ public class UserController extends BaseController{
     private String resetPassWordCheck(LoginTemp loginTemp) throws Exception{
         if(loginTemp == null)return "空信息";
 
+        if(loginTemp.getPassword().indexOf(" ")!=-1
+                )return "密码存在空格";
+
+
         if(StringUtils.isBlank(loginTemp.getPassword())
+                || StringUtils.isEmpty(loginTemp.getPassword())
                 ||loginTemp.getPassword().length() < 8
                 ) return "密码少于8位";
 
@@ -452,71 +449,46 @@ public class UserController extends BaseController{
     }
 
 
-    private String newOrUpdateUserCheck(UserDto userDto , Integer userDtoId) throws Exception{
+    private String newOrUpdateUserCheck(UserDto userDto ,Integer currentCompanyId) throws Exception{
         if(userDto == null)return "空信息";
 
 
 
         if (StringUtils.isBlank(userDto.getPhone())
+                || StringUtils.isEmpty(userDto.getPhone())
                 ||!CommonUtils.isMobileNO(userDto.getPhone())
                 ) return "手机号码有误";
 
 
         if (StringUtils.isBlank(userDto.getEmail())
+                || StringUtils.isEmpty(userDto.getEmail())
                 ||!CommonUtils.isEmail(userDto.getEmail())
                 ) return "Email地址有误";
 
 
         if (StringUtils.isBlank(userDto.getUserName())
+                || StringUtils.isEmpty(userDto.getUserName())
                 ) return "用户名有误";
 
 
-        if(userDtoId == null){
-            if (StringUtils.isBlank(userDto.getLoginPwd())
-                    ||userDto.getLoginPwd().length() < 8
-                    ) return "密码少于8位";
+        if (userDto.getUserName().indexOf(",")!=-1
+                || userDto.getUserName().indexOf(" ")!=-1
+                ) return "用户名有空格或,号";
 
-            UserEntity userEntity = new UserEntity();
 
-            userEntity.setPhone(userDto.getPhone());
-            if( this.userService.getUser(userEntity) != null
-                    ) return "电话号码已存在";
+        String result = this.userService.checkUserExist(userDto,currentCompanyId);
+        if(StringUtils.isNotEmpty(result) && StringUtils.isNotBlank(result)
+                ) return result;
 
-            userEntity.setPhone(null);
-            userEntity.setEmail(userDto.getEmail());
-            if( this.userService.getUser(userEntity) != null
-                    ) return "Email地址已被使用";
 
-            userEntity.setEmail(null);
-            userEntity.setUserName(userDto.getUserName());
-            if( this.userService.getUser(userEntity) != null
-                    ) return "名字已被使用";
-        }else{
-            UserEntity userEntity = new UserEntity();
-            UserEntity result = null;
-
-            userEntity.setPhone(userDto.getPhone());
-            result = this.userService.getUser(userEntity);
-            if( result != null && result.getId() != userDtoId)
-                return "电话号码已存在";
-
-            userEntity.setPhone(null);
-            userEntity.setEmail(userDto.getEmail());
-            result = this.userService.getUser(userEntity);
-            if( result != null && result.getId() != userDtoId)
-                return "Email地址已被使用";
-
-            userEntity.setEmail(null);
-            userEntity.setUserName(userDto.getUserName());
-            result = this.userService.getUser(userEntity);
-            if( result != null && result.getId() != userDtoId)
-                return "名字已被使用";
-        }
 
 
         return null;
     }
-
+    @Override
+    public Logger getLOG(){
+        return this.LOG;
+    }
 
 }
 /*
@@ -532,3 +504,50 @@ public class UserController extends BaseController{
         }
 
 */
+
+
+
+
+
+
+//if(userDtoId == null){
+//        if (StringUtils.isBlank(userDto.getLoginPwd())
+//        ||userDto.getLoginPwd().length() < 8
+//        ) return "密码少于8位";
+//
+//        UserEntity userEntity = new UserEntity();
+//
+//        userEntity.setPhone(userDto.getPhone());
+//        if( this.userService.getUser(userEntity) != null
+//        ) return "电话号码已存在";
+//
+//        userEntity.setPhone(null);
+//        userEntity.setEmail(userDto.getEmail());
+//        if( this.userService.getUser(userEntity) != null
+//        ) return "Email地址已被使用";
+//
+//        userEntity.setEmail(null);
+//        userEntity.setUserName(userDto.getUserName());
+//        if( this.userService.getUser(userEntity) != null
+//        ) return "名字已被使用";
+//        }else{
+//        UserEntity userEntity = new UserEntity();
+//        UserEntity result = null;
+//
+//        userEntity.setPhone(userDto.getPhone());
+//        result = this.userService.getUser(userEntity);
+//        if( result != null && result.getId() != userDtoId)
+//        return "电话号码已存在";
+//
+//        userEntity.setPhone(null);
+//        userEntity.setEmail(userDto.getEmail());
+//        result = this.userService.getUser(userEntity);
+//        if( result != null && result.getId() != userDtoId)
+//        return "Email地址已被使用";
+//
+//        userEntity.setEmail(null);
+//        userEntity.setUserName(userDto.getUserName());
+//        result = this.userService.getUser(userEntity);
+//        if( result != null && result.getId() != userDtoId)
+//        return "名字已被使用";
+//        }

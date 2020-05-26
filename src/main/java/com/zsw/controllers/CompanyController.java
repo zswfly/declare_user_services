@@ -59,7 +59,7 @@ public class CompanyController extends BaseController {
                 result.setMessage("用户没有登录");
                 return result;
             }
-            if (rememberToken == null || StringUtils.isEmpty(rememberToken)) {
+            if (StringUtils.isBlank(rememberToken) || StringUtils.isEmpty(rememberToken)) {
                 result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("rememberToken有问题");
                 return result;
@@ -91,8 +91,7 @@ public class CompanyController extends BaseController {
                 return result;
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
@@ -115,8 +114,7 @@ public class CompanyController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -159,8 +157,7 @@ public class CompanyController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -190,8 +187,7 @@ public class CompanyController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -210,35 +206,35 @@ public class CompanyController extends BaseController {
             Map<String,Object> paramMap = new HashMap<String, Object>();
 
             String status = request.getParameter("status");
-            if(status !=null && StringUtils.isNotBlank(status)) {
+            if(status !=null && StringUtils.isNotEmpty(status)) {
                 paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
             }
             String companyName = request.getParameter("companyName");
-            if(companyName !=null && StringUtils.isNotBlank(companyName)) {
+            if(companyName !=null && StringUtils.isNotEmpty(companyName)) {
                 paramMap.put("companyName", companyName);
             }
 
             String mnemonicCode = request.getParameter("mnemonicCode");
-            if(mnemonicCode !=null && StringUtils.isNotBlank(mnemonicCode)) {
+            if(mnemonicCode !=null && StringUtils.isNotEmpty(mnemonicCode)) {
                 paramMap.put("mnemonicCode", mnemonicCode);
             }
 
             String beginCreateTime = request.getParameter("beginCreateTime");
-            if(beginCreateTime !=null && StringUtils.isNotBlank(beginCreateTime)) {
+            if(beginCreateTime !=null && StringUtils.isNotEmpty(beginCreateTime)) {
                 paramMap.put("beginCreateTime", beginCreateTime);
             }
             String endCreateTime = request.getParameter("endCreateTime");
-            if(endCreateTime !=null && StringUtils.isNotBlank(endCreateTime)) {
+            if(endCreateTime !=null && StringUtils.isNotEmpty(endCreateTime)) {
                 paramMap.put("endCreateTime", endCreateTime);
             }
 
             String size = request.getParameter("size");
-            if(size !=null && StringUtils.isNotBlank(size)) {
+            if(size !=null && StringUtils.isNotEmpty(size)) {
                 paramMap.put("companySize", Integer.valueOf(NumberUtils.toInt(size, 0)));
             }
 
             String creatorId = request.getParameter("creatorId");
-            if(creatorId !=null && StringUtils.isNotBlank(creatorId)) {
+            if(creatorId !=null && StringUtils.isNotEmpty(creatorId)) {
                 paramMap.put("creatorId", Integer.valueOf(NumberUtils.toInt(creatorId, 0)));
             }
 
@@ -259,8 +255,7 @@ public class CompanyController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -293,8 +288,7 @@ public class CompanyController extends BaseController {
             }
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -304,7 +298,10 @@ public class CompanyController extends BaseController {
 
 
 
-
+    @Override
+    public Logger getLOG(){
+        return this.LOG;
+    }
 
 
     }

@@ -63,4 +63,9 @@ public class PermissionController extends BaseController implements IUserPermiss
 
 
     }
+
+    @Override
+    public Logger getLOG(){
+        return this.LOG;
+    }
 }

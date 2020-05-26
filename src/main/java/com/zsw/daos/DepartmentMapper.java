@@ -16,4 +16,7 @@ public interface DepartmentMapper {
     List<DepartmentEntity> listDepartmentEntity(@Param("paramMap") Map<String,Object> paramMap);
     Integer listDepartmentEntityCount(@Param("paramMap") Map<String,Object> paramMap);
 
+
+    Map<String,String> checkDepartmentExist(@Param("paramMap") Map<String,Object> paramMap);
+
 }

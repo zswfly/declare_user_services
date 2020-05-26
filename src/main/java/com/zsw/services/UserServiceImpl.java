@@ -8,6 +8,7 @@ import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.UserServiceStaticWord;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -153,5 +154,48 @@ public class UserServiceImpl implements IUserService,Serializable{
         return this.userMapper.usersPageCount(paramMap);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId) throws Exception {
+        Map<String, Object> paramMap = new HashMap<>();
 
+        paramMap.put("companyId",currentCompanyId);
+        if(userDto.getId() != null && userDto.getId() >0 ){
+            paramMap.put("notUserId",userDto.getId());
+        }
+
+        paramMap.put("userName",userDto.getUserName());
+        paramMap.put("userPhone",userDto.getPhone());
+        paramMap.put("userEmail",userDto.getEmail());
+
+
+        Map<String,String> result = this.userMapper.checkUserExist(paramMap);
+        String userName = result.get("user_name");
+        String userPhone = result.get("user_name");
+        String userEmail = result.get("user_email");
+        StringBuilder stringBuilder = new StringBuilder();
+        if(result != null &&
+                (
+                    (StringUtils.isNotBlank(userName)&&StringUtils.isNotEmpty(userName))
+                    ||(StringUtils.isNotBlank(userPhone)&&StringUtils.isNotEmpty(userPhone))
+                    ||(StringUtils.isNotBlank(userEmail)&&StringUtils.isNotEmpty(userEmail))
+                )
+        ){
+
+            List<String> userNames = Arrays.asList(userName.split(","));
+            List<String> phones = Arrays.asList(userPhone.split(","));
+            List<String>  emails = Arrays.asList(userEmail.split(","));
+            if(userNames.contains(userDto.getUserName())){
+                stringBuilder.append("当前用户名已存在;");
+            }
+            if(phones.contains(userDto.getPhone())){
+                stringBuilder.append("当前手机号码已存在;");
+            }
+            if(emails.contains(userDto.getEmail())){
+                stringBuilder.append("当前邮箱已存在;");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
 }

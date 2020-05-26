@@ -56,6 +56,14 @@ public class DepartmentController extends BaseController {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
+
+            String check = this.newOrUpdateDepartmentCheck(departmentDto,currentCompanyId);
+            if(StringUtils.isNotEmpty(check) && StringUtils.isNotBlank(check)){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage(check);
+                return gson.toJson(responseJson);
+            }
+
             this.departmentService.newDepartment(departmentDto,currentUserId,currentCompanyId);
 
             responseJson.setCode(ResponseCode.Code_200);
@@ -63,8 +71,7 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -91,8 +98,7 @@ public class DepartmentController extends BaseController {
                 return gson.toJson(responseJson);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -107,6 +113,14 @@ public class DepartmentController extends BaseController {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
+
+            String check = this.newOrUpdateDepartmentCheck(departmentDto,currentCompanyId);
+            if(StringUtils.isNotEmpty(check) && StringUtils.isNotBlank(check)){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage(check);
+                return gson.toJson(responseJson);
+            }
+
             this.departmentService.updateDepartment(departmentDto,currentUserId,currentCompanyId);
 
             responseJson.setCode(ResponseCode.Code_200);
@@ -114,8 +128,7 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -146,8 +159,7 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -168,25 +180,25 @@ public class DepartmentController extends BaseController {
             paramMap.put("companyId",currentCompanyId);
 
             String status = request.getParameter("status");
-            if(status !=null && StringUtils.isNotBlank(status)) {
+            if(status !=null && StringUtils.isNotEmpty(status)) {
                 paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
             }
             String departmentName = request.getParameter("departmentName");
-            if(departmentName !=null && StringUtils.isNotBlank(departmentName)) {
+            if(departmentName !=null && StringUtils.isNotEmpty(departmentName)) {
                 paramMap.put("departmentName", departmentName);
             }
 
             String mnemonicCode = request.getParameter("mnemonicCode");
-            if(mnemonicCode !=null && StringUtils.isNotBlank(mnemonicCode)) {
+            if(mnemonicCode !=null && StringUtils.isNotEmpty(mnemonicCode)) {
                 paramMap.put("mnemonicCode", mnemonicCode);
             }
 
             String beginCreateTime = request.getParameter("beginCreateTime");
-            if(beginCreateTime !=null && StringUtils.isNotBlank(beginCreateTime)) {
+            if(beginCreateTime !=null && StringUtils.isNotEmpty(beginCreateTime)) {
                 paramMap.put("beginCreateTime", beginCreateTime);
             }
             String endCreateTime = request.getParameter("endCreateTime");
-            if(endCreateTime !=null && StringUtils.isNotBlank(endCreateTime)) {
+            if(endCreateTime !=null && StringUtils.isNotEmpty(endCreateTime)) {
                 paramMap.put("endCreateTime", endCreateTime);
             }
 
@@ -207,8 +219,7 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -234,8 +245,7 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
@@ -260,11 +270,32 @@ public class DepartmentController extends BaseController {
 
             return gson.toJson(responseJson);
         }catch (Exception e){
-            e.printStackTrace();
-            LOG.error("error", e);
+            CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
 
+    private String newOrUpdateDepartmentCheck(DepartmentDto departmentDto ,Integer currentCompanyId) throws Exception {
+        if (StringUtils.isBlank(departmentDto.getName())
+                || StringUtils.isEmpty(departmentDto.getName())
+                ) return "部门名有误";
 
+
+        if (departmentDto.getName().indexOf(",")!=-1
+                || departmentDto.getName().indexOf(" ")!=-1
+                ) return "部门名有空格或,号";
+
+        String resutl = this.departmentService.checkDepartmentExist(departmentDto,currentCompanyId);
+        if(StringUtils.isNotEmpty(resutl) && StringUtils.isNotBlank(resutl))
+            return resutl;
+
+        return null;
+    }
+
+
+
+        @Override
+    public Logger getLOG(){
+        return this.LOG;
+    }
 }

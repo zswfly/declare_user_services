@@ -72,10 +72,12 @@ public class CompanyImpl implements ICompanyService,Serializable{
         Date currentDate = new Date();
         Date contractStartAt = companyEntity.getContractStartAt();
         Date contractEndAt = companyEntity.getContractEndAt();
-        if(contractStartAt == null
-                || contractEndAt == null
-                || contractStartAt.after(currentDate)
-                || contractEndAt.before(currentDate)
+        if(companyEntity.getStatus() == CommonStaticWord.Normal_Status_0
+                &&
+                    (contractStartAt == null
+                    || contractEndAt == null
+                    || contractStartAt.after(currentDate)
+                    || contractEndAt.before(currentDate))
                 ){
             companyEntity.setStatus(CommonStaticWord.Ban_Status_1);
             this.dbService.update(companyEntity);

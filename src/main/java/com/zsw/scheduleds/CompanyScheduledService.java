@@ -4,6 +4,9 @@ import com.zsw.entitys.CompanyEntity;
 import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.services.ICompanyService;
 import com.zsw.services.IDBService;
+import com.zsw.utils.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +23,9 @@ import java.util.Map;
  */
 @Component
 public class CompanyScheduledService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyScheduledService.class);
+
     @Autowired
     private IDBService dbService;
 
@@ -33,8 +39,8 @@ public class CompanyScheduledService {
         try {
             System.out.println("CompanyScheduledService.checkCompanyContract 1111111111111111________Scheduled Task-------------------------------------------------------------------");
             Integer start = 0;
-            Integer pageSize = 1;
-            //Integer pageSize = 30;
+            //Integer pageSize = 1;
+            Integer pageSize = 30;
             while(true){
                 Map<String, Object> listCompanyEntityParam = new HashMap<>();
                 listCompanyEntityParam.put("start",start);
@@ -50,7 +56,7 @@ public class CompanyScheduledService {
             }
             System.out.println("2222222222222222________Scheduled Task-------------------------------------------------------------------");
         }catch (Exception e){
-            e.printStackTrace();
+            CommonUtils.ErrorAction(LOG,e);
         }
     }
 

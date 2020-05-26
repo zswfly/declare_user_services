@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminUserController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(AdminUserController.class);
 
-
+    @Override
+    public Logger getLOG(){
+        return this.LOG;
+    }
 
 }

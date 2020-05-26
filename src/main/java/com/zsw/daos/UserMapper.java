@@ -15,4 +15,7 @@ public interface UserMapper {
 
     List<UserDto> usersPage(@Param("paramMap") Map<String,Object> paramMap);
     Integer usersPageCount(@Param("paramMap") Map<String,Object> paramMap);
+    Map<String,String> checkUserExist(@Param("paramMap") Map<String,Object> paramMap);
+
+
 }
