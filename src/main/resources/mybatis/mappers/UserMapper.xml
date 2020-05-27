@@ -47,6 +47,9 @@
     <if test="paramMap.companyId != null and paramMap.companyId > 0">
       AND c.id = #{paramMap.companyId}
     </if>
+    <if test="paramMap.userId != null and paramMap.userId > 0">
+      AND u.id = #{paramMap.userId}
+    </if>
     <if test="paramMap.phone != null and paramMap.phone != ''">
       AND u.phone LIKE '%${paramMap.phone}%'
     </if>
@@ -87,6 +90,9 @@
     </if>
     <if test="paramMap.departmentId != null and paramMap.departmentId > 0">
       AND d.id = #{paramMap.departmentId}
+    </if>
+    <if test="paramMap.userId != null and paramMap.userId > 0">
+      AND u.id = #{paramMap.userId}
     </if>
     <if test="paramMap.companyId != null and paramMap.companyId > 0">
       AND c.id = #{paramMap.companyId}
@@ -138,6 +144,40 @@
       )
     </if>
   </select>
+
+
+
+  <update id="batchBan" parameterType="Map">
+    UPDATE `user` u
+    LEFT JOIN department_user du ON du.user_id = u.id
+    LEFT JOIN department d ON d.id = du.department_id
+    LEFT JOIN company c ON c.id = d.company_id
+    SET u.update_time = CURRENT_DATE
+    <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
+      , u.update_user = '${paramMap.currentUserId}'
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      , u.`status`  = #{paramMap.status}
+    </if>
+
+    WHERE 1 = 1
+    <if test="paramMap.companyId != null and paramMap.companyId > 0">
+      AND c.id = #{paramMap.companyId}
+    </if>
+    <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
+      AND u.id != '${paramMap.currentUserId}'
+    </if>
+    <if test="paramMap.ids !=null ">
+      AND u.id IN
+      <foreach item="item" collection="ids" separator="," open="(" close=")" index="">
+        #{item, jdbcType=NUMERIC}
+      </foreach>
+    </if>
+
+
+  </update>
+
+
 
 
 </mapper>

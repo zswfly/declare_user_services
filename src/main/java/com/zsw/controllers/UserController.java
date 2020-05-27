@@ -244,7 +244,7 @@ public class UserController extends BaseController{
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = newOrUpdateUserCheck(userDto,currentCompanyId);
+            String check = AdminUserAndUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -268,25 +268,9 @@ public class UserController extends BaseController{
             method= RequestMethod.GET)
 //    @Permission(code = "user.userController.getUser",name = "获取用户",description ="根据id获取用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
-    public String getUser(@PathVariable Integer userId) throws Exception {
+    public String getUser(@PathVariable Integer userId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-
-            UserEntity userEntity = new UserEntity();
-            userEntity.setId(userId);
-            userEntity = this.userService.getUser(userEntity);
-
-            if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("没有用户");
-            }else{
-                responseJson.setCode(ResponseCode.Code_200);
-                userEntity.setLoginPwd(null);
-                responseJson.setData(userEntity);
-            }
-
-            return gson.toJson(responseJson);
+            return AdminUserAndUserUtils.getUser(this.userService,userId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -301,36 +285,7 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
     public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-
-            Integer userDtoId = userDto.getId();
-
-            String check = newOrUpdateUserCheck(userDto,currentCompanyId);
-
-            if(userDtoId == null || userDtoId < 1){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("用户id缺失");
-            }
-
-            if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
-
-            UserEntity userEntity = this.userService.updateUser(userDto,currentUserId);
-
-            if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("更新失败");
-            }else{
-
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("更新成功");
-            }
-
-            return gson.toJson(responseJson);
+            return AdminUserAndUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -341,23 +296,9 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
     //@Permission(code = "user.userController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复用户"
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
-    public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            String ids = params.get("ids");
-            String type = params.get("type");
-            if(ids == null || type == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("参数不全");
-                return gson.toJson(responseJson);
-            }else{
-                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
-                this.userService.batchBan(list,type,currentUserId);
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("更新成功");
-                return gson.toJson(responseJson);
-            }
+            return AdminUserAndUserUtils.batchBan(this.userService,params,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -368,63 +309,9 @@ public class UserController extends BaseController{
             method= RequestMethod.GET)
     //@Permission(code = "user.userController.usersPage",name = "条件搜索用户",description ="条件搜索用户"
     //        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
-    public String usersPage(NativeWebRequest request) throws Exception {
+    public String usersPage(NativeWebRequest request,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            Map<String,Object> paramMap = new HashMap<String, Object>();
-
-            String status = request.getParameter("status");
-            if(status !=null && StringUtils.isNotEmpty(status)) {
-                paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
-            }
-            String departmentId = request.getParameter("departmentId");
-            if(departmentId !=null && StringUtils.isNotEmpty(departmentId)) {
-                paramMap.put("departmentId", Integer.valueOf(NumberUtils.toInt(departmentId, 0)));
-            }
-            String companyId = request.getParameter("companyId");
-            if(companyId !=null && StringUtils.isNotEmpty(companyId)) {
-                paramMap.put("companyId", Integer.valueOf(NumberUtils.toInt(companyId, 0)));
-            }
-
-            String phone = request.getParameter("phone");
-            if(phone !=null && StringUtils.isNotEmpty(phone)) {
-                paramMap.put("phone", phone);
-            }
-            String email = request.getParameter("email");
-            if(email !=null && StringUtils.isNotEmpty(email)) {
-                paramMap.put("email", email);
-            }
-            String userName = request.getParameter("userName");
-            if(userName !=null && StringUtils.isNotEmpty(userName)) {
-                paramMap.put("userName", userName);
-            }
-            String beginCreateTime = request.getParameter("beginCreateTime");
-            if(beginCreateTime !=null && StringUtils.isNotEmpty(beginCreateTime)) {
-                paramMap.put("beginCreateTime", beginCreateTime);
-            }
-            String endCreateTime = request.getParameter("endCreateTime");
-            if(endCreateTime !=null && StringUtils.isNotEmpty(endCreateTime)) {
-                paramMap.put("endCreateTime", endCreateTime);
-            }
-
-            Integer currentPage = Integer.valueOf(NumberUtils.toInt(request.getParameter("currentPage"), 1));
-            Integer pageSize = Integer.valueOf(NumberUtils.toInt(request.getParameter("pageSize"), 10));
-
-            paramMap.put("start", (currentPage-1)*pageSize);
-            paramMap.put("pageSize", pageSize);
-
-
-            Map<String,Object> data = new HashMap<>();
-            List<UserDto> items = this.userService.usersPage(paramMap);
-            Integer total = this.userService.usersPageCount(paramMap);
-            data.put("items",items);
-            data.put("total",total==null?0:total);
-            responseJson.setData(data);
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("搜索成功");
-
-            return gson.toJson(responseJson);
+            return AdminUserAndUserUtils.usersPage(this.userService,request,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -448,42 +335,9 @@ public class UserController extends BaseController{
     }
 
 
-    private String newOrUpdateUserCheck(UserDto userDto ,Integer currentCompanyId) throws Exception{
-        if(userDto == null)return "空信息";
-
-
-
-        if (StringUtils.isBlank(userDto.getPhone())
-                || StringUtils.isEmpty(userDto.getPhone())
-                ||!CommonUtils.isMobileNO(userDto.getPhone())
-                ) return "手机号码有误";
-
-
-        if (StringUtils.isBlank(userDto.getEmail())
-                || StringUtils.isEmpty(userDto.getEmail())
-                ||!CommonUtils.isEmail(userDto.getEmail())
-                ) return "Email地址有误";
-
-
-        if (StringUtils.isBlank(userDto.getUserName())
-                || StringUtils.isEmpty(userDto.getUserName())
-                ) return "用户名有误";
-
-
-        if (userDto.getUserName().indexOf(",")!=-1
-                || userDto.getUserName().indexOf(" ")!=-1
-                ) return "用户名有空格或,号";
-
-
-        String result = this.userService.checkUserExist(userDto,currentCompanyId);
-        if(StringUtils.isNotEmpty(result) && StringUtils.isNotBlank(result)
-                ) return result;
-
-
-
-
-        return null;
-    }
+//    private String newOrUpdateUserCheck(UserDto userDto ,Integer currentCompanyId) throws Exception{
+//
+//    }
     @Override
     public Logger getLOG(){
         return this.LOG;

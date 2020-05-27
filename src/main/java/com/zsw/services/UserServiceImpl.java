@@ -114,27 +114,43 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception{
-        int falg =0;
+    public void batchBan(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId) throws Exception{
+        int status =0;
         List<Integer> managerIds = null;
         if( UserServiceStaticWord.User_Status_ban.equals(type)){
-            falg = 1;
+            status = 1;
             Map<String, Object > param = new HashMap<>();
             param.put("userIds",ids);
             managerIds = this.companyMapper.checkCompanyManagerIds(param);
 
         }
-
-        List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
-
-        for (UserEntity item : list){
-            if(item.getId() != currentUserId
-                    && (managerIds != null && !managerIds.contains(item.getId()))){
-                item.setStatus(falg);
-                item.setUpdateUser(currentUserId);
-                item.setUpdateTime(new Timestamp(new Date().getTime()));
+        if(managerIds != null && managerIds.size() >0){
+            Iterator<Integer> it = ids.iterator();
+            while(it.hasNext()) {
+                Integer value = it.next();
+                if (managerIds.contains(value)) {
+                    it.remove();
+                }
             }
         }
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("currentUserId",currentUserId);
+        paramMap.put("status",status);
+        if(currentCompanyId != null && currentCompanyId > 0)
+            paramMap.put("companyId",currentCompanyId);
+        paramMap.put("ids",ids);
+
+
+//        List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
+//
+//        for (UserEntity item : list){
+//            if(item.getId() != currentUserId
+//                    && (managerIds != null && !managerIds.contains(item.getId()))){
+//                item.setStatus(status);
+//                item.setUpdateUser(currentUserId);
+//                item.setUpdateTime(new Timestamp(new Date().getTime()));
+//            }
+//        }
     }
 
     @Override
@@ -161,6 +177,13 @@ public class UserServiceImpl implements IUserService,Serializable{
 
         paramMap.put("companyId",currentCompanyId);
         if(userDto.getId() != null && userDto.getId() >0 ){
+            Map<String, Object> paramMapTemp = new HashMap<>();
+            paramMapTemp.put("companyId",currentCompanyId);
+            paramMapTemp.put("userId",userDto.getId());
+            Integer resultTemp = this.userMapper.usersPageCount(paramMapTemp);
+            if(resultTemp == null || resultTemp < 1){
+                return "更新错误,当前公司下没该用户";
+            }
             paramMap.put("notUserId",userDto.getId());
         }
 
