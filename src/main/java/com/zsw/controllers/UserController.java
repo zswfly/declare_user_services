@@ -6,6 +6,7 @@ import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
+import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
 import com.zsw.services.IUserService;
@@ -121,6 +122,91 @@ public class UserController extends BaseController{
             return result;
         }
 
+    }
+
+    @RequestMapping(value=UserStaticURLUtil.userController_selectUserCompany,
+            method= RequestMethod.GET)
+    public Result<HashMap<String, Object>> selectUserCompany(Integer companyId, @RequestHeader("userId") Integer currentUserId,@RequestHeader("rememberToken") String rememberToken) throws Exception {
+        Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
+        try {
+            if (companyId == null) {
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("选择公司为空");
+                return result;
+            }
+            if (currentUserId == null) {
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("用户没有登录");
+                return result;
+            }
+            if (StringUtils.isBlank(rememberToken) || StringUtils.isEmpty(rememberToken)) {
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("rememberToken有问题");
+                return result;
+            }
+            Map<String, Object> listSimpleCompanyDtoParam = new HashMap<>();
+            listSimpleCompanyDtoParam.put("companyId",companyId);
+            listSimpleCompanyDtoParam.put("userId",currentUserId);
+            List<SimpleCompanyDto> listSimpleCompanyDto = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParam);
+            if (listSimpleCompanyDto == null  ) {
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("当前用户没有该公司权限");
+                return result;
+            } else if(listSimpleCompanyDto.size() != 1){
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("数据错误,请联系工作人员");
+                return result;
+            }else if(listSimpleCompanyDto.get(0).getStatus() == CommonStaticWord.Ban_Status_1){
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("该公司已禁用或已过使用期限");
+                return result;
+            }else{
+                HashMap<String,Object> data = new HashMap<>();
+                data.put("userId",currentUserId);
+                data.put("companyId",companyId);
+                data.put("rememberToken",rememberToken);
+                data.put("hostUrl",listSimpleCompanyDto.get(0).getUrl() );
+                result.setData(data);
+                result.setCode(ResponseCode.Code_200);
+                return result;
+            }
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            result.setCode(ResponseCode.Code_500);
+            result.setMessage("系统错误");
+            return result;
+        }
+    }
+
+    @RequestMapping(value=UserStaticURLUtil.userController_getUserCompanys,
+            method= RequestMethod.GET)
+//    @Permission(code = "user.userController.getUserCompanys",name = "获取当前用户的公司",description ="获取当前用户所属的所有公司"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUserCompanys)
+    public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+            Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
+            listSimpleCompanyDtoParams.put("userId",currentUserId+"");
+            List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
+            if(simpleCompanyDtoList == null || simpleCompanyDtoList.size() < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("该用户没有公司数据");
+            }else{
+                for(SimpleCompanyDto dto : simpleCompanyDtoList){
+                    dto.setUrl(null);
+                }
+                HashMap<String,Object> data = new HashMap<>();
+                data.put("items",simpleCompanyDtoList);
+                responseJson.setData(data);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("成功");
+            }
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson();
+        }
     }
 
     @RequestMapping(value=UserStaticURLUtil.userController_loginOut,

@@ -44,70 +44,18 @@ public class CompanyController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(CompanyController.class);
 
 
-    @RequestMapping(value=UserStaticURLUtil.companyController_selectUserCompany,
-            method= RequestMethod.GET)
-    public Result<HashMap<String, Object>> selectUserCompany(Integer companyId, @RequestHeader("userId") Integer currentUserId,@RequestHeader("rememberToken") String rememberToken) throws Exception {
-        Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
-        try {
-            if (companyId == null) {
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("选择公司为空");
-                return result;
-            }
-            if (currentUserId == null) {
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("用户没有登录");
-                return result;
-            }
-            if (StringUtils.isBlank(rememberToken) || StringUtils.isEmpty(rememberToken)) {
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("rememberToken有问题");
-                return result;
-            }
-            Map<String, Object> listSimpleCompanyDtoParam = new HashMap<>();
-            listSimpleCompanyDtoParam.put("companyId",companyId);
-            listSimpleCompanyDtoParam.put("userId",currentUserId);
-            List<SimpleCompanyDto> listSimpleCompanyDto = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParam);
-            if (listSimpleCompanyDto == null  ) {
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("当前用户没有该公司权限");
-                return result;
-            } else if(listSimpleCompanyDto.size() != 1){
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("数据错误,请联系工作人员");
-                return result;
-            }else if(listSimpleCompanyDto.get(0).getStatus() == CommonStaticWord.Ban_Status_1){
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("该公司已禁用或已过使用期限");
-                return result;
-            }else{
-                HashMap<String,Object> data = new HashMap<>();
-                data.put("userId",currentUserId);
-                data.put("companyId",companyId);
-                data.put("rememberToken",rememberToken);
-                data.put("hostUrl",listSimpleCompanyDto.get(0).getUrl() );
-                result.setData(data);
-                result.setCode(ResponseCode.Code_200);
-                return result;
-            }
-        }catch (Exception e){
-            CommonUtils.ErrorAction(LOG,e);
-            result.setCode(ResponseCode.Code_500);
-            result.setMessage("系统错误");
-            return result;
-        }
-    }
+
 
     @RequestMapping(value=UserStaticURLUtil.companyController_newCompany,
             method= RequestMethod.POST)
-    //    @Permission(code = "user.companyController.newCompany",name = "新增公司",description ="新增公司"
+    //    @AdminPermission(code = "user.companyController.newCompany",name = "新增公司",description ="新增公司"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_newCompany)
-    public String newCompany(CompanyDto companyDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String newCompany(CompanyDto companyDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
-            this.companyService.newCompany(companyDto,currentUserId);
+            this.companyService.newCompany(companyDto,currentAdminUserId);
 
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("新增成功");
@@ -121,7 +69,7 @@ public class CompanyController extends BaseController {
 
 //    @RequestMapping(value=UserStaticURLUtil.companyController_deleteCompany,
 //            method= RequestMethod.DELETE)
-//    //    @Permission(code = "user.companyController.deleteCompany",name = "删除公司",description ="删除(禁用)公司"
+//    //    @AdminPermission(code = "user.companyController.deleteCompany",name = "删除公司",description ="删除(禁用)公司"
 ////            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_deleteCompany)
 //    public String deleteCompany(Integer companyId,@RequestHeader("userId") Integer currentUserId) throws Exception {
 //        try {
@@ -143,14 +91,14 @@ public class CompanyController extends BaseController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_updateCompany,
             method= RequestMethod.PUT)
-    //    @Permission(code = "user.companyController.updateCompany",name = "更新公司",description ="更新公司"
+    //    @AdminPermission(code = "user.companyController.updateCompany",name = "更新公司",description ="更新公司"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_updateCompany)
-    public String updateCompany(CompanyDto companyDto,@RequestHeader("userId") Integer currentUserId) throws Exception {
+    public String updateCompany(CompanyDto companyDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
-            this.companyService.updateCompany(companyDto,currentUserId);
+            this.companyService.updateCompany(companyDto,currentAdminUserId);
 
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("更新成功");
@@ -165,7 +113,7 @@ public class CompanyController extends BaseController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_getCompany+"/{companyId}",
             method= RequestMethod.GET)
-//    @Permission(code = "user.companyController.getCompany",name = "获取公司",description ="根据id获取公司"
+//    @AdminPermission(code = "user.companyController.getCompany",name = "获取公司",description ="根据id获取公司"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_getCompany)
     public String getCompany(@PathVariable Integer companyId) throws Exception {
         try {
@@ -197,7 +145,7 @@ public class CompanyController extends BaseController {
 
     @RequestMapping(value=UserStaticURLUtil.companyController_companysPage,
             method= RequestMethod.GET)
-//    @Permission(code = "user.companyController.companysPage",name = "搜索公司",description ="搜索公司"
+//    @AdminPermission(code = "user.companyController.companysPage",name = "搜索公司",description ="搜索公司"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_companysPage)
     public String companysPage(NativeWebRequest request) throws Exception {
         try {
@@ -265,36 +213,7 @@ public class CompanyController extends BaseController {
 
 
 
-    @RequestMapping(value=UserStaticURLUtil.companyController_getUserCompanys,
-            method= RequestMethod.GET)
-//    @Permission(code = "user.companyController.getUserCompanys",name = "获取当前用户的公司",description ="获取当前用户所属的所有公司"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_getUserCompanys)
-    public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
-        try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
-            listSimpleCompanyDtoParams.put("userId",currentUserId+"");
-            List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
-            if(simpleCompanyDtoList == null || simpleCompanyDtoList.size() < 1){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("该用户没有公司数据");
-            }else{
-                for(SimpleCompanyDto dto : simpleCompanyDtoList){
-                    dto.setUrl(null);
-                }
-                HashMap<String,Object> data = new HashMap<>();
-                data.put("items",simpleCompanyDtoList);
-                responseJson.setData(data);
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("成功");
-            }
-            return gson.toJson(responseJson);
-        }catch (Exception e){
-            CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
-        }
-    }
+
 
 
 
