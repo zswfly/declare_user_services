@@ -9,10 +9,7 @@ import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.DepartmentDto;
 import com.zsw.services.ICompanyService;
 import com.zsw.services.IDepartmentService;
-import com.zsw.utils.CommonStaticWord;
-import com.zsw.utils.CommonUtils;
-import com.zsw.utils.ResponseCode;
-import com.zsw.utils.UserStaticURLUtil;
+import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,23 +50,23 @@ public class DepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.companyController_newDepartment)
     public String newDepartment(DepartmentDto departmentDto, @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            return OperationDepartmentUtils.newDepartment(this.departmentService,departmentDto,currentUserId,currentCompanyId);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
 
 
-            String check = this.newOrUpdateDepartmentCheck(departmentDto,currentCompanyId);
-            if(StringUtils.isNotEmpty(check) && StringUtils.isNotBlank(check)){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
 
-            this.departmentService.newDepartment(departmentDto,currentUserId,currentCompanyId);
 
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("新增成功");
-
-            return gson.toJson(responseJson);
+    @RequestMapping(value=UserStaticURLUtil.departmentController_updateDepartment,
+            method= RequestMethod.PUT)
+    //    @Permission(code = "user.departmentController.updateDepartment",name = "更新部门",description ="更新部门"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_updateDepartment)
+    public String updateDepartment(DepartmentDto departmentDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+        try {
+            return OperationDepartmentUtils.updateDepartment(this.departmentService,departmentDto,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -82,57 +79,12 @@ public class DepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_updateStatusDepartment)
     public String updateStatusDepartment(@RequestParam Map<String, String> params ,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            String ids = params.get("ids");
-            String type = params.get("type");
-            if(ids == null || type == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("参数不全");
-                return gson.toJson(responseJson);
-            }else{
-                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
-                this.departmentService.updateStatusDepartment(list,type,currentUserId,currentCompanyId);
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("更新成功");
-                return gson.toJson(responseJson);
-            }
+            return OperationDepartmentUtils.updateStatusDepartment(this.departmentService,params,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
         }
     }
-
-
-    @RequestMapping(value=UserStaticURLUtil.departmentController_updateDepartment,
-            method= RequestMethod.PUT)
-    //    @Permission(code = "user.departmentController.updateDepartment",name = "更新部门",description ="更新部门"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_updateDepartment)
-    public String updateDepartment(DepartmentDto departmentDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
-        try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-
-
-            String check = this.newOrUpdateDepartmentCheck(departmentDto,currentCompanyId);
-            if(StringUtils.isNotEmpty(check) && StringUtils.isNotBlank(check)){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
-
-            this.departmentService.updateDepartment(departmentDto,currentUserId,currentCompanyId);
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("更新成功");
-
-            return gson.toJson(responseJson);
-        }catch (Exception e){
-            CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
-        }
-    }
-
 
     @RequestMapping(value=UserStaticURLUtil.departmentController_getDepartment+"/{departmentId}",
             method= RequestMethod.GET)
@@ -140,24 +92,7 @@ public class DepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_getDepartment)
     public String getDepartment(@PathVariable Integer departmentId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-
-            DepartmentEntity departmentEntity = new DepartmentEntity();
-            departmentEntity.setId(departmentId);
-            departmentEntity.setCompanyId(currentCompanyId);
-
-            departmentEntity = this.departmentService.getDepartment(departmentEntity);
-
-            if(departmentEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("没该id部门");
-            }else{
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setData(departmentEntity);
-            }
-
-            return gson.toJson(responseJson);
+            return OperationDepartmentUtils.getDepartment(this.departmentService , departmentId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -173,51 +108,7 @@ public class DepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.departmentController + UserStaticURLUtil.departmentController_departmentsPage)
     public String departmentsPage(NativeWebRequest request,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            Map<String,Object> paramMap = new HashMap<String, Object>();
-
-            paramMap.put("companyId",currentCompanyId);
-
-            String status = request.getParameter("status");
-            if(status !=null && StringUtils.isNotEmpty(status)) {
-                paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
-            }
-            String departmentName = request.getParameter("departmentName");
-            if(departmentName !=null && StringUtils.isNotEmpty(departmentName)) {
-                paramMap.put("departmentName", departmentName);
-            }
-
-            String mnemonicCode = request.getParameter("mnemonicCode");
-            if(mnemonicCode !=null && StringUtils.isNotEmpty(mnemonicCode)) {
-                paramMap.put("mnemonicCode", mnemonicCode);
-            }
-
-            String beginCreateTime = request.getParameter("beginCreateTime");
-            if(beginCreateTime !=null && StringUtils.isNotEmpty(beginCreateTime)) {
-                paramMap.put("beginCreateTime", beginCreateTime);
-            }
-            String endCreateTime = request.getParameter("endCreateTime");
-            if(endCreateTime !=null && StringUtils.isNotEmpty(endCreateTime)) {
-                paramMap.put("endCreateTime", endCreateTime);
-            }
-
-            Integer currentPage = Integer.valueOf(NumberUtils.toInt(request.getParameter("currentPage"), 1));
-            Integer pageSize = Integer.valueOf(NumberUtils.toInt(request.getParameter("pageSize"), 10));
-
-            paramMap.put("start", (currentPage-1)*pageSize);
-            paramMap.put("pageSize", pageSize);
-
-            Map<String,Object> data = new HashMap<>();
-            List<DepartmentEntity> items = this.departmentService.listDepartmentEntity(paramMap);
-            Integer total = this.departmentService.listDepartmentEntityCount(paramMap);
-            data.put("items",items);
-            data.put("total",total==null?0:total);
-            responseJson.setData(data);
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("搜索成功");
-
-            return gson.toJson(responseJson);
+            return OperationDepartmentUtils.departmentsPage(this.departmentService ,request, currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();

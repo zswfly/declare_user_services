@@ -39,7 +39,8 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         BeanUtils.copyProperties(departmentDto,departmentEntity);
         departmentEntity.setId(null);
         departmentEntity.setStatus(CommonStaticWord.Normal_Status_0);
-        departmentEntity.setCompanyId(currentCompanyId);
+        if(currentCompanyId != null && currentCompanyId > 0)
+            departmentEntity.setCompanyId(currentCompanyId);
         departmentEntity.setMnemonicCode(PinyinUtils.getFirstSpell(departmentEntity.getName()));
         departmentEntity.setCreateUser(currentUserId);
         departmentEntity.setCreateTime(new Timestamp(new Date().getTime()));
@@ -61,9 +62,15 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         }
 
         for(DepartmentEntity item : list){
-            item.setStatus(status);
-            item.setUpdateUser(currentUserId);
-            item.setUpdateTime(new Timestamp(new Date().getTime()));
+            if(currentCompanyId == null
+                    || currentCompanyId < 1
+                    || (currentCompanyId > 0 && currentCompanyId == item.getCompanyId())
+                    ){
+                item.setStatus(status);
+                item.setUpdateUser(currentUserId);
+                item.setUpdateTime(new Timestamp(new Date().getTime()));
+            }
+
         }
 
     }
@@ -77,15 +84,15 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         }
         DepartmentEntity param = new DepartmentEntity();
         param.setId(departmentDto.getId());
-        param.setCompanyId(currentCompanyId);
+        if(currentCompanyId != null && currentCompanyId > 0)
+            param.setCompanyId(currentCompanyId);
         DepartmentEntity departmentEntity = this.dbService.get(param);
 
         if(departmentEntity == null) throw new Exception("没有该公司id");
 
         BeanUtils.copyProperties(departmentDto,departmentEntity);
-
-        departmentEntity.setCompanyId(currentCompanyId);
-        //departmentEntity.setMnemonicCode(PinyinUtils.getFirstSpell(departmentEntity.getName()));
+        if(currentCompanyId != null && currentCompanyId > 0)
+            departmentEntity.setCompanyId(currentCompanyId);
         departmentEntity.setUpdateUser(currentUserId);
         departmentEntity.setUpdateTime(new Timestamp(new Date().getTime()));
 

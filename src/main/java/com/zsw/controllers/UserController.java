@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,7 +329,7 @@ public class UserController extends BaseController{
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = AdminUserAndUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId);
+            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -356,7 +355,7 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
     public String getUser(@PathVariable Integer userId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return AdminUserAndUserUtils.getUser(this.userService,userId,currentCompanyId);
+            return OperationUserUtils.getUser(this.userService,userId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -371,7 +370,7 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
     public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return AdminUserAndUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId);
+            return OperationUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -384,7 +383,7 @@ public class UserController extends BaseController{
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_batchBan)
     public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return AdminUserAndUserUtils.batchBan(this.userService,params,currentUserId,currentCompanyId);
+            return OperationUserUtils.batchBan(this.userService,params,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -397,7 +396,7 @@ public class UserController extends BaseController{
     //        ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_usersPage)
     public String usersPage(NativeWebRequest request,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return AdminUserAndUserUtils.usersPage(this.userService,request,currentCompanyId);
+            return OperationUserUtils.usersPage(this.userService,request,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();

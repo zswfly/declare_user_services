@@ -2,14 +2,11 @@ package com.zsw.controllers;
 
 import com.google.gson.Gson;
 import com.zsw.controller.BaseController;
-import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +43,7 @@ public class AdminOperationUserController extends BaseController {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
             //TODO 公司id
-            String check = AdminUserAndUserUtils.newOrUpdateUserCheck(this.userService,userDto,companyId);
+            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,companyId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -75,7 +69,7 @@ public class AdminOperationUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_getUser)
     public String getUser(@PathVariable Integer userId) throws Exception {
         try {
-            return AdminUserAndUserUtils.getUser(this.userService,userId,0);
+            return OperationUserUtils.getUser(this.userService,userId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -86,10 +80,10 @@ public class AdminOperationUserController extends BaseController {
             method= RequestMethod.PUT)
 //    @AdminPermission(code = "user.adminOperationUserController.updateUser",name = "更新用户",description ="更新用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_updateUser)
-    public String updateUser(UserDto userDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
+    public String updateUser(UserDto userDto,@RequestHeader("adminUserId") Integer currentAdminUserId, Integer companyId) throws Exception {
         try {
             //TODO  公司id
-            return AdminUserAndUserUtils.updateUser(this.userService,userDto,0,0);
+            return OperationUserUtils.updateUser(this.userService,userDto,0,companyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -102,7 +96,7 @@ public class AdminOperationUserController extends BaseController {
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_batchBan)
     public String batchBan(@RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            return AdminUserAndUserUtils.batchBan(this.userService,params,0,0);
+            return OperationUserUtils.batchBan(this.userService,params,0,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
@@ -114,7 +108,7 @@ public class AdminOperationUserController extends BaseController {
     //        ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController)
     public String usersPage(NativeWebRequest request) throws Exception {
         try {
-            return AdminUserAndUserUtils.usersPage(this.userService,request,null);
+            return OperationUserUtils.usersPage(this.userService,request,null);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();

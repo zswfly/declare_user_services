@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by zhangshaowei on 2020/5/27.
  */
-public class AdminUserAndUserUtils {
+public class OperationUserUtils {
     public static String newOrUpdateUserCheck(IUserService userService, UserDto userDto , Integer currentCompanyId) throws Exception{
         if(userDto == null)return "空信息";
 
