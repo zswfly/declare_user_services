@@ -176,7 +176,7 @@ public class CompanyController extends BaseController {
             CompanyEntity companyEntity = new CompanyEntity();
             companyEntity.setId(companyId);
             companyEntity = this.companyService.getCompany(companyEntity);
-
+            companyEntity.setUrl(null);
             if(companyEntity == null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage("该id没公司");
@@ -246,6 +246,9 @@ public class CompanyController extends BaseController {
 
             Map<String,Object> data = new HashMap<>();
             List<CompanyEntity> items = this.companyService.listCompanyEntity(paramMap);
+            for(CompanyEntity temp : items){
+                temp.setUrl(null);
+            }
             Integer total = this.companyService.listCompanyEntityCount(paramMap);
             data.put("items",items);
             data.put("total",total==null?0:total);

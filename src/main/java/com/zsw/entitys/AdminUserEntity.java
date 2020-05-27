@@ -3,26 +3,29 @@ package com.zsw.entitys;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
- * Created by zhangshaowei on 2020/5/21.
+ * Created by zhangshaowei on 2020/4/24.
  */
 @Entity
-@Table(name = "department", schema = "user")
-public class DepartmentEntity extends IDEntity{
+@Table(name = "admin_user", schema = "user")
+public class AdminUserEntity extends IDEntity {
+
+
     private Integer id;
-    private String name;
-    private Integer companyId;
-    private Integer parentId;
+    private String userName;
+    private String loginPwd;
     private Integer status;
     private Timestamp createTime;
     private Integer createUser;
     private Timestamp updateTime;
     private Integer updateUser;
-    private String mnemonicCode;
+    private String phone;
+    private String email;
+    private String avatar;
+    private String rememberToken;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -38,36 +41,27 @@ public class DepartmentEntity extends IDEntity{
     @Basic
     @NotNull
     @Length(max = 80)
-    @Column(name = "name", unique = false,  nullable = false, insertable = true, updatable = true, length = 80)
-    public String getName() {
-        return name;
+    @Column(name = "user_name", unique = false,  nullable = false, insertable = true, updatable = true, length = 80)
+    public String getUserName() {
+        return userName;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Basic
-    @Max(9999999999L)
-    @Column(name = "parent_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-    public Integer getParentId() {
-        return parentId;
+    //@Column(name = "login_pwd", nullable = false, length = 32)
+    @NotNull
+    @Length(max = 100)
+    @Column(name = "login_pwd", unique = false,  nullable = false, insertable = true, updatable = true, length = 100)
+    public String getLoginPwd() {
+        return loginPwd;
     }
 
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
+    public void setLoginPwd(String loginPwd) {
+        this.loginPwd = loginPwd;
     }
-
-    @Basic
-    @Max(9999999999L)
-    @Column(name = "company_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
 
     @Basic
     //@Column(name = "status", nullable = true)
@@ -77,10 +71,10 @@ public class DepartmentEntity extends IDEntity{
         return status;
     }
 
-
     public void setStatus(Integer status) {
         this.status = status;
     }
+
     @Basic
     //@Column(name = "create_time", nullable = false)
     @Column(name = "create_time", nullable = true, unique = false, insertable = true, updatable = false)
@@ -94,8 +88,6 @@ public class DepartmentEntity extends IDEntity{
 
     @Basic
     //@Column(name = "create_user", nullable = false)
-//    @NotNull
-//    @Min(1L)
     @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = true)
     public Integer getCreateUser() {
         return createUser;
@@ -128,15 +120,53 @@ public class DepartmentEntity extends IDEntity{
     }
 
     @Basic
-    @Length(max = 255)
-    @Column(name = "mnemonic_code", unique = false,  nullable = true, insertable = true, updatable = true, length = 255)
-    public String getMnemonicCode() {
-        return mnemonicCode;
+    //@Column(name = "phone", nullable = false, length = 20)
+    @NotNull
+    @Length(max = 30)
+    @Column(name = "phone", unique = false,  nullable = false, insertable = true, updatable = true, length = 30)
+    public String getPhone() {
+        return phone;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public void setMnemonicCode(String mnemonicCode) {
-        this.mnemonicCode = mnemonicCode;
+    @Basic
+    //@Column(name = "email", nullable = false, length = 20)
+    @NotNull
+    @Length(max = 70)
+    @Column(name = "email", unique = false,  nullable = false, insertable = true, updatable = true, length = 70)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Basic
+    //@Column(name = "avatar", nullable = true, length = 50)
+    @Length(max = 50)
+    @Column(name = "avatar", unique = false,  nullable = true, insertable = true, updatable = true, length = 50)
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    @Basic
+    //@Column(name = "remember_token", nullable = true, length = 100)
+    @Length(max = 100)
+    @Column(name = "remember_token", unique = false,  nullable = true, insertable = true, updatable = true, length = 100)
+    public String getRememberToken() {
+        return rememberToken;
+    }
+
+    public void setRememberToken(String rememberToken) {
+        this.rememberToken = rememberToken;
     }
 
     @Override
@@ -144,17 +174,21 @@ public class DepartmentEntity extends IDEntity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DepartmentEntity that = (DepartmentEntity) o;
+        AdminUserEntity that = (AdminUserEntity) o;
 
         if (id != that.id) return false;
-        if (companyId != that.companyId) return false;
         if (createUser != that.createUser) return false;
         if (updateUser != that.updateUser) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (userName != null ? !userName.equals(that.userName) : that.userName != null) return false;
+        if (loginPwd != null ? !loginPwd.equals(that.loginPwd) : that.loginPwd != null) return false;
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
-        if (mnemonicCode != null ? !mnemonicCode.equals(that.mnemonicCode) : that.mnemonicCode != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (avatar != null ? !avatar.equals(that.avatar) : that.avatar != null) return false;
+        if (rememberToken != null ? !rememberToken.equals(that.rememberToken) : that.rememberToken != null)
+            return false;
 
         return true;
     }
@@ -162,14 +196,17 @@ public class DepartmentEntity extends IDEntity{
     @Override
     public int hashCode() {
         Integer result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + companyId;
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (loginPwd != null ? loginPwd.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + createUser;
         result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
         result = 31 * result + updateUser;
-        result = 31 * result + (mnemonicCode != null ? mnemonicCode.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
+        result = 31 * result + (rememberToken != null ? rememberToken.hashCode() : 0);
         return result;
     }
 }

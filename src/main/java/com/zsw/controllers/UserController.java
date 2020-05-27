@@ -54,7 +54,6 @@ public class UserController extends BaseController{
 
             UserEntity userEntity = null;
 
-            //ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
 
             if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
