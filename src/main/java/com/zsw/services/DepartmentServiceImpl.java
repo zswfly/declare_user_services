@@ -87,7 +87,8 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         if(currentCompanyId != null && currentCompanyId > 0)
             param.setCompanyId(currentCompanyId);
         DepartmentEntity departmentEntity = this.dbService.get(param);
-
+        departmentDto.setCreateUser(departmentEntity.getCreateUser());
+        departmentDto.setCreateTime(departmentEntity.getCreateTime());
         if(departmentEntity == null) throw new Exception("没有该公司id");
 
         BeanUtils.copyProperties(departmentDto,departmentEntity);
