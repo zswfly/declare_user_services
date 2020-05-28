@@ -161,4 +161,13 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
 
         return stringBuilder.toString();
     }
+
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void saveDepartmentUserEntity(DepartmentUserEntity departmentUserEntity)throws Exception {
+        this.dbService.delete(departmentUserEntity);
+    }
+
+
+
 }

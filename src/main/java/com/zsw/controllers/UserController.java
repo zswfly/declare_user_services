@@ -325,7 +325,7 @@ public class UserController extends BaseController{
             method= RequestMethod.POST)
 //    @Permission(code = "user.userController.newUser",name = "新增用户",description ="新增用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_newUser)
-    public String newUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+    public String newUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId,Integer departmentId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
@@ -337,7 +337,7 @@ public class UserController extends BaseController{
             }
 
 
-            this.userService.newUser(userDto,currentUserId);
+            this.userService.newUser(userDto,currentUserId,departmentId);
 
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("新增成功");

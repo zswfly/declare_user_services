@@ -3,6 +3,7 @@ package com.zsw.controllers;
 import com.google.gson.Gson;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.AdminUserEntity;
+import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
@@ -142,7 +143,7 @@ public class AdminUserController extends BaseController {
     }
 
 
-    @RequestMapping(value=UserStaticURLUtil.userController_checkRememberToken,
+    @RequestMapping(value=UserStaticURLUtil.adminUserController_checkRememberToken,
             method= RequestMethod.POST)
     public Boolean checkRememberToken( @RequestBody Map<String,String> args) throws Exception {
         Integer userId = Integer.valueOf(NumberUtils.toInt(args.get("adminUserId"), 0));
@@ -171,6 +172,32 @@ public class AdminUserController extends BaseController {
         return Boolean.FALSE;
     }
 
+    @RequestMapping(value=UserStaticURLUtil.adminUserController_getAdminUser+"/{adminUserId}",
+            method= RequestMethod.GET)
+//    @AdminPermission(code = "user.adminUserController.getAdminUser",name = "获取用户",description ="根据id获取用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminUserController + UserStaticURLUtil.adminUserController_getAdminUser)
+    public String getAdminUser(@PathVariable Integer adminUserId) throws Exception {
+        try {
+            Gson gson = new Gson();
+            ResponseJson responseJson = new ResponseJson();
+
+            AdminUserEntity adminUserEntity = new AdminUserEntity();
+            adminUserEntity.setId(adminUserId);
+
+            if(adminUserEntity == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("没有后台用户");
+            }else{
+                responseJson.setCode(ResponseCode.Code_200);
+                adminUserEntity.setLoginPwd(null);
+                responseJson.setData(adminUserEntity);
+            }
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson();
+        }
+    }
 
 
 

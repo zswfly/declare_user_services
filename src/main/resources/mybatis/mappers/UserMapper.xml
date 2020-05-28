@@ -169,7 +169,7 @@
     </if>
     <if test="paramMap.ids !=null ">
       AND u.id IN
-      <foreach item="item" collection="ids" separator="," open="(" close=")" index="">
+      <foreach item="item" collection="paramMap.ids" separator="," open="(" close=")" index="">
         #{item, jdbcType=NUMERIC}
       </foreach>
     </if>

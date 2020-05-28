@@ -3,6 +3,7 @@ package com.zsw.services;
 import com.zsw.daos.CompanyMapper;
 import com.zsw.daos.UserMapper;
 import com.zsw.entitys.CompanyEntity;
+import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
@@ -37,6 +38,10 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Resource
     private CompanyMapper companyMapper;
 
+
+    @Autowired
+    private IDepartmentService departmentService;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void updateRememberToken(Integer userId, String rememberToken) throws Exception {
@@ -64,7 +69,9 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public void newUser(UserDto userDto, Integer currentUserId)throws Exception {
+    public void newUser(UserDto userDto, Integer currentUserId,Integer departmentId)throws Exception {
+
+
         //userDto.setId(null);
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto,userEntity);
@@ -75,6 +82,19 @@ public class UserServiceImpl implements IUserService,Serializable{
         userEntity.setUpdateUser(currentUserId);
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
+
+        userEntity = this.dbService.get(userEntity) ;
+
+        DepartmentUserEntity departmentUserEntity = new DepartmentUserEntity();
+        departmentUserEntity.setDepartmentId(departmentId);
+        departmentUserEntity.setUserId(userEntity.getId());
+        departmentUserEntity.setCreateTime(new Timestamp(new Date().getTime()));
+        departmentUserEntity.setCreateTime(new Timestamp(new Date().getTime()));
+        departmentUserEntity.setUpdateUser(currentUserId);
+        departmentUserEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+        this.departmentService.saveDepartmentUserEntity(departmentUserEntity);
+
+
     }
 
     @Override
@@ -172,10 +192,10 @@ public class UserServiceImpl implements IUserService,Serializable{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId) throws Exception {
+    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId, Integer departmentId) throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
 
-        paramMap.put("companyId",currentCompanyId);
+
         if(userDto.getId() != null && userDto.getId() >0 ){
             Map<String, Object> paramMapTemp = new HashMap<>();
             paramMapTemp.put("companyId",currentCompanyId);
@@ -186,6 +206,11 @@ public class UserServiceImpl implements IUserService,Serializable{
             }
             paramMap.put("notUserId",userDto.getId());
         }
+
+        if(departmentId != null && departmentId > 0)
+            paramMap.put("departmentId",departmentId);
+        if(currentCompanyId != null && currentCompanyId > 0)
+            paramMap.put("companyId",currentCompanyId);
 
         paramMap.put("userName",userDto.getUserName());
         paramMap.put("userPhone",userDto.getPhone());

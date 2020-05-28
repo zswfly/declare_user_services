@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by zhangshaowei on 2020/5/27.
  */
 public class OperationUserUtils {
-    public static String newOrUpdateUserCheck(IUserService userService, UserDto userDto , Integer currentCompanyId) throws Exception{
+    public static String newOrUpdateUserCheck(IUserService userService, UserDto userDto , Integer currentCompanyId,Integer departmentId) throws Exception{
         if(userDto == null)return "空信息";
 
 
@@ -46,7 +46,7 @@ public class OperationUserUtils {
                 ) return "用户名有空格或,号";
 
 
-        String result = userService.checkUserExist(userDto,currentCompanyId);
+        String result = userService.checkUserExist(userDto,currentCompanyId, departmentId);
         if(StringUtils.isNotEmpty(result) && StringUtils.isNotBlank(result)
                 ) return result;
 
@@ -88,13 +88,13 @@ public class OperationUserUtils {
 
     }
 
-    public static String updateUser(IUserService userService, UserDto userDto,Integer currentUserId,Integer currentCompanyId)throws Exception{
+    public static String updateUser(IUserService userService, UserDto userDto,Integer currentUserId,Integer currentCompanyId,Integer departmentId)throws Exception{
         ResponseJson responseJson = new ResponseJson();
         Gson gson = new Gson();
 
         Integer userDtoId = userDto.getId();
 
-        String check = newOrUpdateUserCheck(userService,userDto,currentCompanyId);
+        String check = newOrUpdateUserCheck(userService,userDto,currentCompanyId, departmentId);
 
         if(userDtoId == null || userDtoId < 1){
             responseJson.setCode(ResponseCode.Code_Bussiness_Error);

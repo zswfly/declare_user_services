@@ -15,12 +15,12 @@ public interface IUserService  extends IBaseService{
 
     UserEntity getUser(UserEntity param) throws Exception;
     UserEntity resetPassWord(UserEntity param,String resetPassWord) throws Exception;
-    void newUser(UserDto userDto, Integer currentUserId)throws Exception;
+    void newUser(UserDto userDto, Integer currentUserId,Integer departmentId)throws Exception;
     UserEntity updateUser(UserDto userDto, Integer currentUserId) throws Exception;
     void batchBan(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId) throws Exception;
     List<UserEntity> getUsersByIds(List<Integer> ids) throws Exception;
     List<UserDto> usersPage(Map<String, Object> paramMap) throws Exception;
     Integer usersPageCount(Map<String, Object> paramMap) throws Exception;
     void updateRememberToken(Integer userId,String rememberToken)throws Exception;
-    String checkUserExist(UserDto userDto,Integer currentCompanyId)throws Exception;
+    String checkUserExist(UserDto userDto,Integer currentCompanyId,Integer departmentId)throws Exception;
 }

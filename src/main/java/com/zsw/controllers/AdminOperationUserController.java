@@ -38,12 +38,12 @@ public class AdminOperationUserController extends BaseController {
             method= RequestMethod.POST)
 //    @AdminPermission(code = "user.adminOperationUserController.newUser",name = "新增用户",description ="新增用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_newUser)
-    public String newUser(UserDto userDto, @RequestHeader("adminUserId") Integer currentAdminUserId,  Integer companyId) throws Exception {
+    public String newUser(UserDto userDto, @RequestHeader("adminUserId") Integer currentAdminUserId,  Integer departmentId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
             //TODO 公司id
-            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,companyId);
+            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,0, departmentId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -51,7 +51,7 @@ public class AdminOperationUserController extends BaseController {
             }
 
 
-            this.userService.newUser(userDto,0);
+            this.userService.newUser(userDto,0,departmentId);
 
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("新增成功");
@@ -80,10 +80,10 @@ public class AdminOperationUserController extends BaseController {
             method= RequestMethod.PUT)
 //    @AdminPermission(code = "user.adminOperationUserController.updateUser",name = "更新用户",description ="更新用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_updateUser)
-    public String updateUser(UserDto userDto,@RequestHeader("adminUserId") Integer currentAdminUserId, Integer companyId) throws Exception {
+    public String updateUser(UserDto userDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             //TODO  公司id
-            return OperationUserUtils.updateUser(this.userService,userDto,0,companyId);
+            return OperationUserUtils.updateUser(this.userService,userDto,0,0,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();

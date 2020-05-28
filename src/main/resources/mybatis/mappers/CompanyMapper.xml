@@ -158,9 +158,9 @@
         SELECT c.manager_id
         FROM company c
         WHERE 1=1
-        <if test="userIds !=null ">
+        <if test="paramMap.userIds !=null ">
             AND c.manager_id in
-            <foreach item="item" collection="userIds" separator="," open="(" close=")" index="">
+            <foreach item="item" collection="paramMap.userIds" separator="," open="(" close=")" index="">
                 #{item, jdbcType=NUMERIC}
             </foreach>
         </if>

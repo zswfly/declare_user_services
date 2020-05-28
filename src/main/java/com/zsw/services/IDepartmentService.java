@@ -25,5 +25,5 @@ public interface IDepartmentService extends IBaseService{
     void deleteDepartmentUser(List<DepartmentUserEntity> listDepartmentUser,Integer currentUserId)throws Exception;
     String checkDepartmentExist(DepartmentDto departmentDto,Integer currentCompanyId)throws Exception;
 
-
+    void saveDepartmentUserEntity(DepartmentUserEntity departmentUserEntity)throws Exception;
 }
