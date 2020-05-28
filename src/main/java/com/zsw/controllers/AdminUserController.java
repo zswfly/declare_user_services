@@ -155,7 +155,7 @@ public class AdminUserController extends BaseController {
         ResponseEntity<Boolean> checkUserTokenResult  = this.restTemplate.postForEntity(
                 CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                         + CacheStaticURLUtil.redisController
-                        + CacheStaticURLUtil.redisController_checkUserToken
+                        + CacheStaticURLUtil.redisController_checkAdminUserToken
                 ,param,Boolean.class);
         if(checkUserTokenResult != null
                 && checkUserTokenResult.getBody() != null
