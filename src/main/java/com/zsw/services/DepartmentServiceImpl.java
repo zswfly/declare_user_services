@@ -146,7 +146,9 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
             paramMap.put("notDepartmentId",departmentDto.getId());
         }
         Map<String,String> result = this.departmentMapper.checkDepartmentExist(paramMap);
-        String departmentName = result.get("department_name");
+        String departmentName = null;
+        if(result != null)
+             departmentName = result.get("department_name");
         StringBuilder stringBuilder = new StringBuilder();
         if(result != null &&
                 (
