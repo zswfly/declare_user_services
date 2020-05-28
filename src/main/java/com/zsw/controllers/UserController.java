@@ -329,7 +329,7 @@ public class UserController extends BaseController{
         try {
             ResponseJson responseJson = new ResponseJson();
             Gson gson = new Gson();
-            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId);
+            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId,departmentId);
             if(check != null){
                 responseJson.setCode(ResponseCode.Code_Bussiness_Error);
                 responseJson.setMessage(check);
@@ -370,7 +370,7 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
     public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return OperationUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId);
+            return OperationUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson();
