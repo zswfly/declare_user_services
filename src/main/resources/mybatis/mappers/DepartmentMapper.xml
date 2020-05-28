@@ -84,7 +84,7 @@
 
   <select id="checkDepartmentExist" resultType="Map">
     SELECT
-    group_concat(d.`name` separator ',')  AS department_name,
+    group_concat(d.`name` separator ',')  AS department_name
     FROM department d
     LEFT JOIN company c ON d.company_id = c.id
     WHERE 1 = 1
