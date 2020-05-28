@@ -137,6 +137,7 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public String checkDepartmentExist(DepartmentDto departmentDto, Integer currentCompanyId) throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("companyId",currentCompanyId);

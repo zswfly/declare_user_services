@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zsw.daos.PermissionMapper" >
-<!--  <resultMap id="BaseResultMap" type="com.zsw.entitys.PermissionEntity" >
+
+  <resultMap id="PermissionEntityMap" type="com.zsw.entitys.PermissionEntity" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="code" property="code" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="create_user" property="createUser" jdbcType="INTEGER" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="update_user" property="updateUser" jdbcType="INTEGER" />
-  </resultMap>-->
+  </resultMap>
 
   <resultMap id="UserPermissionMap" type="com.zsw.entitys.user.UserPermission" >
     <result column="user_id" property="userId" jdbcType="INTEGER" />
@@ -44,4 +48,66 @@
     </if>
   </select>
 
+  <select id="listPermissionEntity" resultMap="PermissionEntityMap">
+      SELECT
+      p.*
+      FROM permission p
+      WHERE 1=1
+
+    <if test="paramMap.parentId != null and paramMap.parentId > 0">
+      AND p.parent_id = #{paramMap.parentId}
+    </if>
+    <if test="paramMap.code != null and paramMap.code != ''">
+      AND p.`code` LIKE '%${paramMap.code}%'
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND p.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.permissionName != null and paramMap.permissionName != ''">
+      AND p.`name` LIKE '%${paramMap.phone}%'
+    </if>
+
+    <if test="paramMap.beginCreateTime !=null">
+      AND p.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND p.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+    GROUP BY p.id
+
+    <if test="paramMap.start !=null and paramMap.start >= 0
+         and paramMap.pageSize !=null and paramMap.pageSize > 0">
+      LIMIT ${paramMap.start} , ${paramMap.pageSize}
+    </if>
+  </select>
+
+  <select id="listPermissionEntityCount" resultType="Integer">
+    SELECT
+    COUNT(DISTINCT p.id)
+    FROM permission p
+    WHERE 1=1
+
+    <if test="paramMap.parentId != null and paramMap.parentId > 0">
+      AND p.parent_id = #{paramMap.parentId}
+    </if>
+    <if test="paramMap.code != null and paramMap.code != ''">
+      AND p.`code` LIKE '%${paramMap.code}%'
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND p.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.permissionName != null and paramMap.permissionName != ''">
+      AND p.`name` LIKE '%${paramMap.phone}%'
+    </if>
+
+    <if test="paramMap.beginCreateTime !=null">
+      AND p.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND p.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+
+  </select>
 </mapper>

@@ -88,12 +88,12 @@ public class CompanyImpl implements ICompanyService,Serializable{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<CompanyEntity> listCompanyEntity(Map<String, Object> paramMap) {
-        List<CompanyEntity> listCompanyEntity = this.companyMapper.listCompanyEntity(paramMap);
-        return listCompanyEntity ;
+        return this.companyMapper.listCompanyEntity(paramMap);
     }
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void newCompany(CompanyDto companyDto, Integer currentUserId) throws Exception {
         CompanyEntity companyEntity = new CompanyEntity();
         BeanUtils.copyProperties(companyDto,companyEntity);
@@ -109,6 +109,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public CompanyEntity deleteCompany(Integer companyId, Integer currentUserId) throws Exception {
         CompanyEntity companyEntity = this.dbService.get(CompanyEntity.class,companyId);
         companyEntity.setStatus(CommonStaticWord.Ban_Status_1);
@@ -118,6 +119,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public CompanyEntity updateCompany(CompanyDto companyDto , Integer currentUserId) throws Exception {
 
         if(companyDto == null
@@ -139,6 +141,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public CompanyEntity getCompany(CompanyEntity param) throws Exception {
         return this.dbService.get(param);
     }

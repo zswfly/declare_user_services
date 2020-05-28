@@ -16,10 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by zhangshaowei on 2020/4/13.
@@ -83,6 +80,25 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public List<UserPermission> listUserPermission(List<Integer> ids){
         return this.permissionMapper.listUserPermission(ids);
+    }
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public List<PermissionEntity> listPermissionEntity(Map<String,Object> paramMap){
+        return this.permissionMapper.listPermissionEntity(paramMap);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public Integer listPermissionEntityCount(Map<String,Object> paramMap){
+        return this.permissionMapper.listPermissionEntityCount(paramMap);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public PermissionEntity getPermission(PermissionEntity param) throws Exception {
+        return this.dbService.get(param);
     }
 }
 
