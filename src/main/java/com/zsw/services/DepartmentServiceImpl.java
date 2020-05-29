@@ -89,8 +89,8 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
         DepartmentEntity departmentEntity = this.dbService.get(param);
         departmentDto.setCreateUser(departmentEntity.getCreateUser());
         departmentDto.setCreateTime(departmentEntity.getCreateTime());
-        if(departmentEntity == null) throw new Exception("没有该公司id");
-
+        if(departmentEntity == null) throw new Exception("没有该公司部门id");
+        departmentDto.setCompanyId(departmentEntity.getCompanyId());
         BeanUtils.copyProperties(departmentDto,departmentEntity);
         if(currentCompanyId != null && currentCompanyId > 0)
             departmentEntity.setCompanyId(currentCompanyId);
@@ -141,7 +141,24 @@ public class DepartmentServiceImpl implements IDepartmentService,Serializable {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public String checkDepartmentExist(DepartmentDto departmentDto, Integer currentCompanyId) throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("companyId",currentCompanyId);
+        if(departmentDto == null ){
+            return "参数为空";
+        }else if(departmentDto.getCompanyId() != null
+                && departmentDto.getCompanyId() > 0
+                && currentCompanyId != null
+                && currentCompanyId > 0
+                ){
+            return "公司id不一致";
+        }else if((departmentDto.getCompanyId() == null || departmentDto.getCompanyId() < 1)
+                &&(currentCompanyId == null || currentCompanyId < 1)
+                ){
+            return "参数公司id为空";
+        }else if(currentCompanyId != null && currentCompanyId > 0){
+            paramMap.put("companyId",currentCompanyId);
+        }else{
+            paramMap.put("companyId",departmentDto.getCompanyId());
+        }
+
         paramMap.put("departmentName",departmentDto.getName());
         if(departmentDto.getId() != null && departmentDto.getId() >0 ){
             paramMap.put("notDepartmentId",departmentDto.getId());
