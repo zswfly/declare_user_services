@@ -14,54 +14,25 @@ import java.sql.Timestamp;
 public class AdminUserEntity extends IDEntity {
 
 
-    private Integer id;
-    private String userName;
-    private String loginPwd;
+    private Integer userId;
     private Integer status;
     private Timestamp createTime;
     private Integer createUser;
     private Timestamp updateTime;
     private Integer updateUser;
-    private String phone;
-    private String email;
-    private String avatar;
     private String rememberToken;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="id", length=11, nullable=false, unique=true, insertable=true, updatable=false)
-    public Integer getId() {
-        return id;
+    @Column(name="user_id", length=11, nullable=false, unique=true, insertable=true, updatable=false)
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    @Basic
-    @NotNull
-    @Length(max = 80)
-    @Column(name = "user_name", unique = false,  nullable = false, insertable = true, updatable = true, length = 80)
-    public String getUserName() {
-        return userName;
-    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    @Basic
-    //@Column(name = "login_pwd", nullable = false, length = 32)
-    @NotNull
-    @Length(max = 100)
-    @Column(name = "login_pwd", unique = false,  nullable = false, insertable = true, updatable = true, length = 100)
-    public String getLoginPwd() {
-        return loginPwd;
-    }
-
-    public void setLoginPwd(String loginPwd) {
-        this.loginPwd = loginPwd;
-    }
 
     @Basic
     //@Column(name = "status", nullable = true)
@@ -119,55 +90,8 @@ public class AdminUserEntity extends IDEntity {
         this.updateUser = updateUser;
     }
 
-    @Basic
-    //@Column(name = "phone", nullable = false, length = 20)
-    @NotNull
-    @Length(max = 30)
-    @Column(name = "phone", unique = false,  nullable = false, insertable = true, updatable = true, length = 30)
-    public String getPhone() {
-        return phone;
-    }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
-    @Basic
-    //@Column(name = "email", nullable = false, length = 20)
-    @NotNull
-    @Length(max = 70)
-    @Column(name = "email", unique = false,  nullable = false, insertable = true, updatable = true, length = 70)
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Basic
-    //@Column(name = "avatar", nullable = true, length = 50)
-    @Length(max = 50)
-    @Column(name = "avatar", unique = false,  nullable = true, insertable = true, updatable = true, length = 50)
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    @Basic
-    //@Column(name = "remember_token", nullable = true, length = 100)
-    @Length(max = 100)
-    @Column(name = "remember_token", unique = false,  nullable = true, insertable = true, updatable = true, length = 100)
-    public String getRememberToken() {
-        return rememberToken;
-    }
-
-    public void setRememberToken(String rememberToken) {
-        this.rememberToken = rememberToken;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -176,17 +100,12 @@ public class AdminUserEntity extends IDEntity {
 
         AdminUserEntity that = (AdminUserEntity) o;
 
-        if (id != that.id) return false;
+        if (userId != that.userId) return false;
         if (createUser != that.createUser) return false;
         if (updateUser != that.updateUser) return false;
-        if (userName != null ? !userName.equals(that.userName) : that.userName != null) return false;
-        if (loginPwd != null ? !loginPwd.equals(that.loginPwd) : that.loginPwd != null) return false;
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (avatar != null ? !avatar.equals(that.avatar) : that.avatar != null) return false;
         if (rememberToken != null ? !rememberToken.equals(that.rememberToken) : that.rememberToken != null)
             return false;
 
@@ -195,17 +114,12 @@ public class AdminUserEntity extends IDEntity {
 
     @Override
     public int hashCode() {
-        Integer result = id;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        result = 31 * result + (loginPwd != null ? loginPwd.hashCode() : 0);
+        Integer result = userId;
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
         result = 31 * result + createUser;
         result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
         result = 31 * result + updateUser;
-        result = 31 * result + (phone != null ? phone.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
         result = 31 * result + (rememberToken != null ? rememberToken.hashCode() : 0);
         return result;
     }

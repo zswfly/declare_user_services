@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.UserDto;
+import com.zsw.services.IAdminUserService;
 import com.zsw.services.IUserService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,7 @@ import java.util.Map;
  * Created by zhangshaowei on 2020/5/27.
  */
 public class OperationUserUtils {
-    public static String newOrUpdateUserCheck(IUserService userService, UserDto userDto , Integer currentCompanyId,Integer departmentId) throws Exception{
+    public static String newOrUpdateUserCheck(IUserService userService, UserDto userDto /*, Integer currentCompanyId,Integer departmentId*/) throws Exception{
         if(userDto == null)return "空信息";
 
 
@@ -46,7 +47,7 @@ public class OperationUserUtils {
                 ) return "用户名有空格或,号";
 
 
-        String result = userService.checkUserExist(userDto,currentCompanyId, departmentId);
+        String result = userService.checkUserExist(userDto);
         if(StringUtils.isNotEmpty(result) && StringUtils.isNotBlank(result)
                 ) return result;
 
@@ -88,19 +89,19 @@ public class OperationUserUtils {
 
     }
 
-    public static String updateUser(IUserService userService, UserDto userDto,Integer currentUserId,Integer currentCompanyId,Integer departmentId)throws Exception{
+    public static String updateUser(IUserService userService, UserDto userDto,Integer currentUserId)throws Exception{
         ResponseJson responseJson = new ResponseJson();
         Gson gson = new Gson();
 
         Integer userDtoId = userDto.getId();
-
-        String check = newOrUpdateUserCheck(userService,userDto,currentCompanyId, departmentId);
 
         if(userDtoId == null || userDtoId < 1){
             responseJson.setCode(ResponseCode.Code_Bussiness_Error);
             responseJson.setMessage("用户id缺失");
         }
 
+
+        String check = newOrUpdateUserCheck(userService,userDto);
         if(check != null){
             responseJson.setCode(ResponseCode.Code_Bussiness_Error);
             responseJson.setMessage(check);
@@ -202,7 +203,28 @@ public class OperationUserUtils {
 
         return gson.toJson(responseJson);
     }
+    public static String newUser(IUserService userService , IAdminUserService adminUserService, UserDto userDto, Integer currentUserId, Integer departmentId, Boolean isNewAdminUser) throws Exception {
+        ResponseJson responseJson = new ResponseJson();
+        Gson gson = new Gson();
+        String check = OperationUserUtils.newOrUpdateUserCheck(userService,userDto);
+        if(check != null){
+            responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+            responseJson.setMessage(check);
+            return gson.toJson(responseJson);
+        }
 
+        if(isNewAdminUser){
+            adminUserService.newAdminUser(userDto,currentUserId);
+        }else{
+            userService.newUser(userDto,currentUserId,departmentId);
+        }
+
+
+        responseJson.setCode(ResponseCode.Code_200);
+        responseJson.setMessage("新增成功");
+
+        return gson.toJson(responseJson);
+    }
 
 
 }

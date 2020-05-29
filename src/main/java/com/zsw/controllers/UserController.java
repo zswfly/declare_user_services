@@ -49,72 +49,19 @@ public class UserController extends BaseController{
     public Result<HashMap<String, Object>> login(LoginTemp loginTemp) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try{
-            UserEntity paramUserEntity = new UserEntity();
-            //电话号码设置为参数
-
             UserEntity userEntity = null;
+            UserEntity paramUserEntity = new UserEntity();
+            paramUserEntity.setPhone(loginTemp.getPhone());
+            userEntity = userService.getUser(paramUserEntity);
 
-            Gson gson = new Gson();
-
-            if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-                paramUserEntity.setPhone(loginTemp.getPhone());
-                paramUserEntity.setLoginPwd(loginTemp.getPassword());
-                userEntity = this.userService.getUser(paramUserEntity);
-            }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
-
-                //验证码校验
-                Map<String, Object > param = new HashMap<>();
-                param.put("phone",loginTemp.getPhone());
-                param.put("verifyCode",loginTemp.getVerifyCode());
-                param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_LOGIN);
-                ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
-                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                                + CacheStaticURLUtil.redisController
-                                + CacheStaticURLUtil.redisController_checkVerifyCode
-                        ,param,Boolean.class);
-                if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-
-                    result.setCode(ResponseCode.Code_Bussiness_Error);
-                    result.setMessage("验证码错误");
-                    return result;
-                }
-                paramUserEntity.setPhone(loginTemp.getPhone());
-                userEntity = this.userService.getUser(paramUserEntity);
-            }
-
-            if(userEntity == null){
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("账号不存在或密码错误");
-            }else if(userEntity.getStatus() == CommonStaticWord.Ban_Status_1){
+            if(userEntity.getStatus() == CommonStaticWord.Ban_Status_1){
                 result.setCode(ResponseCode.Code_Bussiness_Error);
                 result.setMessage("账户禁用");
-            }else{
-                String rememberToken = CommonUtils.getVerifyCode_6number();
-
-                this.userService.updateRememberToken(userEntity.getId(),rememberToken);
-
-                Map<String, String > param = new HashMap<>();
-                param.put("rememberToken",rememberToken);
-                param.put("userId",userEntity.getId().toString());
-
-                this.restTemplate.postForEntity(
-                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                                + CacheStaticURLUtil.redisController
-                                + CacheStaticURLUtil.redisController_putUserToken
-                        ,param,null);
-
-                HashMap<String,Object> data = new HashMap<>();
-                userEntity.setLoginPwd(null);
-                //不用返回user对象
-                //data.put("user",userEntity);
-                data.put("userId",userEntity.getId());
-                data.put("rememberToken",rememberToken);
-
-                result.setData(data);
-                result.setCode(ResponseCode.Code_200);
             }
-            return result;
+
+            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity);
         }catch (Exception e){
+
             CommonUtils.ErrorAction(LOG,e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
@@ -204,7 +151,7 @@ public class UserController extends BaseController{
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -214,109 +161,31 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_loginOut)
     public String loginOut(@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            this.userService.updateRememberToken(currentUserId,null);
-
-            Map<String, String > param = new HashMap<>();
-            param.put("rememberToken","");
-            param.put("userId",currentUserId.toString());
-
-            this.restTemplate.postForEntity(
-                    CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                            + CacheStaticURLUtil.redisController
-                            + CacheStaticURLUtil.redisController_putUserToken
-                    ,param,null);
-
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("登出成功");
-            return gson.toJson(responseJson);
+            return UserUtils.loginOut(this.userService,this.restTemplate,currentUserId);
         } catch (Exception e) {
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
     @RequestMapping(value=UserStaticURLUtil.userController_checkRememberToken,
             method= RequestMethod.POST)
     public Boolean checkRememberToken( @RequestBody Map<String,String> args) throws Exception {
-        Integer userId = Integer.valueOf(NumberUtils.toInt(args.get("userId"), 0));
-        String rememberToken = args.get("rememberToken");
-        //验证码校验
-        Map<String, Object > param = new HashMap<>();
-        param.put("rememberToken",rememberToken);
-        param.put("userId",userId);
-        ResponseEntity<Boolean> checkUserTokenResult  = this.restTemplate.postForEntity(
-                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                        + CacheStaticURLUtil.redisController
-                        + CacheStaticURLUtil.redisController_checkUserToken
-                ,param,Boolean.class);
-        if(checkUserTokenResult != null
-                && checkUserTokenResult.getBody() != null
-                && checkUserTokenResult.getBody()
-                )return Boolean.TRUE;
-
-        UserEntity userEntityParam = new UserEntity();
-        userEntityParam.setId(userId);
-        UserEntity userEntity = this.userService.getUser(userEntityParam);
-        if(rememberToken != null
-                && userEntity != null
-                && rememberToken.equals(userEntity.getRememberToken())
-                )return Boolean.TRUE;
-        return Boolean.FALSE;
+        try {
+            return UserUtils.checkRememberToken(this.userService,this.restTemplate,args);
+        } catch (Exception e) {
+            CommonUtils.ErrorAction(LOG,e);
+            return Boolean.FALSE;
+        }
     }
 
-        @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
+    @RequestMapping(value=UserStaticURLUtil.userController_resetPassWord,
             method= RequestMethod.POST)
     public String resetPassWord(LoginTemp loginTemp) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-
-            //验证码校验
-            Map<String, String > paramMap = new HashMap<>();
-            paramMap.put("phone",loginTemp.getPhone());
-            paramMap.put("verifyCode",loginTemp.getVerifyCode());
-            paramMap.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_REST_PASSWORD);
-            ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
-                    CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                            + CacheStaticURLUtil.redisController
-                            + CacheStaticURLUtil.redisController_checkVerifyCode
-                    ,paramMap,Boolean.class);
-            if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("验证码错误");
-                return gson.toJson(responseJson);
-            }
-
-            //参数校验
-            String check = resetPassWordCheck(loginTemp);
-            if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
-
-
-            //重置密码
-            UserEntity paramEntity = new UserEntity();
-            paramEntity.setPhone(loginTemp.getPhone());
-            UserEntity userEntity =this.userService.resetPassWord(paramEntity,loginTemp.getPassword());
-
-
-            if(userEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("账户不存在");
-            }else{
-                responseJson.setCode(ResponseCode.Code_200);
-                responseJson.setMessage("重置成功");
-
-            }
-
-            return gson.toJson(responseJson);
+            return UserUtils.resetPassWord(this.userService,this.restTemplate,loginTemp);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
 
     }
@@ -325,27 +194,12 @@ public class UserController extends BaseController{
             method= RequestMethod.POST)
 //    @Permission(code = "user.userController.newUser",name = "新增用户",description ="新增用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_newUser)
-    public String newUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId,Integer departmentId) throws Exception {
+    public String newUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,Integer departmentId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,currentCompanyId,departmentId);
-            if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
-
-
-            this.userService.newUser(userDto,currentUserId,departmentId);
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("新增成功");
-
-            return gson.toJson(responseJson);
+            return OperationUserUtils.newUser(this.userService,null,userDto,currentUserId,departmentId,false);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -358,7 +212,7 @@ public class UserController extends BaseController{
             return OperationUserUtils.getUser(this.userService,userId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -368,12 +222,12 @@ public class UserController extends BaseController{
             method= RequestMethod.PUT)
 //    @Permission(code = "user.userController.updateUser",name = "更新用户",description ="更新用户"
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_updateUser)
-    public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+    public String updateUser(UserDto userDto,@RequestHeader("userId") Integer currentUserId/*,@RequestHeader("companyId") Integer currentCompanyId*/) throws Exception {
         try {
-            return OperationUserUtils.updateUser(this.userService,userDto,currentUserId,currentCompanyId,0);
+            return OperationUserUtils.updateUser(this.userService,userDto,currentUserId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -386,7 +240,7 @@ public class UserController extends BaseController{
             return OperationUserUtils.batchBan(this.userService,params,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -399,25 +253,12 @@ public class UserController extends BaseController{
             return OperationUserUtils.usersPage(this.userService,request,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    private String resetPassWordCheck(LoginTemp loginTemp) throws Exception{
-        if(loginTemp == null)return "空信息";
 
-        if(loginTemp.getPassword().indexOf(" ")!=-1
-                )return "密码存在空格";
-
-
-        if(StringUtils.isBlank(loginTemp.getPassword())
-                || StringUtils.isEmpty(loginTemp.getPassword())
-                ||loginTemp.getPassword().length() < 8
-                ) return "密码少于8位";
-
-        return null;
-    }
 
 
 //    private String newOrUpdateUserCheck(UserDto userDto ,Integer currentCompanyId) throws Exception{
@@ -448,44 +289,3 @@ public class UserController extends BaseController{
 
 
 
-//if(userDtoId == null){
-//        if (StringUtils.isBlank(userDto.getLoginPwd())
-//        ||userDto.getLoginPwd().length() < 8
-//        ) return "密码少于8位";
-//
-//        UserEntity userEntity = new UserEntity();
-//
-//        userEntity.setPhone(userDto.getPhone());
-//        if( this.userService.getUser(userEntity) != null
-//        ) return "电话号码已存在";
-//
-//        userEntity.setPhone(null);
-//        userEntity.setEmail(userDto.getEmail());
-//        if( this.userService.getUser(userEntity) != null
-//        ) return "Email地址已被使用";
-//
-//        userEntity.setEmail(null);
-//        userEntity.setUserName(userDto.getUserName());
-//        if( this.userService.getUser(userEntity) != null
-//        ) return "名字已被使用";
-//        }else{
-//        UserEntity userEntity = new UserEntity();
-//        UserEntity result = null;
-//
-//        userEntity.setPhone(userDto.getPhone());
-//        result = this.userService.getUser(userEntity);
-//        if( result != null && result.getId() != userDtoId)
-//        return "电话号码已存在";
-//
-//        userEntity.setPhone(null);
-//        userEntity.setEmail(userDto.getEmail());
-//        result = this.userService.getUser(userEntity);
-//        if( result != null && result.getId() != userDtoId)
-//        return "Email地址已被使用";
-//
-//        userEntity.setEmail(null);
-//        userEntity.setUserName(userDto.getUserName());
-//        result = this.userService.getUser(userEntity);
-//        if( result != null && result.getId() != userDtoId)
-//        return "名字已被使用";
-//        }

@@ -47,10 +47,10 @@ public class AdminOperationDepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationDepartmentController + UserStaticURLUtil.adminOperationDepartmentController_newDepartment)
     public String newDepartment(DepartmentDto departmentDto, @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            return OperationDepartmentUtils.newDepartment(this.departmentService,departmentDto,0,0);
+            return OperationDepartmentUtils.newDepartment(this.departmentService,departmentDto,currentAdminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -60,10 +60,10 @@ public class AdminOperationDepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationDepartmentController + UserStaticURLUtil.adminOperationDepartmentController_updateDepartment)
     public String updateDepartment(DepartmentDto departmentDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            return OperationDepartmentUtils.updateDepartment(this.departmentService,departmentDto,0,0);
+            return OperationDepartmentUtils.updateDepartment(this.departmentService,departmentDto,currentAdminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -73,10 +73,10 @@ public class AdminOperationDepartmentController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationDepartmentController + UserStaticURLUtil.adminOperationDepartmentController_updateStatusDepartment)
     public String updateStatusDepartment(@RequestParam Map<String, String> params ,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            return OperationDepartmentUtils.updateStatusDepartment(this.departmentService,params,0,0);
+            return OperationDepartmentUtils.updateStatusDepartment(this.departmentService,params,currentAdminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -90,7 +90,7 @@ public class AdminOperationDepartmentController extends BaseController {
             return OperationDepartmentUtils.getDepartment(this.departmentService , departmentId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -104,7 +104,7 @@ public class AdminOperationDepartmentController extends BaseController {
             return OperationDepartmentUtils.departmentsPage(this.departmentService ,request, 0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 

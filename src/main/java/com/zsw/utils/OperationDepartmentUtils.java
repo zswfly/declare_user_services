@@ -179,10 +179,6 @@ public class OperationDepartmentUtils {
 
 
 
-
-
-
-
         private static String newOrUpdateDepartmentCheck(IDepartmentService departmentService,DepartmentDto departmentDto , Integer currentCompanyId) throws Exception {
         if (StringUtils.isBlank(departmentDto.getName())
                 || StringUtils.isEmpty(departmentDto.getName())

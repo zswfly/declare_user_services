@@ -63,7 +63,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -106,7 +106,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -136,7 +136,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -207,7 +207,7 @@ public class CompanyController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 

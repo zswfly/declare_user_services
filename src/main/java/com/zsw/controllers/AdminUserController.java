@@ -8,6 +8,7 @@ import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.services.IAdminUserService;
+import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -33,83 +34,51 @@ public class AdminUserController extends BaseController {
 
     @Autowired
     RestTemplate restTemplate;
-    
+
+    @Autowired
+    IUserService userService;
+
     @RequestMapping(value=UserStaticURLUtil.adminUserController_login,
             method= RequestMethod.POST)
     public Result<HashMap<String, Object>> login(LoginTemp loginTemp) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
         try{
-            Gson gson = new Gson();
+            UserEntity userEntity = null;
+            UserEntity paramUserEntity = new UserEntity();
+            paramUserEntity.setPhone(loginTemp.getPhone());
+            userEntity = userService.getUser(paramUserEntity);
 
+            if(userEntity == null || userEntity.getId() == null){
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("没有该后台用户");
+                return result;
+            }
+
+            AdminUserEntity userAdminEntity = null;
             AdminUserEntity paramAdminUserEntity = new AdminUserEntity();
-            //电话号码设置为参数
+            paramAdminUserEntity.setUserId(userEntity.getId());
+            userAdminEntity = this.adminUserService.getAdminUser(paramAdminUserEntity);
 
-            AdminUserEntity adminUserEntity = null;
-            if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-                paramAdminUserEntity.setPhone(loginTemp.getPhone());
-                paramAdminUserEntity.setLoginPwd(loginTemp.getPassword());
-                adminUserEntity = this.adminUserService.getAdminUser(paramAdminUserEntity);
-            }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
-
-                //验证码校验
-                Map<String, Object > param = new HashMap<>();
-                param.put("phone",loginTemp.getPhone());
-                param.put("verifyCode",loginTemp.getVerifyCode());
-                param.put("type", CommonStaticWord.CacheServices_Redis_VerifyCode_Type_LOGIN);
-                ResponseEntity<Boolean> checkVerifyCodeResult  = this.restTemplate.postForEntity(
-                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                                + CacheStaticURLUtil.redisController
-                                + CacheStaticURLUtil.redisController_checkVerifyCode
-                        ,param,Boolean.class);
-                if(Boolean.TRUE != checkVerifyCodeResult.getBody() ){
-
-                    result.setCode(ResponseCode.Code_Bussiness_Error);
-                    result.setMessage("验证码错误");
-                    return result;
-                }
-                paramAdminUserEntity.setPhone(loginTemp.getPhone());
-                adminUserEntity = this.adminUserService.getAdminUser(paramAdminUserEntity);
+            if(userAdminEntity == null){
+                result.setCode(ResponseCode.Code_Bussiness_Error);
+                result.setMessage("没有该后台用户");
+                return result;
             }
 
-            if(adminUserEntity == null){
+            if(userAdminEntity.getStatus() == CommonStaticWord.Ban_Status_1){
                 result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("账号不存在或密码错误");
-            }else if(adminUserEntity.getStatus() == CommonStaticWord.Ban_Status_1){
-                result.setCode(ResponseCode.Code_Bussiness_Error);
-                result.setMessage("账户禁用");
-            }else{
-                String rememberToken = CommonUtils.getVerifyCode_6number();
-
-                this.adminUserService.updateRememberToken(adminUserEntity.getId(),rememberToken);
-
-                Map<String, String > param = new HashMap<>();
-                param.put("rememberToken",rememberToken);
-                param.put("userId",adminUserEntity.getId().toString());
-
-                this.restTemplate.postForEntity(
-                        CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                                + CacheStaticURLUtil.redisController
-                                + CacheStaticURLUtil.redisController_putUserToken
-                        ,param,null);
-
-                HashMap<String,Object> data = new HashMap<>();
-                adminUserEntity.setLoginPwd(null);
-                //不用返回user对象
-                //data.put("user",userEntity);
-                data.put("adminUserId",adminUserEntity.getId());
-                data.put("rememberToken",rememberToken);
-
-                result.setData(data);
-                result.setCode(ResponseCode.Code_200);
+                result.setMessage("用户已被禁用");
+                return result;
             }
-            return result;
+
+            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity);
         }catch (Exception e){
+
             CommonUtils.ErrorAction(LOG,e);
             result.setCode(ResponseCode.Code_500);
             result.setMessage("系统错误");
             return result;
         }
-
     }
 
     @RequestMapping(value=UserStaticURLUtil.adminUserController_loginOut,
@@ -118,58 +87,33 @@ public class AdminUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminUserController + UserStaticURLUtil.adminUserController_loginOut)
     public String loginOut(@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            this.adminUserService.updateRememberToken(currentAdminUserId,null);
-
-            Map<String, String > param = new HashMap<>();
-            param.put("rememberToken","");
-            param.put("adminUserId",currentAdminUserId.toString());
-
-            this.restTemplate.postForEntity(
-                    CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                            + CacheStaticURLUtil.redisController
-                            + CacheStaticURLUtil.redisController_putAdminUserToken
-                    ,param,null);
-
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("登出成功");
-            return gson.toJson(responseJson);
+            return UserUtils.loginOut(this.userService,this.restTemplate,currentAdminUserId);
         } catch (Exception e) {
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
-
 
     @RequestMapping(value=UserStaticURLUtil.adminUserController_checkRememberToken,
             method= RequestMethod.POST)
     public Boolean checkRememberToken( @RequestBody Map<String,String> args) throws Exception {
-        Integer userId = Integer.valueOf(NumberUtils.toInt(args.get("adminUserId"), 0));
-        String rememberToken = args.get("rememberToken");
-        //验证码校验
-        Map<String, Object > param = new HashMap<>();
-        param.put("rememberToken",rememberToken);
-        param.put("adminUserId",userId);
-        ResponseEntity<Boolean> checkUserTokenResult  = this.restTemplate.postForEntity(
-                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                        + CacheStaticURLUtil.redisController
-                        + CacheStaticURLUtil.redisController_checkAdminUserToken
-                ,param,Boolean.class);
-        if(checkUserTokenResult != null
-                && checkUserTokenResult.getBody() != null
-                && checkUserTokenResult.getBody()
-                )return Boolean.TRUE;
+        try {
+            return UserUtils.checkRememberToken(this.userService,this.restTemplate,args);
+        } catch (Exception e) {
+            CommonUtils.ErrorAction(LOG,e);
+            return Boolean.FALSE;
+        }
+    }
 
-        AdminUserEntity adminUserEntityParam = new AdminUserEntity();
-        adminUserEntityParam.setId(userId);
-        AdminUserEntity adminUserEntity = this.adminUserService.getAdminUser(adminUserEntityParam);
-        if(rememberToken != null
-                && adminUserEntity != null
-                && rememberToken.equals(adminUserEntity.getRememberToken())
-                )return Boolean.TRUE;
-        return Boolean.FALSE;
+    @RequestMapping(value=UserStaticURLUtil.adminUserController_resetPassWord,
+            method= RequestMethod.POST)
+    public String resetPassWord(LoginTemp loginTemp) throws Exception {
+        try {
+            return UserUtils.resetPassWord(this.userService,this.restTemplate,loginTemp);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
     }
 
     @RequestMapping(value=UserStaticURLUtil.adminUserController_getAdminUser+"/{adminUserId}",
@@ -178,24 +122,19 @@ public class AdminUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminUserController + UserStaticURLUtil.adminUserController_getAdminUser)
     public String getAdminUser(@PathVariable Integer adminUserId) throws Exception {
         try {
-            Gson gson = new Gson();
-            ResponseJson responseJson = new ResponseJson();
+            AdminUserEntity userAdminEntity = null;
+            AdminUserEntity paramAdminUserEntity = new AdminUserEntity();
+            paramAdminUserEntity.setUserId(adminUserId);
+            userAdminEntity = this.adminUserService.getAdminUser(paramAdminUserEntity);
 
-            AdminUserEntity adminUserEntity = new AdminUserEntity();
-            adminUserEntity.setId(adminUserId);
-
-            if(adminUserEntity == null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage("没有后台用户");
-            }else{
-                responseJson.setCode(ResponseCode.Code_200);
-                adminUserEntity.setLoginPwd(null);
-                responseJson.setData(adminUserEntity);
+            if(userAdminEntity == null){
+                return CommonUtils.ErrorResposeJson("没有该后台用户");
             }
-            return gson.toJson(responseJson);
+
+            return OperationUserUtils.getUser(this.userService,adminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 

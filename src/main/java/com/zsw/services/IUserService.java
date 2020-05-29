@@ -12,7 +12,6 @@ import java.util.Map;
  * Created by zhangshaowei on 2020/4/16.
  */
 public interface IUserService  extends IBaseService{
-
     UserEntity getUser(UserEntity param) throws Exception;
     UserEntity resetPassWord(UserEntity param,String resetPassWord) throws Exception;
     void newUser(UserDto userDto, Integer currentUserId,Integer departmentId)throws Exception;
@@ -22,5 +21,5 @@ public interface IUserService  extends IBaseService{
     List<UserDto> usersPage(Map<String, Object> paramMap) throws Exception;
     Integer usersPageCount(Map<String, Object> paramMap) throws Exception;
     void updateRememberToken(Integer userId,String rememberToken)throws Exception;
-    String checkUserExist(UserDto userDto,Integer currentCompanyId,Integer departmentId)throws Exception;
+    String checkUserExist(UserDto userDto)throws Exception;
 }

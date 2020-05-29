@@ -40,26 +40,10 @@ public class AdminOperationUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_newUser)
     public String newUser(UserDto userDto, @RequestHeader("adminUserId") Integer currentAdminUserId,  Integer departmentId) throws Exception {
         try {
-            ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
-            //TODO 公司id
-            String check = OperationUserUtils.newOrUpdateUserCheck(this.userService,userDto,0, departmentId);
-            if(check != null){
-                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-                responseJson.setMessage(check);
-                return gson.toJson(responseJson);
-            }
-
-
-            this.userService.newUser(userDto,0,departmentId);
-
-            responseJson.setCode(ResponseCode.Code_200);
-            responseJson.setMessage("新增成功");
-
-            return gson.toJson(responseJson);
+            return OperationUserUtils.newUser(this.userService,null,userDto,currentAdminUserId,departmentId,false);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -72,7 +56,7 @@ public class AdminOperationUserController extends BaseController {
             return OperationUserUtils.getUser(this.userService,userId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -82,11 +66,10 @@ public class AdminOperationUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_updateUser)
     public String updateUser(UserDto userDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            //TODO  公司id
-            return OperationUserUtils.updateUser(this.userService,userDto,0,0,0);
+            return OperationUserUtils.updateUser(this.userService,userDto,currentAdminUserId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -96,10 +79,10 @@ public class AdminOperationUserController extends BaseController {
     //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_batchBan)
     public String batchBan(@RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
-            return OperationUserUtils.batchBan(this.userService,params,0,0);
+            return OperationUserUtils.batchBan(this.userService,params,currentAdminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
     @RequestMapping(value=UserStaticURLUtil.userController_usersPage,
@@ -111,7 +94,7 @@ public class AdminOperationUserController extends BaseController {
             return OperationUserUtils.usersPage(this.userService,request,null);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
     @Override

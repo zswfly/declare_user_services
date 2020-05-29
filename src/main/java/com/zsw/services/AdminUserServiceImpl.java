@@ -24,7 +24,7 @@ import java.util.*;
  * Created by zhangshaowei on 2020/4/16.
  */
 @Service
-public class AdminUserServiceImpl implements IAdminUserService,Serializable{
+public class AdminUserServiceImpl implements IAdminUserService,Serializable {
 
 
     private static final long serialVersionUID = 758431059117830918L;
@@ -37,15 +37,34 @@ public class AdminUserServiceImpl implements IAdminUserService,Serializable{
 
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = {Exception.class})
     public AdminUserEntity getAdminUser(AdminUserEntity param) throws Exception {
         return this.dbService.get(param);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public void updateRememberToken(Integer adminUserId, String rememberToken) throws Exception {
-        AdminUserEntity adminUserEntity = this.dbService.get(AdminUserEntity.class,adminUserId);
-        adminUserEntity.setRememberToken(rememberToken);
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = {Exception.class})
+    public void newAdminUser(UserDto userDto, Integer currentUserId) throws Exception {
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(userDto,userEntity);
+        userEntity.setId(null);
+        userEntity.setStatus(CommonStaticWord.Normal_Status_0);
+        userEntity.setCreateUser(currentUserId);
+        userEntity.setCreateTime(new Timestamp(new Date().getTime()));
+        userEntity.setUpdateUser(currentUserId);
+        userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+        this.dbService.save(userEntity);
+
+        userEntity = this.dbService.get(userEntity) ;
+
+        AdminUserEntity adminUserEntity = new AdminUserEntity();
+        adminUserEntity.setUserId(userEntity.getId());
+        adminUserEntity.setStatus(CommonStaticWord.Normal_Status_0);
+        adminUserEntity.setCreateUser(currentUserId);
+        adminUserEntity.setCreateTime(new Timestamp(new Date().getTime()));
+        adminUserEntity.setUpdateUser(currentUserId);
+        adminUserEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+        this.dbService.save(adminUserEntity);
+
     }
 }

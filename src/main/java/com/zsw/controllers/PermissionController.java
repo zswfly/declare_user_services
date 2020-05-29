@@ -123,7 +123,7 @@ public class PermissionController extends BaseController implements IUserPermiss
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -152,7 +152,7 @@ public class PermissionController extends BaseController implements IUserPermiss
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 

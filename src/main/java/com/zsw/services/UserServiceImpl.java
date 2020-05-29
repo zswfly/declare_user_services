@@ -71,8 +71,6 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void newUser(UserDto userDto, Integer currentUserId,Integer departmentId)throws Exception {
 
-
-        //userDto.setId(null);
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(userDto,userEntity);
         userEntity.setId(null);
@@ -93,7 +91,6 @@ public class UserServiceImpl implements IUserService,Serializable{
         departmentUserEntity.setUpdateUser(currentUserId);
         departmentUserEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.departmentService.saveDepartmentUserEntity(departmentUserEntity);
-
 
     }
 
@@ -189,61 +186,100 @@ public class UserServiceImpl implements IUserService,Serializable{
     public Integer usersPageCount(Map<String, Object> paramMap) throws Exception {
         return this.userMapper.usersPageCount(paramMap);
     }
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId, Integer departmentId) throws Exception {
-        Map<String, Object> paramMap = new HashMap<>();
-
-
-        if(userDto.getId() != null && userDto.getId() >0 ){
-            Map<String, Object> paramMapTemp = new HashMap<>();
-            paramMapTemp.put("companyId",currentCompanyId);
-            paramMapTemp.put("userId",userDto.getId());
-            Integer resultTemp = this.userMapper.usersPageCount(paramMapTemp);
-            if(resultTemp == null || resultTemp < 1){
-                return "更新错误,当前公司下没该用户";
-            }
-            paramMap.put("notUserId",userDto.getId());
-        }
-
-        if(departmentId != null && departmentId > 0)
-            paramMap.put("departmentId",departmentId);
-        if(currentCompanyId != null && currentCompanyId > 0)
-            paramMap.put("companyId",currentCompanyId);
-
-        paramMap.put("userName",userDto.getUserName());
-        paramMap.put("userPhone",userDto.getPhone());
-        paramMap.put("userEmail",userDto.getEmail());
-
-
-        Map<String,String> result = this.userMapper.checkUserExist(paramMap);
-        String userName = result.get("user_name");
-        String userPhone = result.get("user_name");
-        String userEmail = result.get("user_email");
+    public synchronized String checkUserExist(UserDto userDto) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
-        if(result != null &&
-                (
-                    (StringUtils.isNotBlank(userName)&&StringUtils.isNotEmpty(userName))
-                    ||(StringUtils.isNotBlank(userPhone)&&StringUtils.isNotEmpty(userPhone))
-                    ||(StringUtils.isNotBlank(userEmail)&&StringUtils.isNotEmpty(userEmail))
-                )
-        ){
 
-            List<String> userNames = Arrays.asList(userName.split(","));
-            List<String> phones = Arrays.asList(userPhone.split(","));
-            List<String>  emails = Arrays.asList(userEmail.split(","));
-            if(userNames.contains(userDto.getUserName())){
-                stringBuilder.append("当前用户名已存在;");
-            }
-            if(phones.contains(userDto.getPhone())){
-                stringBuilder.append("当前手机号码已存在;");
-            }
-            if(emails.contains(userDto.getEmail())){
-                stringBuilder.append("当前邮箱已存在;");
-            }
+        if(userDto.getId() == null){
+            if (StringUtils.isBlank(userDto.getLoginPwd())
+                    ||userDto.getLoginPwd().length() < 8
+                    ) stringBuilder.append("密码少于8位") ;
+
+            UserEntity userEntity = new UserEntity();
+
+            userEntity.setPhone(userDto.getPhone());
+            if( this.dbService.get(userEntity) != null
+                    ) stringBuilder.append("电话号码已存在");
+
+            userEntity.setPhone(null);
+            userEntity.setEmail(userDto.getEmail());
+            if( this.dbService.get(userEntity) != null
+                    )  stringBuilder.append("Email地址已被使用");
+        }else{
+            UserEntity userEntity = new UserEntity();
+            UserEntity result = null;
+
+            userEntity.setPhone(userDto.getPhone());
+            result = this.dbService.get(userEntity);
+            if( result != null && result.getId() != userDto.getId() )
+                 stringBuilder.append("电话号码已存在");
+
+            userEntity.setPhone(null);
+            userEntity.setEmail(userDto.getEmail());
+            result = this.dbService.get(userEntity);
+            if( result != null && result.getId() != userDto.getId() )
+                 stringBuilder.append("Email地址已被使用");
+
         }
 
         return stringBuilder.toString();
     }
+
 }
+//    @Override
+//    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+//    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId, Integer departmentId) throws Exception {
+//        Map<String, Object> paramMap = new HashMap<>();
+//
+//
+//        if(userDto.getId() != null && userDto.getId() >0 ){
+//            Map<String, Object> paramMapTemp = new HashMap<>();
+//            paramMapTemp.put("companyId",currentCompanyId);
+//            paramMapTemp.put("userId",userDto.getId());
+//            Integer resultTemp = this.userMapper.usersPageCount(paramMapTemp);
+//            if(resultTemp == null || resultTemp < 1){
+//                return "更新错误,当前公司下没该用户";
+//            }
+//            paramMap.put("notUserId",userDto.getId());
+//        }
+//
+//        if(departmentId != null && departmentId > 0)
+//            paramMap.put("departmentId",departmentId);
+//        if(currentCompanyId != null && currentCompanyId > 0)
+//            paramMap.put("companyId",currentCompanyId);
+//
+//        paramMap.put("userName",userDto.getUserName());
+//        paramMap.put("userPhone",userDto.getPhone());
+//        paramMap.put("userEmail",userDto.getEmail());
+//
+//
+//        Map<String,String> result = this.userMapper.checkUserExist(paramMap);
+//        String userName = result.get("user_name");
+//        String userPhone = result.get("user_name");
+//        String userEmail = result.get("user_email");
+//        StringBuilder stringBuilder = new StringBuilder();
+//        if(result != null &&
+//                (
+//                    (StringUtils.isNotBlank(userName)&&StringUtils.isNotEmpty(userName))
+//                    ||(StringUtils.isNotBlank(userPhone)&&StringUtils.isNotEmpty(userPhone))
+//                    ||(StringUtils.isNotBlank(userEmail)&&StringUtils.isNotEmpty(userEmail))
+//                )
+//        ){
+//
+//            List<String> userNames = Arrays.asList(userName.split(","));
+//            List<String> phones = Arrays.asList(userPhone.split(","));
+//            List<String>  emails = Arrays.asList(userEmail.split(","));
+//            if(userNames.contains(userDto.getUserName())){
+//                stringBuilder.append("当前用户名已存在;");
+//            }
+//            if(phones.contains(userDto.getPhone())){
+//                stringBuilder.append("当前手机号码已存在;");
+//            }
+//            if(emails.contains(userDto.getEmail())){
+//                stringBuilder.append("当前邮箱已存在;");
+//            }
+//        }
+//
+//        return stringBuilder.toString();
+//    }

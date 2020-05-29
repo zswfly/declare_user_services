@@ -53,7 +53,7 @@ public class DepartmentController extends BaseController {
             return OperationDepartmentUtils.newDepartment(this.departmentService,departmentDto,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -69,7 +69,7 @@ public class DepartmentController extends BaseController {
             return OperationDepartmentUtils.updateDepartment(this.departmentService,departmentDto,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -82,7 +82,7 @@ public class DepartmentController extends BaseController {
             return OperationDepartmentUtils.updateStatusDepartment(this.departmentService,params,currentUserId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -95,7 +95,7 @@ public class DepartmentController extends BaseController {
             return OperationDepartmentUtils.getDepartment(this.departmentService , departmentId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -111,7 +111,7 @@ public class DepartmentController extends BaseController {
             return OperationDepartmentUtils.departmentsPage(this.departmentService ,request, currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -137,7 +137,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
     @RequestMapping(value=UserStaticURLUtil.departmentController_deleteDepartmentUser,
@@ -162,7 +162,7 @@ public class DepartmentController extends BaseController {
             return gson.toJson(responseJson);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
-            return CommonUtils.ErrorResposeJson();
+            return CommonUtils.ErrorResposeJson(null);
         }
     }
 
@@ -185,7 +185,7 @@ public class DepartmentController extends BaseController {
 
 
 
-        @Override
+    @Override
     public Logger getLOG(){
         return this.LOG;
     }
