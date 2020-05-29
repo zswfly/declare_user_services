@@ -81,6 +81,7 @@ public class UserServiceImpl implements IUserService,Serializable{
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
 
+        //TODO test
         userEntity = this.dbService.get(userEntity) ;
 
         DepartmentUserEntity departmentUserEntity = new DepartmentUserEntity();
@@ -119,6 +120,7 @@ public class UserServiceImpl implements IUserService,Serializable{
             //不能禁用manager用户 , 当前用户自己
         }
 
+        //TODO test
         userDto.setLoginPwd(userEntity.getLoginPwd());
 
         BeanUtils.copyProperties(userDto,userEntity);

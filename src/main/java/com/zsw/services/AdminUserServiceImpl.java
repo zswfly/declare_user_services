@@ -55,6 +55,7 @@ public class AdminUserServiceImpl implements IAdminUserService,Serializable {
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
 
+        //TODO test
         userEntity = this.dbService.get(userEntity) ;
 
         AdminUserEntity adminUserEntity = new AdminUserEntity();
