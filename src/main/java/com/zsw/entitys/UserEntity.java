@@ -124,7 +124,7 @@ public class UserEntity extends IDEntity {
     //@Column(name = "phone", nullable = false, length = 20)
     @NotNull
     @Length(max = 30)
-    @Column(name = "phone", unique = false,  nullable = false, insertable = true, updatable = true, length = 30)
+    @Column(name = "phone", unique = true,  nullable = false, insertable = true, updatable = true, length = 30)
     public String getPhone() {
         return phone;
     }
@@ -137,7 +137,7 @@ public class UserEntity extends IDEntity {
     //@Column(name = "email", nullable = false, length = 20)
     @NotNull
     @Length(max = 70)
-    @Column(name = "email", unique = false,  nullable = false, insertable = true, updatable = true, length = 70)
+    @Column(name = "email", unique = true,  nullable = false, insertable = true, updatable = true, length = 70)
     public String getEmail() {
         return email;
     }
