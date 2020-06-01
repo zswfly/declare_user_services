@@ -134,10 +134,10 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void batchBan(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId) throws Exception{
-        int status =0;
+        int status =CommonStaticWord.Normal_Status_0;
         List<Integer> managerIds = null;
-        if( UserServiceStaticWord.User_Status_ban.equals(type)){
-            status = 1;
+        if( CommonStaticWord.Status_ban.equals(type)){
+            status = CommonStaticWord.Ban_Status_1;
             Map<String, Object > param = new HashMap<>();
             param.put("userIds",ids);
             managerIds = this.companyMapper.checkCompanyManagerIds(param);
@@ -158,6 +158,8 @@ public class UserServiceImpl implements IUserService,Serializable{
         if(currentCompanyId != null && currentCompanyId > 0)
             paramMap.put("companyId",currentCompanyId);
         paramMap.put("ids",ids);
+
+        this.userMapper.batchBan(paramMap);
 
 
 //        List<UserEntity> list = this.dbService.findBy(UserEntity.class,"id",ids);
