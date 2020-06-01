@@ -145,4 +145,33 @@ public class CompanyImpl implements ICompanyService,Serializable{
     public CompanyEntity getCompany(CompanyEntity param) throws Exception {
         return this.dbService.get(param);
     }
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public synchronized String checkCompanyExist(CompanyDto companyDto) throws Exception {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if(companyDto.getId() == null){
+
+            CompanyEntity param = new CompanyEntity();
+
+            param.setName(companyDto.getName());
+            if( this.dbService.get(param) != null
+                    ) stringBuilder.append("公司名已存在");
+
+        }else{
+            CompanyEntity param = new CompanyEntity();
+            CompanyEntity result = null;
+
+            param.setName(companyDto.getName());
+            result = this.dbService.get(param);
+            if( result != null && result.getId() != companyDto.getId() )
+                stringBuilder.append("公司名已存在");
+
+        }
+
+        return stringBuilder.toString();
+    }
+
 }

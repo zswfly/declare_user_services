@@ -3,6 +3,8 @@ package com.zsw.services;
 import com.zsw.entitys.CompanyEntity;
 import com.zsw.entitys.user.CompanyDto;
 import com.zsw.entitys.user.SimpleCompanyDto;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -23,5 +25,5 @@ public interface ICompanyService extends IBaseService{
     CompanyEntity getCompany(CompanyEntity param)throws Exception;
 
 
-
+    String checkCompanyExist(CompanyDto companyDto) throws Exception;
 }
