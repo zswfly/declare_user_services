@@ -166,4 +166,26 @@
         </if>
     </select>
 
+
+    <update id="batchBan" parameterType="Map">
+
+        UPDATE company c
+        SET c.update_time = CURRENT_DATE
+        <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
+            , c.update_user = '${paramMap.currentUserId}'
+        </if>
+        <if test="paramMap.status != null and paramMap.status >= 0">
+            , c.`status`  = #{paramMap.status}
+        </if>
+
+        WHERE 1 = 1
+        <if test="paramMap.ids !=null ">
+            AND c.id IN
+            <foreach item="item" collection="paramMap.ids" separator="," open="(" close=")" index="">
+                #{item, jdbcType=NUMERIC}
+            </foreach>
+        </if>
+
+    </update>
+
 </mapper>

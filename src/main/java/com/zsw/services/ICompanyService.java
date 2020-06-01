@@ -26,4 +26,6 @@ public interface ICompanyService extends IBaseService{
 
 
     String checkCompanyExist(CompanyDto companyDto) throws Exception;
+
+    void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception;
 }

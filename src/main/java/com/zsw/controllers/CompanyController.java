@@ -10,20 +10,20 @@ import com.zsw.entitys.user.CompanyDto;
 import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
-import com.zsw.utils.CommonStaticWord;
-import com.zsw.utils.CommonUtils;
-import com.zsw.utils.ResponseCode;
-import com.zsw.utils.UserStaticURLUtil;
+import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,7 +225,33 @@ public class CompanyController extends BaseController {
 
 
 
+    @RequestMapping(value= UserStaticURLUtil.companyController_batchBan,
+            method= RequestMethod.PUT)
+    //@AdminPermission(code = "user.companyController.batchBan",name = "批量禁用/恢复",description ="批量禁用/恢复公司"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.companyController + UserStaticURLUtil.companyController_batchBan)
+    public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+            String ids = params.get("ids");
+            String type = params.get("type");
+            if(ids == null || type == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
+                this.companyService.batchBan(list,type,currentAdminUserId);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
 
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
 

@@ -15,4 +15,6 @@ public interface CompanyMapper {
     Integer listCompanyEntityCount(@Param("paramMap") Map<String,Object> paramMap);
     CompanyEntity getCompanyEntity(@Param("paramMap") Map<String,Object> paramMap);
     List<Integer> checkCompanyManagerIds(@Param("paramMap") Map<String,Object> paramMap);
+
+    void batchBan(@Param("paramMap")Map<String, Object> paramMap);
 }

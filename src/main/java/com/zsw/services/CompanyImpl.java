@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangshaowei on 2020/4/29.
@@ -173,5 +170,18 @@ public class CompanyImpl implements ICompanyService,Serializable{
 
         return stringBuilder.toString();
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public void batchBan(List<Integer> ids, String type, Integer currentUserId) throws Exception{
+        int status = CommonStaticWord.Status_ban.equals(type)?CommonStaticWord.Ban_Status_1:CommonStaticWord.Normal_Status_0 ;
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("currentUserId",currentUserId);
+        paramMap.put("status",status);
+        paramMap.put("ids",ids);
+        this.companyMapper.batchBan(paramMap);
+
+    }
+
 
 }
