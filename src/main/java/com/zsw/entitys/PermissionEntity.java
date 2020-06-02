@@ -90,7 +90,7 @@ public class PermissionEntity extends IDEntity{
     //@Column(name = "create_user", nullable = false)
 //    @NotNull
 //    @Min(1L)
-    @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = true)
+    @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = false)
     public Integer getCreateUser() {
         return createUser;
     }
@@ -101,7 +101,7 @@ public class PermissionEntity extends IDEntity{
 
     @Basic
     //@Column(name = "update_time", nullable = false)
-    @Column(name = "update_time", nullable = true, unique = false, insertable = true, updatable = false)
+    @Column(name = "update_time", nullable = true, unique = false, insertable = true, updatable = true)
     public Timestamp getUpdateTime() {
         return updateTime;
     }

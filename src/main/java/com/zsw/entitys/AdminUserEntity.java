@@ -59,7 +59,7 @@ public class AdminUserEntity extends IDEntity {
 
     @Basic
     //@Column(name = "create_user", nullable = false)
-    @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = true)
+    @Column(name = "create_user", length = 11, nullable = true, unique = false, insertable = true, updatable = false)
     public Integer getCreateUser() {
         return createUser;
     }
@@ -70,7 +70,7 @@ public class AdminUserEntity extends IDEntity {
 
     @Basic
     //@Column(name = "update_time", nullable = false)
-    @Column(name = "update_time", nullable = true, unique = false, insertable = true, updatable = false)
+    @Column(name = "update_time", nullable = true, unique = false, insertable = true, updatable = true)
     public Timestamp getUpdateTime() {
         return updateTime;
     }
