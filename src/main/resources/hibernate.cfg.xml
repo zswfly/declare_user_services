@@ -17,12 +17,12 @@
     <mapping class="com.zsw.entitys.CompanyEntity"/>
     <mapping class="com.zsw.entitys.DepartmentEntity"/>
     <mapping class="com.zsw.entitys.DepartmentUserEntity"/>
+    <mapping class="com.zsw.entitys.RoleEntity"/>
+    <mapping class="com.zsw.entitys.RolePermissionEntity"/>
+    <mapping class="com.zsw.entitys.UserRoleEntity"/>
 
 
-
-
-
-    <!-- DB schema will be updated if needed -->
+      <!-- DB schema will be updated if needed -->
     <!-- <property name="hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>

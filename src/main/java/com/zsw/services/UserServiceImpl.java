@@ -211,20 +211,28 @@ public class UserServiceImpl implements IUserService,Serializable{
             if( this.dbService.get(userEntity) != null
                     )  stringBuilder.append("Email地址已被使用");
         }else{
-            UserEntity userEntity = new UserEntity();
-            UserEntity result = null;
+            UserEntity param = new UserEntity();
+            List<UserEntity> resultList = null;
+            param.setPhone(userDto.getPhone());
+            resultList = this.dbService.find(param);
+            for(UserEntity result :resultList){
+                result = this.dbService.get(param);
+                if( result != null && result.getId() != userDto.getId() ) {
+                    stringBuilder.append("电话号码已存在");
+                    break;
+                }
+            }
 
-            userEntity.setPhone(userDto.getPhone());
-            result = this.dbService.get(userEntity);
-            if( result != null && result.getId() != userDto.getId() )
-                 stringBuilder.append("电话号码已存在");
-
-            userEntity.setPhone(null);
-            userEntity.setEmail(userDto.getEmail());
-            result = this.dbService.get(userEntity);
-            if( result != null && result.getId() != userDto.getId() )
-                 stringBuilder.append("Email地址已被使用");
-
+            param.setPhone(null);
+            param.setEmail(userDto.getEmail());
+            resultList = this.dbService.find(param);
+            for(UserEntity result :resultList){
+                result = this.dbService.get(param);
+                if( result != null && result.getId() != userDto.getId() ) {
+                    stringBuilder.append("Email地址已被使用");
+                    break;
+                }
+            }
         }
 
         return stringBuilder.toString();

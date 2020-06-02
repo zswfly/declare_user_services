@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsw.daos.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.zsw.entitys.Role" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="listRoleEntity" resultMap="BaseResultMap">
+
+    SELECT r.*
+    FROM role r
+
+    <if test="paramMap.roleName != null and paramMap.roleName != ''">
+      AND r.`name` LIKE '%${paramMap.roleName}%'
+    </if>
+
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND r.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.beginCreateTime !=null">
+      AND r.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND r.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+
+    GROUP BY r.id
+
+    <if test="paramMap.start !=null and paramMap.start >= 0
+         and paramMap.pageSize !=null and paramMap.pageSize > 0">
+      LIMIT ${paramMap.start} , ${paramMap.pageSize}
+    </if>
+  </select>
+
+  <select id="listRoleEntityCount" resultType="Integer">
+
+    SELECT
+    COUNT(DISTINCT r.id)
+    FROM role c
+    <if test="paramMap.roleName != null and paramMap.roleName != ''">
+      AND r.`name` LIKE '%${paramMap.roleName}%'
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      AND r.`status` = #{paramMap.status}
+    </if>
+    <if test="paramMap.beginCreateTime !=null">
+      AND r.create_time >= Date(#{paramMap.beginCreateTime})
+    </if>
+    <if test="paramMap.endCreateTime !=null">
+      <![CDATA[ AND r.create_time <=  Date(#{paramMap.endCreateTime}) ]]>
+    </if>
+  </select>
+
+  <update id="batchBan" parameterType="Map">
+
+    UPDATE role c
+    SET r.update_time = CURRENT_DATE
+    <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
+      , r.update_user = #{paramMap.currentUserId}
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      , r.`status`  = #{paramMap.status}
+    </if>
+
+    WHERE 1 = 1
+    <if test="paramMap.currentCompanyId != null and paramMap.currentCompanyId >= 0">
+      AND r.company_id  = #{paramMap.currentCompanyId}
+    </if>
+    <if test="paramMap.ids !=null ">
+      AND r.id IN
+      <foreach item="item" collection="paramMap.ids" separator="," open="(" close=")" index="">
+        #{item, jdbcType=NUMERIC}
+      </foreach>
+    </if>
+
+  </update>
+  
+</mapper>

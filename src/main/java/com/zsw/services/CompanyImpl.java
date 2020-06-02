@@ -3,6 +3,7 @@ package com.zsw.services;
 import com.zsw.daos.CompanyMapper;
 import com.zsw.daos.UserMapper;
 import com.zsw.entitys.CompanyEntity;
+import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.user.CompanyDto;
 import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.utils.CommonStaticWord;
@@ -159,12 +160,16 @@ public class CompanyImpl implements ICompanyService,Serializable{
 
         }else{
             CompanyEntity param = new CompanyEntity();
-            CompanyEntity result = null;
-
+            List<CompanyEntity> resultList = null;
             param.setName(companyDto.getName());
-            result = this.dbService.get(param);
-            if( result != null && result.getId() != companyDto.getId() )
-                stringBuilder.append("公司名已存在");
+            resultList = this.dbService.find(param);
+            for(CompanyEntity result :resultList){
+                result = this.dbService.get(param);
+                if( result != null && result.getId() != companyDto.getId() ) {
+                    stringBuilder.append("公司名已存在");
+                    break;
+                }
+            }
 
         }
 

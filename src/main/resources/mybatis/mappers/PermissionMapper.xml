@@ -37,9 +37,11 @@
     <include refid="UserPermissionColumns" />
 	  FROM user t
       LEFT JOIN user_role ur ON t.id = ur.user_id
+      LEFT JOIN role r ON r.id = ur.role_id
       LEFT JOIN role_permission rp ON rp.role_id = ur.role_id
       LEFT JOIN permission p ON p.id = rp.permission_id
-      WHERE 1=1
+      WHERE r.`status` = 0
+
     <if test="ids !=null ">
       AND t.id in
       <foreach item="item" collection="ids" separator="," open="(" close=")" index="">
