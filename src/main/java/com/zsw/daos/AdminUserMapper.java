@@ -12,6 +12,5 @@ import java.util.Map;
 @Component
 public interface AdminUserMapper {
 
-
-
+    void batchBan(@Param("paramMap")Map<String, Object> paramMap);
 }

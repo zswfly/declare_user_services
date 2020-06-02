@@ -154,7 +154,7 @@
     LEFT JOIN company c ON c.id = d.company_id
     SET u.update_time = CURRENT_DATE
     <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
-      , u.update_user = '${paramMap.currentUserId}'
+      , u.update_user = #{paramMap.currentUserId}
     </if>
     <if test="paramMap.status != null and paramMap.status >= 0">
       , u.`status`  = #{paramMap.status}
@@ -165,7 +165,7 @@
       AND c.id = #{paramMap.companyId}
     </if>
     <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
-      AND u.id != '${paramMap.currentUserId}'
+      AND u.id != #{{paramMap.currentUserId}
     </if>
     <if test="paramMap.ids !=null ">
       AND u.id IN

@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -138,7 +140,33 @@ public class AdminUserController extends BaseController {
         }
     }
 
+    @RequestMapping(value=UserStaticURLUtil.adminUserController_batchBan,
+            method= RequestMethod.PUT)
+//    @AdminPermission(code = "user.adminUserController.batchBan",name = "批量恢复/禁用后台用户",description ="批量恢复/禁用后台用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminUserController + UserStaticURLUtil.adminUserController_batchBan)
+    public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = new Gson();
+            String ids = params.get("ids");
+            String type = params.get("type");
+            if(ids == null || type == null){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
+                this.adminUserService.batchBan(list,type,currentAdminUserId);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
 
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
 

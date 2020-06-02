@@ -12,7 +12,26 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
   </resultMap>
 
+  <update id="batchBan" parameterType="Map">
 
+    UPDATE admin_user a
+    SET a.update_time = CURRENT_DATE
+    <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
+      , a.update_user = #{paramMap.currentUserId}
+    </if>
+    <if test="paramMap.status != null and paramMap.status >= 0">
+      , a.`status`  = #{paramMap.status}
+    </if>
+
+    WHERE a.id != 1
+    <if test="paramMap.ids !=null ">
+      AND g.id IN
+      <foreach item="item" collection="paramMap.ids" separator="," open="(" close=")" index="">
+        #{item, jdbcType=NUMERIC}
+      </foreach>
+    </if>
+
+  </update>
 
 
 </mapper>

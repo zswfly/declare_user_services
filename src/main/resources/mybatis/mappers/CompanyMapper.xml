@@ -172,7 +172,7 @@
         UPDATE company c
         SET c.update_time = CURRENT_DATE
         <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
-            , c.update_user = '${paramMap.currentUserId}'
+            , c.update_user = #{paramMap.currentUserId}
         </if>
         <if test="paramMap.status != null and paramMap.status >= 0">
             , c.`status`  = #{paramMap.status}
