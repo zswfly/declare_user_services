@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by zhangshaowei on 2020/6/2.
  */
 @RestController
-@RequestMapping(UserStaticURLUtil.companyController)
+@RequestMapping(UserStaticURLUtil.roleController)
 public class RoleController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(CompanyController.class);
 
