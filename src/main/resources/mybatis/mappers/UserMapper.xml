@@ -165,7 +165,7 @@
       AND c.id = #{paramMap.companyId}
     </if>
     <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
-      AND u.id != #{{paramMap.currentUserId}
+      AND u.id != #{paramMap.currentUserId}
     </if>
     <if test="paramMap.ids !=null ">
       AND u.id IN

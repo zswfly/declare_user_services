@@ -57,11 +57,7 @@ public class UserUtils {
 
             Map<String, String > param = new HashMap<>();
             param.put("rememberToken",rememberToken);
-            if(isAdminLogin) {
-                param.put("adminUserId", userEntity.getId().toString());
-            }else{
-                param.put("userId", userEntity.getId().toString());
-            }
+            param.put("userId", userEntity.getId().toString());
             restTemplate.postForEntity(
                     CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                             + CacheStaticURLUtil.redisController
@@ -73,7 +69,11 @@ public class UserUtils {
             //不用返回user对象
             //userEntity.setLoginPwd(null);
             //data.put("user",userEntity);
-            data.put("userId",userEntity.getId());
+            if(isAdminLogin) {
+                data.put("adminUserId", userEntity.getId());
+            }else{
+                data.put("userId",userEntity.getId());
+            }
             data.put("rememberToken",rememberToken);
 
             result.setData(data);

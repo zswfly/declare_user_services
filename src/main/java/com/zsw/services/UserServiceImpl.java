@@ -81,9 +81,6 @@ public class UserServiceImpl implements IUserService,Serializable{
         userEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(userEntity);
 
-        //TODO test
-        userEntity = this.dbService.get(userEntity) ;
-
         DepartmentUserEntity departmentUserEntity = new DepartmentUserEntity();
         departmentUserEntity.setDepartmentId(departmentId);
         departmentUserEntity.setUserId(userEntity.getId());
