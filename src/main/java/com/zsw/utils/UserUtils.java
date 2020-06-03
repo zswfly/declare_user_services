@@ -25,7 +25,7 @@ public class UserUtils {
         Gson gson = new Gson();
 
         if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
-            if(userEntity == null || loginTemp == null || userEntity.getLoginPwd() == null || userEntity.getLoginPwd().equals(loginTemp.getPassword()))
+            if(userEntity == null || loginTemp == null || userEntity.getLoginPwd() == null || !userEntity.getLoginPwd().equals(loginTemp.getPassword()))
                 userEntity = null ;
         }else if(UserServiceStaticWord.loginVerifyType_code.equals(loginTemp.getVerifyType())){
 
