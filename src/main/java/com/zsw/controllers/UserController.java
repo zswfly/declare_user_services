@@ -59,7 +59,7 @@ public class UserController extends BaseController{
                 result.setMessage("账户禁用");
             }
 
-            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity);
+            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity,Boolean.FALSE);
         }catch (Exception e){
 
             CommonUtils.ErrorAction(LOG,e);

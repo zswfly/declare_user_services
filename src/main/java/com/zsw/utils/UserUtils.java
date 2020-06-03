@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by zhangshaowei on 2020/5/29.
  */
 public class UserUtils {
-    public static Result<HashMap<String, Object>> login(IUserService userService , RestTemplate restTemplate , LoginTemp loginTemp, UserEntity userEntity) throws Exception {
+    public static Result<HashMap<String, Object>> login(IUserService userService , RestTemplate restTemplate , LoginTemp loginTemp, UserEntity userEntity,Boolean isAdminLogin) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
 
         Gson gson = new Gson();
@@ -57,8 +57,11 @@ public class UserUtils {
 
             Map<String, String > param = new HashMap<>();
             param.put("rememberToken",rememberToken);
-            param.put("userId",userEntity.getId().toString());
-
+            if(isAdminLogin) {
+                param.put("adminUserId", userEntity.getId().toString());
+            }else{
+                param.put("userId", userEntity.getId().toString());
+            }
             restTemplate.postForEntity(
                     CommonStaticWord.HTTP + CommonStaticWord.cacheServices
                             + CacheStaticURLUtil.redisController

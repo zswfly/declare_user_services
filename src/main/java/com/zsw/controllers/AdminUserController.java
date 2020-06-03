@@ -73,7 +73,7 @@ public class AdminUserController extends BaseController {
                 return result;
             }
 
-            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity);
+            return UserUtils.login(this.userService,this.restTemplate,loginTemp,userEntity,Boolean.TRUE);
         }catch (Exception e){
 
             CommonUtils.ErrorAction(LOG,e);
