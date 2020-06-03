@@ -1,6 +1,8 @@
 package com.zsw.controllers;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.DepartmentEntity;
@@ -41,6 +43,19 @@ public class DepartmentController extends BaseController {
     ICompanyService companyService;
 
     private static final Logger LOG = LoggerFactory.getLogger(DepartmentController.class);
+
+
+    public static void main(String[] args) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+        Gson gson = gsonBuilder.create();
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setMnemonicCode("123123");
+        System.out.println("-------------------------");
+        System.out.println(gson.toJson(departmentEntity));
+        System.out.println("-------------------------");
+    }
 
 
 
