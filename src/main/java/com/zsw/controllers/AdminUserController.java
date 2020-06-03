@@ -48,7 +48,7 @@ public class AdminUserController extends BaseController {
             UserEntity userEntity = null;
             UserEntity paramUserEntity = new UserEntity();
             paramUserEntity.setPhone(loginTemp.getPhone());
-            userEntity = userService.getUser(paramUserEntity);
+            userEntity = this.userService.getUser(paramUserEntity);
 
             if(userEntity == null || userEntity.getId() == null){
                 result.setCode(ResponseCode.Code_Bussiness_Error);
