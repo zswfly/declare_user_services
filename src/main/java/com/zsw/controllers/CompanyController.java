@@ -1,6 +1,7 @@
 package com.zsw.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.zsw.annotations.Permission;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.CompanyEntity;
@@ -131,7 +132,10 @@ public class CompanyController extends BaseController {
         try {
 
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    //.setDateFormat("yyyy-MM-dd")
+                    .create();
 
             CompanyEntity companyEntity = new CompanyEntity();
             companyEntity.setId(companyId);
