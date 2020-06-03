@@ -147,7 +147,7 @@ public class AdminUserController extends BaseController {
     public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             String ids = params.get("ids");
             String type = params.get("type");
             if(ids == null || type == null){

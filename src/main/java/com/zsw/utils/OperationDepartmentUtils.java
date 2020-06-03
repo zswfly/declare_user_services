@@ -1,19 +1,12 @@
 package com.zsw.utils;
 
 import com.google.gson.Gson;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.zsw.entitys.DepartmentEntity;
-import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.DepartmentDto;
-import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IDepartmentService;
-import com.zsw.services.IUserService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Arrays;
@@ -29,7 +22,7 @@ public class OperationDepartmentUtils {
     public static String newDepartment(IDepartmentService departmentService,DepartmentDto departmentDto, Integer currentUserId, Integer currentCompanyId) throws Exception {
 
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
 
         String check = newOrUpdateDepartmentCheck(departmentService,departmentDto,currentCompanyId);
@@ -50,7 +43,7 @@ public class OperationDepartmentUtils {
 
     public static String updateDepartment(IDepartmentService departmentService ,DepartmentDto departmentDto, Integer currentUserId, Integer currentCompanyId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
 
         String check = newOrUpdateDepartmentCheck(departmentService ,departmentDto,currentCompanyId);
@@ -71,7 +64,7 @@ public class OperationDepartmentUtils {
 
     public static String updateStatusDepartment(IDepartmentService departmentService ,Map<String, String> params ,Integer currentUserId,Integer currentCompanyId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         String ids = params.get("ids");
         String type = params.get("type");
         if(ids == null || type == null){
@@ -89,7 +82,7 @@ public class OperationDepartmentUtils {
 
     public static String getDepartment(IDepartmentService departmentService ,Integer departmentId, Integer currentCompanyId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
         DepartmentEntity departmentEntity = new DepartmentEntity();
         departmentEntity.setId(departmentId);
@@ -113,7 +106,7 @@ public class OperationDepartmentUtils {
 
     public static String departmentsPage(IDepartmentService departmentService ,NativeWebRequest request, Integer currentCompanyId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         Map<String,Object> paramMap = new HashMap<String, Object>();
 
         if(currentCompanyId != null && currentCompanyId > 0){

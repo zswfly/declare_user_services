@@ -5,6 +5,7 @@ import com.zsw.annotations.Permission;
 import com.zsw.controller.BaseController;
 import com.zsw.services.IUserService;
 import com.zsw.utils.CommonStaticWord;
+import com.zsw.utils.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class TestController extends BaseController {
 
     @RequestMapping(value= CommonStaticWord.System_Url+"/test2", method= RequestMethod.POST)
     public String test2(List<Integer> ids) throws Exception {
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         return gson.toJson(this.userService.getUsersByIds(ids));
     }
 

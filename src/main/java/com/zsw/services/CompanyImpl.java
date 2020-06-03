@@ -129,6 +129,7 @@ public class CompanyImpl implements ICompanyService,Serializable{
 
         if(companyEntity == null) throw new Exception("没有该公司id");
 
+        if(companyDto.getUrl() == null )companyDto.setUrl(companyEntity.getUrl());
         BeanUtils.copyProperties(companyDto,companyEntity);
 
         //companyEntity.setMnemonicCode(PinyinUtils.getFirstSpell(companyEntity.getName()));

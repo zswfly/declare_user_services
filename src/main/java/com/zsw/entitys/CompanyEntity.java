@@ -1,6 +1,13 @@
 package com.zsw.entitys;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSerializer;
+import com.zsw.utils.TestUtil;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -290,5 +297,31 @@ public class CompanyEntity extends IDEntity{
         result = 31 * result + (contractStartAt != null ? contractStartAt.hashCode() : 0);
         result = 31 * result + (contractEndAt != null ? contractEndAt.hashCode() : 0);
         return result;
+    }
+
+
+
+    public static void main(String[] args) {
+//        Gson gson = new GsonBuilder()
+//                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+//                //.setDateFormat("yyyy-MM-dd")
+//                //.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+//                .create();
+
+//        Gson gson = new Gson();
+        JsonSerializer<Date> jsonSerializer =TestUtil.gsonJsonDate();
+        JsonSerializer<Timestamp> jsonSerializer2 =TestUtil.gsonJsonTimestamp();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, jsonSerializer)
+                .registerTypeAdapter(Timestamp.class, jsonSerializer2)
+                .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
+                .create();
+        CompanyEntity companyEntity = new CompanyEntity();
+        companyEntity.setContractStartAt(new Date(System.currentTimeMillis()));
+        companyEntity.setContractEndAt(new Date(System.currentTimeMillis()));
+        companyEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        System.out.println("-------------------------");
+        System.out.println(gson.toJson(companyEntity));
+        System.out.println("-------------------------");
     }
 }

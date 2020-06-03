@@ -33,7 +33,7 @@ public class RoleController extends BaseController {
     public String newRole(RoleEntity roleEntity, @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             String check =this.roleService.checkRoleExist(roleEntity, currentCompanyId);
             if(StringUtils.isNotBlank(check) && StringUtils.isNotEmpty(check)){
@@ -61,7 +61,7 @@ public class RoleController extends BaseController {
     public String updateRole(RoleEntity roleEntity,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             String check =this.roleService.checkRoleExist(roleEntity,currentCompanyId);
             if(StringUtils.isNotBlank(check) && StringUtils.isNotEmpty(check)){
@@ -92,7 +92,7 @@ public class RoleController extends BaseController {
         try {
 
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             RoleEntity roleEntity = new RoleEntity();
             roleEntity.setId(roleId);
@@ -120,7 +120,7 @@ public class RoleController extends BaseController {
     public String rolePage(NativeWebRequest request,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             Map<String,Object> paramMap = new HashMap<String, Object>();
 
             paramMap.put("currentCompanyId", currentCompanyId);
@@ -176,7 +176,7 @@ public class RoleController extends BaseController {
     public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             String ids = params.get("ids");
             String type = params.get("type");
             if(ids == null || type == null){
@@ -210,7 +210,7 @@ public class RoleController extends BaseController {
 //    public String relationRolePermission( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
 //        try {
 //            ResponseJson responseJson = new ResponseJson();
-//            Gson gson = new Gson();
+//            Gson gson = CommonUtils.getGson();
 //            String ids = params.get("ids");
 //            String type = params.get("type");
 //            if(ids == null || type == null){

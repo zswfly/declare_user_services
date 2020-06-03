@@ -45,18 +45,6 @@ public class DepartmentController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(DepartmentController.class);
 
 
-    public static void main(String[] args) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        Gson gson = gsonBuilder.create();
-
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setMnemonicCode("123123");
-        System.out.println("-------------------------");
-        System.out.println(gson.toJson(departmentEntity));
-        System.out.println("-------------------------");
-    }
-
 
 
     @RequestMapping(value=UserStaticURLUtil.departmentController_newDepartment,
@@ -137,7 +125,7 @@ public class DepartmentController extends BaseController {
     public String relationDepartmentUser(String jsonDepartmentUser,@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 //            2.把jsonList转化为一个list对象
 //            String jsonList="[{'userid':'1881140130','username':'三哥','usersex':'男','banji':'计算机1班','phone':'18255052351'},"
 //                    + "{'userid':'1881140131','username':'蜂','usersex':'男','banji':'计算机1班','phone':'18355092351'},"
@@ -162,7 +150,7 @@ public class DepartmentController extends BaseController {
     public String deleteDepartmentUser(String jsonDepartmentUser,@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 //            2.把jsonList转化为一个list对象
 //            String jsonList="[{'userid':'1881140130','username':'三哥','usersex':'男','banji':'计算机1班','phone':'18255052351'},"
 //                    + "{'userid':'1881140131','username':'蜂','usersex':'男','banji':'计算机1班','phone':'18355092351'},"

@@ -73,7 +73,7 @@ public class PermissionController extends BaseController implements IUserPermiss
     public String permissionsPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             Map<String,Object> paramMap = new HashMap<String, Object>();
 
             String status = request.getParameter("status");
@@ -136,7 +136,7 @@ public class PermissionController extends BaseController implements IUserPermiss
         try {
 
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             PermissionEntity permissionEntity = new PermissionEntity();
             permissionEntity.setId(permissionId);

@@ -54,7 +54,7 @@ public class CompanyController extends BaseController {
     public String newCompany(CompanyDto companyDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             String check =this.companyService.checkCompanyExist(companyDto);
             if(StringUtils.isNotBlank(check) && StringUtils.isNotEmpty(check)){
@@ -81,7 +81,7 @@ public class CompanyController extends BaseController {
 //    public String deleteCompany(Integer companyId,@RequestHeader("userId") Integer currentUserId) throws Exception {
 //        try {
 //            ResponseJson responseJson = new ResponseJson();
-//            Gson gson = new Gson();
+//            Gson gson = CommonUtils.getGson();
 //
 //            this.companyService.deleteCompany(companyId,currentUserId);
 //
@@ -103,7 +103,7 @@ public class CompanyController extends BaseController {
     public String updateCompany(CompanyDto companyDto,@RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
             String check =this.companyService.checkCompanyExist(companyDto);
             if(StringUtils.isNotBlank(check) && StringUtils.isNotEmpty(check)){
@@ -132,10 +132,7 @@ public class CompanyController extends BaseController {
         try {
 
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                    //.setDateFormat("yyyy-MM-dd")
-                    .create();
+            Gson gson = CommonUtils.getGson();
 
             CompanyEntity companyEntity = new CompanyEntity();
             companyEntity.setId(companyId);
@@ -166,7 +163,7 @@ public class CompanyController extends BaseController {
     public String companysPage(NativeWebRequest request) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             Map<String,Object> paramMap = new HashMap<String, Object>();
 
             String status = request.getParameter("status");
@@ -236,7 +233,7 @@ public class CompanyController extends BaseController {
     public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             String ids = params.get("ids");
             String type = params.get("type");
             if(ids == null || type == null){

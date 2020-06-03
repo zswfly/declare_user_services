@@ -57,7 +57,7 @@ public class OperationUserUtils {
 
 
     public static String getUser(IUserService userService,Integer userId,Integer currentCompanyId) throws Exception{
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         ResponseJson responseJson = new ResponseJson();
 
         if(userId != null && currentCompanyId != null && userId >0 && currentCompanyId > 0){
@@ -91,7 +91,7 @@ public class OperationUserUtils {
 
     public static String updateUser(IUserService userService, UserDto userDto,Integer currentUserId)throws Exception{
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
         Integer userDtoId = userDto.getId();
 
@@ -125,7 +125,7 @@ public class OperationUserUtils {
 
     public static String batchBan(IUserService userService,@RequestParam Map<String, String> params,Integer currentUserId,Integer currentCompanyId) throws Exception{
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         String ids = params.get("ids");
         String type = params.get("type");
         if(ids == null || type == null){
@@ -143,7 +143,7 @@ public class OperationUserUtils {
 
     public static String usersPage(IUserService userService ,NativeWebRequest request,Integer currentCompanyId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         Map<String,Object> paramMap = new HashMap<String, Object>();
 
         String status = request.getParameter("status");
@@ -205,7 +205,7 @@ public class OperationUserUtils {
     }
     public static String newUser(IUserService userService , IAdminUserService adminUserService, UserDto userDto, Integer currentUserId, Integer departmentId, Boolean isNewAdminUser) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         String check = OperationUserUtils.newOrUpdateUserCheck(userService,userDto);
         if(check != null){
             responseJson.setCode(ResponseCode.Code_Bussiness_Error);

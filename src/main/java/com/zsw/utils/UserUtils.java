@@ -22,7 +22,7 @@ public class UserUtils {
     public static Result<HashMap<String, Object>> login(IUserService userService , RestTemplate restTemplate , LoginTemp loginTemp, UserEntity userEntity,Boolean isAdminLogin) throws Exception {
         Result<HashMap<String, Object>> result= new Result<HashMap<String, Object>>();
 
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
         if(UserServiceStaticWord.loginVerifyType_passWord.equals(loginTemp.getVerifyType())){
             if(userEntity == null || loginTemp == null || userEntity.getLoginPwd() == null || !userEntity.getLoginPwd().equals(loginTemp.getPassword()))
@@ -89,7 +89,7 @@ public class UserUtils {
 
     public static String loginOut(IUserService userService , RestTemplate restTemplate ,  Integer currentUserId) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
         userService.updateRememberToken(currentUserId,null);
 
         Map<String, String > param = new HashMap<>();
@@ -140,7 +140,7 @@ public class UserUtils {
 
     public static String resetPassWord(IUserService userService , RestTemplate restTemplate , LoginTemp loginTemp) throws Exception {
         ResponseJson responseJson = new ResponseJson();
-        Gson gson = new Gson();
+        Gson gson = CommonUtils.getGson();
 
         //验证码校验
         Map<String, String > paramMap = new HashMap<>();

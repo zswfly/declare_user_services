@@ -131,7 +131,7 @@ public class UserController extends BaseController{
     public String getUserCompanys(@RequestHeader("userId") Integer currentUserId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
             Map<String,Object> listSimpleCompanyDtoParams = new HashMap<>();
             listSimpleCompanyDtoParams.put("userId",currentUserId+"");
             List<SimpleCompanyDto> simpleCompanyDtoList = this.companyService.listSimpleCompanyDto(listSimpleCompanyDtoParams);
@@ -273,7 +273,7 @@ public class UserController extends BaseController{
 /*
         try {
             ResponseJson responseJson = new ResponseJson();
-            Gson gson = new Gson();
+            Gson gson = CommonUtils.getGson();
 
 
             return gson.toJson(responseJson);

@@ -1,6 +1,12 @@
 package com.zsw.entitys;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -20,6 +26,7 @@ public class DepartmentEntity extends IDEntity{
     private Integer status;
     private Timestamp createTime;
     private Integer createUser;
+
     private Timestamp updateTime;
     private Integer updateUser;
     private String mnemonicCode;
@@ -171,5 +178,23 @@ public class DepartmentEntity extends IDEntity{
         result = 31 * result + updateUser;
         result = 31 * result + (mnemonicCode != null ? mnemonicCode.hashCode() : 0);
         return result;
+    }
+
+
+
+
+
+    public static void main(String[] args) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setMnemonicCode("123123");
+        //departmentEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+
+
+        System.out.println("-------------------------");
+        System.out.println(gson.toJson(departmentEntity));
+        System.out.println("-------------------------");
     }
 }
