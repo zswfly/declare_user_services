@@ -54,10 +54,10 @@ public class RoleController extends BaseController {
     }
 
 
-    @RequestMapping(value= UserStaticURLUtil.roleControler_updateRole,
+    @RequestMapping(value= UserStaticURLUtil.roleController_updateRole,
             method= RequestMethod.PUT)
-    //    @Permission(code = "user.roleControler.updateRole",name = "更新角色",description ="更新角色"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleControler + UserStaticURLUtil.roleControler_updateRole)
+    //    @Permission(code = "user.roleController.updateRole",name = "更新角色",description ="更新角色"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_updateRole)
     public String updateRole(RoleEntity roleEntity,@RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -84,10 +84,10 @@ public class RoleController extends BaseController {
 
 
 
-    @RequestMapping(value=UserStaticURLUtil.roleControler_getRole+"/{roleId}",
+    @RequestMapping(value=UserStaticURLUtil.roleController_getRole+"/{roleId}",
             method= RequestMethod.GET)
-    //    @Permission(code = "user.roleControler.getRole",name = "获取单个角色",description ="获取单个角色"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleControler + UserStaticURLUtil.roleControler_getRole)
+    //    @Permission(code = "user.roleController.getRole",name = "获取单个角色",description ="获取单个角色"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_getRole)
     public String getRole(@PathVariable Integer roleId,Integer currentCompanyId) throws Exception {
         try {
 
@@ -113,10 +113,10 @@ public class RoleController extends BaseController {
         }
     }
 
-    @RequestMapping(value=UserStaticURLUtil.roleControler_rolePage,
+    @RequestMapping(value=UserStaticURLUtil.roleController_rolePage,
             method= RequestMethod.GET)
-    //    @Permission(code = "user.roleControler.rolePage",name = "搜索角色",description ="搜索角色"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleControler + UserStaticURLUtil.roleControler_rolePage)
+    //    @Permission(code = "user.roleController.rolePage",name = "搜索角色",description ="搜索角色"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_rolePage)
     public String rolePage(NativeWebRequest request,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -169,10 +169,10 @@ public class RoleController extends BaseController {
 
 
 
-    @RequestMapping(value=UserStaticURLUtil.roleControler_batchBan,
+    @RequestMapping(value=UserStaticURLUtil.roleController_batchBan,
             method= RequestMethod.PUT)
-    //@Permission(code = "user.roleControler.batchBan",name = "批量禁用/恢复角色",description ="批量禁用/恢复角色"
-    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleControler + UserStaticURLUtil.roleControler_batchBan)
+    //@Permission(code = "user.roleController.batchBan",name = "批量禁用/恢复角色",description ="批量禁用/恢复角色"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_batchBan)
     public String batchBan( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -203,10 +203,10 @@ public class RoleController extends BaseController {
 
 
 
-//    @RequestMapping(value=UserStaticURLUtil.roleControler_relationRolePermission,
+//    @RequestMapping(value=UserStaticURLUtil.roleController_relationRolePermission,
 //            method= RequestMethod.PUT)
-//    //@Permission(code = "user.roleControler.relationRolePermission",name = "关联角色权限",description ="批量禁用/恢复角色"
-//    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleControler + UserStaticURLUtil.roleControler_relationRolePermission)
+//    //@Permission(code = "user.roleController.relationRolePermission",name = "关联角色权限",description ="批量禁用/恢复角色"
+//    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_relationRolePermission)
 //    public String relationRolePermission( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
 //        try {
 //            ResponseJson responseJson = new ResponseJson();
