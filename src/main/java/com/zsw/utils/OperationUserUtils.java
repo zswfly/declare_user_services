@@ -172,7 +172,7 @@ public class OperationUserUtils {
         if(email !=null && StringUtils.isNotEmpty(email)) {
             paramMap.put("email", email);
         }
-        String userName = request.getParameter("userName");
+        String userName = request.getParameter("name");
         if(userName !=null && StringUtils.isNotEmpty(userName)) {
             paramMap.put("userName", userName);
         }

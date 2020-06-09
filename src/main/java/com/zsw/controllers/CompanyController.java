@@ -170,7 +170,7 @@ public class CompanyController extends BaseController {
             if(status !=null && StringUtils.isNotEmpty(status)) {
                 paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
             }
-            String companyName = request.getParameter("companyName");
+            String companyName = request.getParameter("name");
             if(companyName !=null && StringUtils.isNotEmpty(companyName)) {
                 paramMap.put("companyName", companyName);
             }

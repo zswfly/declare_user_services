@@ -122,7 +122,7 @@ public class OperationDepartmentUtils {
         if(status !=null && StringUtils.isNotEmpty(status)) {
             paramMap.put("status", Integer.valueOf(NumberUtils.toInt(status, CommonStaticWord.Normal_Status_0)));
         }
-        String departmentName = request.getParameter("departmentName");
+        String departmentName = request.getParameter("name");
         if(departmentName !=null && StringUtils.isNotEmpty(departmentName)) {
             paramMap.put("departmentName", departmentName);
         }
