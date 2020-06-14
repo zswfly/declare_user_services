@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "user_role", schema = "user")
 public class UserRoleEntity extends IDEntity {
-    private String userId;
+    private Integer userId;
     private Integer roleId;
     private Timestamp createTime;
     private Integer createUser;
@@ -19,11 +19,11 @@ public class UserRoleEntity extends IDEntity {
     @Id
     @Column(name="user_id", length=11, nullable=true, unique=false, insertable=true, updatable=false)
     //@Column(name = "user_id", nullable = false, length = 40)
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -90,9 +90,9 @@ public class UserRoleEntity extends IDEntity {
         UserRoleEntity that = (UserRoleEntity) o;
 
         if (roleId != that.roleId) return false;
+        if (userId != that.userId) return false;
         if (createUser != that.createUser) return false;
         if (updateUser != that.updateUser) return false;
-        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
         if (createTime != null ? !createTime.equals(that.createTime) : that.createTime != null) return false;
         if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
 

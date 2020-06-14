@@ -5,6 +5,7 @@ import com.zsw.daos.RoleMapper;
 import com.zsw.daos.UserMapper;
 import com.zsw.entitys.DepartmentUserEntity;
 import com.zsw.entitys.RoleEntity;
+import com.zsw.entitys.RolePermissionEntity;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.utils.CommonStaticWord;
@@ -136,8 +137,37 @@ public class RoleServiceImpl implements IRoleService,Serializable {
 
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public void relationOrDeleteRolePermission(List<Integer> permissionIds, Integer roleId, Integer currentUserId, Integer currentCompanyId,Boolean isDelete) throws Exception {
+        if(roleId == null || roleId < 1) throw new Exception("参数错误 roleId");
+        List<RolePermissionEntity> rolePermissionEntities = new ArrayList<>();
 
 
+        if(isDelete){
+            for (Integer permissionId: permissionIds) {
+                RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
+                rolePermissionEntity.setPermissionId(permissionId);
+                rolePermissionEntity.setRoleId(roleId);
 
+                rolePermissionEntities.add(rolePermissionEntity);
+            }
+            this.dbService.delete(rolePermissionEntities);
 
+        }else{
+            for (Integer permissionId: permissionIds) {
+                RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
+                rolePermissionEntity.setPermissionId(permissionId);
+                rolePermissionEntity.setRoleId(roleId);
+                rolePermissionEntity.setCreateUser(currentUserId);
+                rolePermissionEntity.setCreateTime(new Timestamp(new Date().getTime()));
+                rolePermissionEntity.setUpdateUser(currentUserId);
+                rolePermissionEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+
+                rolePermissionEntities.add(rolePermissionEntity);
+            }
+            this.dbService.save(rolePermissionEntities);
+        }
+
+    }
 }

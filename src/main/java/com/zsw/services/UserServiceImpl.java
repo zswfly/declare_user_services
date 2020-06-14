@@ -2,9 +2,7 @@ package com.zsw.services;
 
 import com.zsw.daos.CompanyMapper;
 import com.zsw.daos.UserMapper;
-import com.zsw.entitys.CompanyEntity;
-import com.zsw.entitys.DepartmentUserEntity;
-import com.zsw.entitys.UserEntity;
+import com.zsw.entitys.*;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.utils.CommonStaticWord;
@@ -235,7 +233,49 @@ public class UserServiceImpl implements IUserService,Serializable{
         return stringBuilder.toString();
     }
 
+
+
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public void relationOrDeleteUserRole(List<Integer> roleIds, Integer userId, Integer currentUserId, Integer currentCompanyId,Boolean isDelete) throws Exception {
+        if(userId == null || userId < 1) throw new Exception("参数错误 userId");
+        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+
+
+        if(isDelete){
+            for (Integer roleId: roleIds) {
+                UserRoleEntity userRoleEntity = new UserRoleEntity();
+                userRoleEntity.setUserId(userId);
+                userRoleEntity.setRoleId(roleId);
+                userRoleEntities.add(userRoleEntity);
+            }
+            this.dbService.delete(userRoleEntities);
+
+        }else{
+            for (Integer roleId: roleIds) {
+                UserRoleEntity userRoleEntity = new UserRoleEntity();
+                userRoleEntity.setUserId(userId);
+                userRoleEntity.setRoleId(roleId);
+                userRoleEntity.setCreateUser(currentUserId);
+                userRoleEntity.setCreateTime(new Timestamp(new Date().getTime()));
+                userRoleEntity.setUpdateUser(currentUserId);
+                userRoleEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+
+                userRoleEntities.add(userRoleEntity);
+            }
+            this.dbService.save(userRoleEntities);
+        }
+
+    }
+
+
 }
+
+
+
+
 //    @Override
 //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 //    public synchronized String checkUserExist(UserDto userDto,Integer currentCompanyId, Integer departmentId) throws Exception {

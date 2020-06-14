@@ -7,6 +7,7 @@ import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
+import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IAdminUserService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
@@ -169,6 +170,18 @@ public class AdminUserController extends BaseController {
     }
 
 
+    @RequestMapping(value=UserStaticURLUtil.adminUserController_newUser,
+            method= RequestMethod.POST)
+//    @AdminPermission(code = "user.adminOperationUserController.newUser",name = "新增用户",description ="新增用户"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_newUser)
+    public String newUser(UserDto userDto, @RequestHeader("adminUserId") Integer currentAdminUserId) throws Exception {
+        try {
+            return OperationUserUtils.newUser(this.userService,this.adminUserService,userDto,currentAdminUserId,null,true);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
     @Override
     public Logger getLOG(){

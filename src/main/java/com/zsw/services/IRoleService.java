@@ -23,4 +23,8 @@ public interface IRoleService extends IBaseService{
 
     void batchBan(List<Integer> ids, String type, Integer currentUserId,Integer currentCompanyId) throws Exception;
 
+    void relationOrDeleteRolePermission(List<Integer> permissionIds, Integer roleId, Integer currentUserId,Integer currentCompanyId,Boolean isDelete) throws Exception;
+
+
+
 }

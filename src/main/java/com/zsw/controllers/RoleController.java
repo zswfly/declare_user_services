@@ -203,36 +203,62 @@ public class RoleController extends BaseController {
 
 
 
-//    @RequestMapping(value=UserStaticURLUtil.roleController_relationRolePermission,
-//            method= RequestMethod.PUT)
-//    //@Permission(code = "user.roleController.relationRolePermission",name = "关联角色权限",description ="批量禁用/恢复角色"
-//    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_relationRolePermission)
-//    public String relationRolePermission( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
-//        try {
-//            ResponseJson responseJson = new ResponseJson();
-//            Gson gson = CommonUtils.getGson();
-//            String ids = params.get("ids");
-//            String type = params.get("type");
-//            if(ids == null || type == null){
-//                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
-//                responseJson.setMessage("参数不全");
-//                return gson.toJson(responseJson);
-//            }else{
-//                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
-//                this.roleService.batchBan(list,type,currentUserId,currentCompanyId);
-//                responseJson.setCode(ResponseCode.Code_200);
-//                responseJson.setMessage("更新成功");
-//                return gson.toJson(responseJson);
-//            }
-//
-//        }catch (Exception e){
-//            CommonUtils.ErrorAction(LOG,e);
-//            return CommonUtils.ErrorResposeJson(null);
-//        }
-//    }
+    @RequestMapping(value=UserStaticURLUtil.roleController_relationRolePermission,
+            method= RequestMethod.PUT)
+    //@Permission(code = "user.roleController.relationRolePermission",name = "关联角色权限",description ="关联角色权限"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_relationRolePermission)
+    public String relationRolePermission( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = CommonUtils.getGson();
+            String permissionIds = params.get("permissionIds");
+            Integer roleId = Integer.valueOf(NumberUtils.toInt(params.get("roleId"), 0));
+            if(permissionIds == null || roleId < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(permissionIds, Integer[].class));
+                this.roleService.relationOrDeleteRolePermission(list,roleId,currentUserId,currentCompanyId,Boolean.FALSE);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
+
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
+    @RequestMapping(value=UserStaticURLUtil.roleController_deleteRolePermission,
+            method= RequestMethod.PUT)
+    //@Permission(code = "user.roleController.deleteRolePermission",name = "删除角色权限",description ="删除角色权限"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_deleteRolePermission)
+    public String deleteRolePermission( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = CommonUtils.getGson();
+            String permissionIds = params.get("permissionIds");
+            Integer roleId = Integer.valueOf(NumberUtils.toInt(params.get("roleId"), 0));
+            if(permissionIds == null || roleId < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(permissionIds, Integer[].class));
+                this.roleService.relationOrDeleteRolePermission(list,roleId,currentUserId,currentCompanyId,Boolean.TRUE);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
 
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
 
