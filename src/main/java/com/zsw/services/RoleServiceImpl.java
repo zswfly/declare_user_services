@@ -143,21 +143,43 @@ public class RoleServiceImpl implements IRoleService,Serializable {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void relationOrDeleteRolePermission(List<Integer> permissionIds, Integer roleId, Integer currentUserId, Integer currentCompanyId,Boolean isDelete) throws Exception {
         if(roleId == null || roleId < 1) throw new Exception("参数错误 roleId");
-        List<RolePermissionEntity> rolePermissionEntities = new ArrayList<>();
+//        List<RolePermissionEntity> rolePermissionEntities = new ArrayList<>();
 
 
         if(isDelete){
-            for (Integer permissionId: permissionIds) {
-                RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
-                rolePermissionEntity.setPermissionId(permissionId);
-                rolePermissionEntity.setRoleId(roleId);
-
-                rolePermissionEntities.add(rolePermissionEntity);
-            }
-            this.dbService.delete(rolePermissionEntities);
+//            for (Integer permissionId: permissionIds) {
+//                RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
+//                rolePermissionEntity.setPermissionId(permissionId);
+//                rolePermissionEntity.setRoleId(roleId);
+//
+//                rolePermissionEntities.add(rolePermissionEntity);
+//            }
+//            this.dbService.delete(rolePermissionEntities);
 
         }else{
-            for (Integer permissionId: permissionIds) {
+            RolePermissionEntity param = new RolePermissionEntity();
+            param.setRoleId(roleId);
+            List<RolePermissionEntity> resultList = this.dbService.find(param);
+
+            List<Integer> newList = new ArrayList<>();
+            List<RolePermissionEntity> newRolePermissionEntity = new ArrayList<>();
+            List<RolePermissionEntity> deleteRolePermissionEntity = new ArrayList<>();
+
+            if(permissionIds != null && permissionIds.size() > 0)
+            for(RolePermissionEntity rolePermissionEntity: resultList){
+               if(!permissionIds.contains(rolePermissionEntity.getPermissionId())){
+                   deleteRolePermissionEntity.add(rolePermissionEntity);
+               }
+            }
+            for(Integer permissionId: permissionIds){
+                Boolean isNew = Boolean.TRUE;
+                for(RolePermissionEntity rolePermissionEntity: resultList){
+                    if(rolePermissionEntity.getPermissionId() == permissionId) isNew = Boolean.FALSE;
+                }
+                if(isNew) newList.add(permissionId);
+            }
+
+            for (Integer permissionId: newList) {
                 RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
                 rolePermissionEntity.setPermissionId(permissionId);
                 rolePermissionEntity.setRoleId(roleId);
@@ -166,9 +188,11 @@ public class RoleServiceImpl implements IRoleService,Serializable {
                 rolePermissionEntity.setUpdateUser(currentUserId);
                 rolePermissionEntity.setUpdateTime(new Timestamp(new Date().getTime()));
 
-                rolePermissionEntities.add(rolePermissionEntity);
+                newRolePermissionEntity.add(rolePermissionEntity);
             }
-            this.dbService.save(rolePermissionEntities);
+            this.dbService.save(newRolePermissionEntity);
+
+            this.dbService.delete(deleteRolePermissionEntity);
         }
 
     }
