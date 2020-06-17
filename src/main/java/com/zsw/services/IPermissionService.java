@@ -18,6 +18,7 @@ public interface IPermissionService extends IBaseService {
 
     Integer listPermissionEntityCount( Map<String,Object> paramMap)throws Exception;
     List<PermissionEntity> listPermissionEntity(Map<String,Object> paramMap)throws Exception;
+    List<PermissionEntity> listPermissionEntity2(Map<String,Object> paramMap)throws Exception;
 
     PermissionEntity getPermission(PermissionEntity param)throws Exception;
 

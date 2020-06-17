@@ -5,6 +5,8 @@ import com.zsw.controller.BaseController;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
+import com.zsw.services.IPermissionService;
+import com.zsw.services.IRoleService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.slf4j.Logger;
@@ -27,6 +29,12 @@ public class AdminOperationUserController extends BaseController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IPermissionService permissionService;
+
+    @Autowired
+    IRoleService roleService;
 
     @Autowired
     RestTemplate restTemplate;
@@ -53,7 +61,7 @@ public class AdminOperationUserController extends BaseController {
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.adminOperationUserController + UserStaticURLUtil.adminOperationUserController_getUser)
     public String getUser(@PathVariable Integer userId) throws Exception {
         try {
-            return OperationUserUtils.getUser(this.userService,userId,0);
+            return OperationUserUtils.getUser(this.userService,this.roleService,this.permissionService,userId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson(null);

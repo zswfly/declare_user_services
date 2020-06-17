@@ -10,6 +10,8 @@ import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.SimpleCompanyDto;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.ICompanyService;
+import com.zsw.services.IPermissionService;
+import com.zsw.services.IRoleService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
@@ -36,6 +38,12 @@ public class UserController extends BaseController{
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IPermissionService permissionService;
+
+    @Autowired
+    IRoleService roleService;
 
     @Autowired
     RestTemplate restTemplate;
@@ -211,7 +219,7 @@ public class UserController extends BaseController{
 //            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
     public String getUser(@PathVariable Integer userId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
-            return OperationUserUtils.getUser(this.userService,userId,currentCompanyId);
+            return OperationUserUtils.getUser(this.userService,this.roleService,this.permissionService,userId,currentCompanyId);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson(null);

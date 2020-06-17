@@ -17,6 +17,7 @@
 
     SELECT r.*
     FROM role r
+    WHERE 1 =1
 
     <if test="paramMap.roleName != null and paramMap.roleName != ''">
       AND r.`name` LIKE '%${paramMap.roleName}%'
@@ -45,6 +46,7 @@
     SELECT
     COUNT(DISTINCT r.id)
     FROM role r
+    WHERE 1 =1
     <if test="paramMap.roleName != null and paramMap.roleName != ''">
       AND r.`name` LIKE '%${paramMap.roleName}%'
     </if>
@@ -82,5 +84,24 @@
     </if>
 
   </update>
-  
+
+  <select id="listRoleEntity2" resultMap="BaseResultMap">
+
+    SELECT r.*
+    FROM role r
+    LEFT JOIN user_role ur ON ur.role_id = r.id
+    LEFT JOIN user u ON  u.id = ur.user_id
+    WHERE 1 = 1
+
+    <if test="paramMap.roleStatus != null and paramMap.roleStatus > 0">
+      AND r.`status` = #{paramMap.roleStatus}
+    </if>
+    <if test="paramMap.userId != null and paramMap.userId > 0">
+      AND u.id = #{paramMap.userId}
+    </if>
+
+    GROUP BY r.id
+
+  </select>
+
 </mapper>

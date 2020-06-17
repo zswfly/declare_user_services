@@ -125,4 +125,25 @@
     </if>
   </select>
 
+
+  <select id="listPermissionEntity2" resultMap="PermissionEntityMap">
+      SELECT p.*
+      FROM permission p
+      LEFT JOIN role_permission rp ON rp.permission_id = p.id
+      LEFT JOIN role r ON r.id = rp.role_id
+      LEFT JOIN user_role ur ON r.id = ur.role_id
+      LEFT JOIN user u ON u.id = ur.user_id
+      WHERE  1= 1
+    <if test="paramMap.roleStatus != null and paramMap.roleStatus > 0">
+      AND r.`status` = #{paramMap.roleStatus}
+    </if>
+    <if test="paramMap.userId != null and paramMap.userId > 0">
+      AND u.id = #{paramMap.userId}
+    </if>
+
+    GROUP BY p.id
+
+
+  </select>
+
 </mapper>

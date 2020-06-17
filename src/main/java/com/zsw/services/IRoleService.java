@@ -17,6 +17,7 @@ public interface IRoleService extends IBaseService{
     RoleEntity getRole(RoleEntity param) throws Exception;
 
     List<RoleEntity> listRoleEntity(Map<String, Object> paramMap) throws Exception;
+    List<RoleEntity> listRoleEntity2(Map<String, Object> paramMap) throws Exception;
 
     Integer listRoleEntityCount(Map<String, Object> paramMap) throws Exception;
 

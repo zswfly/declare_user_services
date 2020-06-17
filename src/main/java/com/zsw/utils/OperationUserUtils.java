@@ -1,10 +1,14 @@
 package com.zsw.utils;
 
 import com.google.gson.Gson;
+import com.zsw.entitys.PermissionEntity;
+import com.zsw.entitys.RoleEntity;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IAdminUserService;
+import com.zsw.services.IPermissionService;
+import com.zsw.services.IRoleService;
 import com.zsw.services.IUserService;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +60,7 @@ public class OperationUserUtils {
     }
 
 
-    public static String getUser(IUserService userService,Integer userId,Integer currentCompanyId) throws Exception{
+    public static String getUser(IUserService userService, IRoleService roleService, IPermissionService permissionService, Integer userId, Integer currentCompanyId) throws Exception{
         Gson gson = CommonUtils.getGson();
         ResponseJson responseJson = new ResponseJson();
 
@@ -77,13 +81,24 @@ public class OperationUserUtils {
         userEntity.setId(userId);
         userEntity = userService.getUser(userEntity);
 
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("roleStatus",0);
+        paramMap.put("userId",userId);
+        List<RoleEntity> roleEntities= roleService.listRoleEntity2(paramMap);
+        List<PermissionEntity> permissionEntities= permissionService.listPermissionEntity2(paramMap);
+
+        Map<String,Object> data = new HashMap<>();
+
         if(userEntity == null){
             responseJson.setCode(ResponseCode.Code_Bussiness_Error);
             responseJson.setMessage("没有用户");
         }else{
             responseJson.setCode(ResponseCode.Code_200);
             userEntity.setLoginPwd(null);
-            responseJson.setData(userEntity);
+            data.put("user",userEntity);
+            data.put("roles",roleEntities);
+            data.put("permissions",permissionEntities);
+            responseJson.setData(data);
         }
         return gson.toJson(responseJson);
 

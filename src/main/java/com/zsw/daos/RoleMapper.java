@@ -15,6 +15,7 @@ public interface RoleMapper {
     Integer listRoleEntityCount(@Param("paramMap") Map<String,Object> paramMap);
 
     List<RoleEntity> listRoleEntity(@Param("paramMap") Map<String,Object> paramMap);
+    List<RoleEntity> listRoleEntity2(@Param("paramMap") Map<String,Object> paramMap);
 
     void batchBan(@Param("paramMap")Map<String, Object> paramMap);
 

@@ -89,6 +89,12 @@ public class RoleServiceImpl implements IRoleService,Serializable {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public List<RoleEntity>  listRoleEntity2(Map<String, Object> paramMap) throws Exception{
+        return this.roleMapper.listRoleEntity2(paramMap);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Integer listRoleEntityCount(Map<String, Object> paramMap) throws Exception {
         return this.roleMapper.listRoleEntityCount(paramMap);
     }

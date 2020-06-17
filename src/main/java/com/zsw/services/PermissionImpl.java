@@ -100,6 +100,13 @@ public class PermissionImpl extends BaseServiceImpl implements IPermissionServic
     public PermissionEntity getPermission(PermissionEntity param) throws Exception {
         return this.dbService.get(param);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public List<PermissionEntity> listPermissionEntity2(Map<String,Object> paramMap){
+        return this.permissionMapper.listPermissionEntity2(paramMap);
+    }
+
 }
 
 

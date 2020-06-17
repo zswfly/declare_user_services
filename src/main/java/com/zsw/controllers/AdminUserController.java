@@ -9,6 +9,8 @@ import com.zsw.entitys.common.Result;
 import com.zsw.entitys.user.LoginTemp;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.services.IAdminUserService;
+import com.zsw.services.IPermissionService;
+import com.zsw.services.IRoleService;
 import com.zsw.services.IUserService;
 import com.zsw.utils.*;
 import org.apache.commons.lang.math.NumberUtils;
@@ -34,6 +36,12 @@ public class AdminUserController extends BaseController {
 
     @Autowired
     IAdminUserService adminUserService;
+
+    @Autowired
+    IPermissionService permissionService;
+
+    @Autowired
+    IRoleService roleService;
 
     @Autowired
     RestTemplate restTemplate;
@@ -134,7 +142,7 @@ public class AdminUserController extends BaseController {
                 return CommonUtils.ErrorResposeJson("没有该后台用户");
             }
 
-            return OperationUserUtils.getUser(this.userService,adminUserId,0);
+            return OperationUserUtils.getUser(this.userService,this.roleService,this.permissionService,adminUserId,0);
         }catch (Exception e){
             CommonUtils.ErrorAction(LOG,e);
             return CommonUtils.ErrorResposeJson(null);

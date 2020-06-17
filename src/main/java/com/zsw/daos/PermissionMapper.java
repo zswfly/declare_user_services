@@ -19,6 +19,7 @@ public interface PermissionMapper {
 
     List<PermissionEntity> getRolePermissions(@Param("paramMap") Map<String,Object> paramMap);
 
+    List<PermissionEntity> listPermissionEntity2(@Param("paramMap") Map<String,Object> paramMap);
 
 
 
