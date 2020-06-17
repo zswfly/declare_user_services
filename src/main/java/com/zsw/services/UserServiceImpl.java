@@ -241,31 +241,54 @@ public class UserServiceImpl implements IUserService,Serializable{
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
     public void relationOrDeleteUserRole(List<Integer> roleIds, Integer userId, Integer currentUserId, Integer currentCompanyId,Boolean isDelete) throws Exception {
         if(userId == null || userId < 1) throw new Exception("参数错误 userId");
-        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+//        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
 
 
         if(isDelete){
-            for (Integer roleId: roleIds) {
-                UserRoleEntity userRoleEntity = new UserRoleEntity();
-                userRoleEntity.setUserId(userId);
-                userRoleEntity.setRoleId(roleId);
-                userRoleEntities.add(userRoleEntity);
-            }
-            this.dbService.delete(userRoleEntities);
+//            for (Integer roleId: roleIds) {
+//                UserRoleEntity userRoleEntity = new UserRoleEntity();
+//                userRoleEntity.setUserId(userId);
+//                userRoleEntity.setRoleId(roleId);
+//                userRoleEntities.add(userRoleEntity);
+//            }
+//            this.dbService.delete(userRoleEntities);
 
         }else{
-            for (Integer roleId: roleIds) {
-                UserRoleEntity userRoleEntity = new UserRoleEntity();
-                userRoleEntity.setUserId(userId);
-                userRoleEntity.setRoleId(roleId);
-                userRoleEntity.setCreateUser(currentUserId);
-                userRoleEntity.setCreateTime(new Timestamp(new Date().getTime()));
-                userRoleEntity.setUpdateUser(currentUserId);
-                userRoleEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+            UserRoleEntity param = new UserRoleEntity();
+            param.setUserId(userId);
+            List<UserRoleEntity> resultList = this.dbService.find(param);
 
-                userRoleEntities.add(userRoleEntity);
+            List<Integer> newList = new ArrayList<>();
+            List<UserRoleEntity> newUserRoleEntity = new ArrayList<>();
+            List<UserRoleEntity> deleteUserRoleEntity = new ArrayList<>();
+
+            if(roleIds != null && roleIds.size() > 0) {
+                for (UserRoleEntity userRoleEntity : resultList) {
+                    if (!roleIds.contains(userRoleEntity.getRoleId())) {
+                        deleteUserRoleEntity.add(userRoleEntity);
+                    }
+                }
+                for (Integer rolerId : roleIds) {
+                    Boolean isNew = Boolean.TRUE;
+                    for (UserRoleEntity userRoleEntity : resultList) {
+                        if (userRoleEntity.getRoleId() == rolerId) isNew = Boolean.FALSE;
+                    }
+                    if (isNew) newList.add(rolerId);
+                }
+
+                for (Integer roleId : newList) {
+                    UserRoleEntity userRoleEntity = new UserRoleEntity();
+                    userRoleEntity.setUserId(userId);
+                    userRoleEntity.setRoleId(roleId);
+                    userRoleEntity.setCreateUser(currentUserId);
+                    userRoleEntity.setCreateTime(new Timestamp(new Date().getTime()));
+                    userRoleEntity.setUpdateUser(currentUserId);
+                    userRoleEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+
+                    newUserRoleEntity.add(userRoleEntity);
+                }
+                this.dbService.save(newUserRoleEntity);
             }
-            this.dbService.save(userRoleEntities);
         }
 
     }

@@ -165,34 +165,35 @@ public class RoleServiceImpl implements IRoleService,Serializable {
             List<RolePermissionEntity> newRolePermissionEntity = new ArrayList<>();
             List<RolePermissionEntity> deleteRolePermissionEntity = new ArrayList<>();
 
-            if(permissionIds != null && permissionIds.size() > 0)
-            for(RolePermissionEntity rolePermissionEntity: resultList){
-               if(!permissionIds.contains(rolePermissionEntity.getPermissionId())){
-                   deleteRolePermissionEntity.add(rolePermissionEntity);
-               }
-            }
-            for(Integer permissionId: permissionIds){
-                Boolean isNew = Boolean.TRUE;
-                for(RolePermissionEntity rolePermissionEntity: resultList){
-                    if(rolePermissionEntity.getPermissionId() == permissionId) isNew = Boolean.FALSE;
+            if(permissionIds != null && permissionIds.size() > 0) {
+                for (RolePermissionEntity rolePermissionEntity : resultList) {
+                    if (!permissionIds.contains(rolePermissionEntity.getPermissionId())) {
+                        deleteRolePermissionEntity.add(rolePermissionEntity);
+                    }
                 }
-                if(isNew) newList.add(permissionId);
+                for (Integer permissionId : permissionIds) {
+                    Boolean isNew = Boolean.TRUE;
+                    for (RolePermissionEntity rolePermissionEntity : resultList) {
+                        if (rolePermissionEntity.getPermissionId() == permissionId) isNew = Boolean.FALSE;
+                    }
+                    if (isNew) newList.add(permissionId);
+                }
+
+                for (Integer permissionId : newList) {
+                    RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
+                    rolePermissionEntity.setPermissionId(permissionId);
+                    rolePermissionEntity.setRoleId(roleId);
+                    rolePermissionEntity.setCreateUser(currentUserId);
+                    rolePermissionEntity.setCreateTime(new Timestamp(new Date().getTime()));
+                    rolePermissionEntity.setUpdateUser(currentUserId);
+                    rolePermissionEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+
+                    newRolePermissionEntity.add(rolePermissionEntity);
+                }
+                this.dbService.save(newRolePermissionEntity);
+
+                this.dbService.delete(deleteRolePermissionEntity);
             }
-
-            for (Integer permissionId: newList) {
-                RolePermissionEntity rolePermissionEntity = new RolePermissionEntity();
-                rolePermissionEntity.setPermissionId(permissionId);
-                rolePermissionEntity.setRoleId(roleId);
-                rolePermissionEntity.setCreateUser(currentUserId);
-                rolePermissionEntity.setCreateTime(new Timestamp(new Date().getTime()));
-                rolePermissionEntity.setUpdateUser(currentUserId);
-                rolePermissionEntity.setUpdateTime(new Timestamp(new Date().getTime()));
-
-                newRolePermissionEntity.add(rolePermissionEntity);
-            }
-            this.dbService.save(newRolePermissionEntity);
-
-            this.dbService.delete(deleteRolePermissionEntity);
         }
 
     }
