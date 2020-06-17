@@ -1,5 +1,6 @@
 package com.zsw.daos;
 
+import com.zsw.entitys.PermissionEntity;
 import com.zsw.entitys.RoleEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,4 +17,6 @@ public interface RoleMapper {
     List<RoleEntity> listRoleEntity(@Param("paramMap") Map<String,Object> paramMap);
 
     void batchBan(@Param("paramMap")Map<String, Object> paramMap);
+
+
 }

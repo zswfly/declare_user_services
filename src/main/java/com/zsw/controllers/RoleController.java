@@ -2,6 +2,7 @@ package com.zsw.controllers;
 
 import com.google.gson.Gson;
 import com.zsw.controller.BaseController;
+import com.zsw.entitys.PermissionEntity;
 import com.zsw.entitys.RoleEntity;
 import com.zsw.entitys.common.ResponseJson;
 import com.zsw.services.IRoleService;
@@ -29,7 +30,10 @@ public class RoleController extends BaseController {
 
     @Autowired
     IRoleService roleService;
-    
+    @RequestMapping(value= UserStaticURLUtil.roleController_newRole,
+            method= RequestMethod.POST)
+    //    @Permission(code = "user.roleController.newRole",name = "新增角色",description ="新增角色"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_newRole)
     public String newRole(RoleEntity roleEntity, @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             ResponseJson responseJson = new ResponseJson();
@@ -41,8 +45,11 @@ public class RoleController extends BaseController {
                 responseJson.setMessage(check);
             }
 
-            this.roleService.newRole(roleEntity,currentUserId, currentCompanyId);
+            RoleEntity newRoleEntity = this.roleService.newRole(roleEntity,currentUserId, currentCompanyId);
 
+            Integer roleId = newRoleEntity.getId();
+
+            responseJson.setData(roleId);
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("新增成功");
 
@@ -260,7 +267,30 @@ public class RoleController extends BaseController {
         }
     }
 
+    @RequestMapping(value=UserStaticURLUtil.roleController_getRolePermissions+"/{roleId}",
+            method= RequestMethod.GET)
+    //    @Permission(code = "user.roleController.getRolePermissions",name = "获取单个角色的所有权限",description ="获取单个角色的所有权限"
+//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_getRolePermissions)
+    public String getRolePermissions(@PathVariable Integer roleId,Integer currentCompanyId) throws Exception {
+        try {
 
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = CommonUtils.getGson();
+
+            Map<String,Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("roleId", roleId);
+
+            List<PermissionEntity> list = this.roleService.getRolePermissions(paramMap);
+
+            responseJson.setCode(ResponseCode.Code_200);
+            responseJson.setData(list);
+
+            return gson.toJson(responseJson);
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
 

@@ -1,12 +1,10 @@
 package com.zsw.services;
 
 import com.zsw.daos.CompanyMapper;
+import com.zsw.daos.PermissionMapper;
 import com.zsw.daos.RoleMapper;
 import com.zsw.daos.UserMapper;
-import com.zsw.entitys.DepartmentUserEntity;
-import com.zsw.entitys.RoleEntity;
-import com.zsw.entitys.RolePermissionEntity;
-import com.zsw.entitys.UserEntity;
+import com.zsw.entitys.*;
 import com.zsw.entitys.user.UserDto;
 import com.zsw.utils.CommonStaticWord;
 import com.zsw.utils.PinyinUtils;
@@ -36,9 +34,12 @@ public class RoleServiceImpl implements IRoleService,Serializable {
     @Resource
     private RoleMapper roleMapper;
 
+    @Resource
+    private PermissionMapper permissionMapper;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
-    public void newRole(RoleEntity roleEntity, Integer currentUserId,Integer currentCompanyId)throws Exception {
+    public RoleEntity newRole(RoleEntity roleEntity, Integer currentUserId,Integer currentCompanyId)throws Exception {
         roleEntity.setId(null);
         roleEntity.setCompanyId(currentCompanyId);
         roleEntity.setStatus(CommonStaticWord.Normal_Status_0);
@@ -47,6 +48,7 @@ public class RoleServiceImpl implements IRoleService,Serializable {
         roleEntity.setUpdateUser(currentUserId);
         roleEntity.setUpdateTime(new Timestamp(new Date().getTime()));
         this.dbService.save(roleEntity);
+        return roleEntity;
     }
 
     @Override
@@ -169,5 +171,11 @@ public class RoleServiceImpl implements IRoleService,Serializable {
             this.dbService.save(rolePermissionEntities);
         }
 
+    }
+
+
+    @Override
+    public List<PermissionEntity> getRolePermissions(Map<String, Object> paramMap) throws Exception {
+        return this.permissionMapper.getRolePermissions(paramMap);
     }
 }
