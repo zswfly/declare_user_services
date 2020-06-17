@@ -44,7 +44,7 @@
 
     SELECT
     COUNT(DISTINCT r.id)
-    FROM role c
+    FROM role r
     <if test="paramMap.roleName != null and paramMap.roleName != ''">
       AND r.`name` LIKE '%${paramMap.roleName}%'
     </if>
@@ -61,7 +61,7 @@
 
   <update id="batchBan" parameterType="Map">
 
-    UPDATE role c
+    UPDATE role r
     SET r.update_time = CURRENT_DATE
     <if test="paramMap.currentUserId != null and paramMap.currentUserId >= 0">
       , r.update_user = #{paramMap.currentUserId}
