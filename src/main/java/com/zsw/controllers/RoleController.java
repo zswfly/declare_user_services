@@ -295,7 +295,33 @@ public class RoleController extends BaseController {
     }
 
 
+    @RequestMapping(value=UserStaticURLUtil.roleController_relationUserRole,
+            method= RequestMethod.PUT)
+    //@Permission(code = "user.roleController.relationRolePermission",name = "关联角色权限",description ="关联角色权限"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.roleController + UserStaticURLUtil.roleController_relationRolePermission)
+    public String relationUserRole( @RequestParam Map<String, String> params , @RequestHeader("userId") Integer currentUserId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = CommonUtils.getGson();
+            String userIds = params.get("userIds");
+            Integer roleId = Integer.valueOf(NumberUtils.toInt(params.get("roleId"), 0));
+            if(userIds == null || roleId < 1){
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            }else{
+                List<Integer> list = Arrays.asList(gson.fromJson(userIds, Integer[].class));
+                this.roleService.relationOrDeleteUserRole(list,roleId,currentUserId,currentCompanyId,Boolean.FALSE);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
 
+        }catch (Exception e){
+            CommonUtils.ErrorAction(LOG,e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
 
 
     @Override

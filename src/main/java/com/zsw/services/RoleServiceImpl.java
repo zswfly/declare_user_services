@@ -197,6 +197,62 @@ public class RoleServiceImpl implements IRoleService,Serializable {
         }
 
     }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = { Exception.class })
+    public void relationOrDeleteUserRole(List<Integer> userIds, Integer roleId, Integer currentUserId, Integer currentCompanyId,Boolean isDelete) throws Exception {
+        if(roleId == null || roleId < 1) throw new Exception("参数错误 roleId");
+//        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+
+
+        if(isDelete){
+//            for (Integer roleId: roleIds) {
+//                UserRoleEntity userRoleEntity = new UserRoleEntity();
+//                userRoleEntity.setUserId(userId);
+//                userRoleEntity.setRoleId(roleId);
+//                userRoleEntities.add(userRoleEntity);
+//            }
+//            this.dbService.delete(userRoleEntities);
+
+        }else{
+            UserRoleEntity param = new UserRoleEntity();
+            param.setUserId(roleId);
+            List<UserRoleEntity> resultList = this.dbService.find(param);
+
+            List<Integer> newList = new ArrayList<>();
+            List<UserRoleEntity> newUserRoleEntity = new ArrayList<>();
+            List<UserRoleEntity> deleteUserRoleEntity = new ArrayList<>();
+
+            if(userIds != null && userIds.size() > 0) {
+                for (UserRoleEntity userRoleEntity : resultList) {
+                    if (!userIds.contains(userRoleEntity.getUserId())) {
+                        deleteUserRoleEntity.add(userRoleEntity);
+                    }
+                }
+                for (Integer userId : userIds) {
+                    Boolean isNew = Boolean.TRUE;
+                    for (UserRoleEntity userRoleEntity : resultList) {
+                        if (userRoleEntity.getUserId() == userId) isNew = Boolean.FALSE;
+                    }
+                    if (isNew) newList.add(userId);
+                }
+
+                for (Integer userId : newList) {
+                    UserRoleEntity userRoleEntity = new UserRoleEntity();
+                    userRoleEntity.setUserId(userId);
+                    userRoleEntity.setRoleId(roleId);
+                    userRoleEntity.setCreateUser(currentUserId);
+                    userRoleEntity.setCreateTime(new Timestamp(new Date().getTime()));
+                    userRoleEntity.setUpdateUser(currentUserId);
+                    userRoleEntity.setUpdateTime(new Timestamp(new Date().getTime()));
+
+                    newUserRoleEntity.add(userRoleEntity);
+                }
+                this.dbService.save(newUserRoleEntity);
+                this.dbService.delete(deleteUserRoleEntity);
+            }
+        }
+
+    }
 
 
     @Override

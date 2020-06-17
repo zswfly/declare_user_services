@@ -288,6 +288,7 @@ public class UserServiceImpl implements IUserService,Serializable{
                     newUserRoleEntity.add(userRoleEntity);
                 }
                 this.dbService.save(newUserRoleEntity);
+                this.dbService.delete(deleteUserRoleEntity);
             }
         }
 

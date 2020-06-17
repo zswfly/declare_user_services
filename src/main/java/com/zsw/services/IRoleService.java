@@ -28,6 +28,7 @@ public interface IRoleService extends IBaseService{
 
     List<PermissionEntity> getRolePermissions(Map<String, Object> paramMap) throws Exception;
 
+    void relationOrDeleteUserRole(List<Integer> userIds, Integer roleId, Integer currentUserId,Integer currentCompanyId,Boolean isDelete) throws Exception;
 
 
 }
