@@ -115,7 +115,7 @@
 
 
   <select id="getRolePermissions" resultMap="PermissionEntityMap">
-      SELECT
+      SELECT p.*
       FROM role r
       LEFT JOIN role_permission rp ON rp.role_id = r.id
       LEFT JOIN permission p ON p.id = rp.permission_id

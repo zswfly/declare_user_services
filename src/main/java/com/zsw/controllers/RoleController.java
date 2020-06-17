@@ -48,8 +48,10 @@ public class RoleController extends BaseController {
             RoleEntity newRoleEntity = this.roleService.newRole(roleEntity,currentUserId, currentCompanyId);
 
             Integer roleId = newRoleEntity.getId();
+            Map<String,Object> data = new HashMap<String, Object>();
+            data.put("roleId",roleId);
 
-            responseJson.setData(roleId);
+            responseJson.setData(data);
             responseJson.setCode(ResponseCode.Code_200);
             responseJson.setMessage("新增成功");
 
