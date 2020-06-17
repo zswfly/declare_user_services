@@ -32,7 +32,7 @@ public class TestController extends BaseController {
 
 
     @RequestMapping(value="/test", method= RequestMethod.POST)
-    //@Permission(code="user.test.test",name = "测试",description = "test")
+    @Permission(code="user.test.test",name = "测试",description = "test")
     public void test(HttpServletRequest request) throws Exception {
         LOG.trace("这是 test info 级别");
         LOG.debug("这是 test debug 级别");

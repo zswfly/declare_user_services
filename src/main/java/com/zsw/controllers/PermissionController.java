@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -45,23 +47,7 @@ public class PermissionController extends BaseController implements IUserPermiss
         this.permissionService.initPermission(initPermissionList);
 
         //2.缓存更新个人权限
-        List<UserPermission> userPermissionList = this.permissionService.listUserPermission(null);
-        Map<Integer,Set<String>> userPermissions = new HashMap<>();
-        for(UserPermission userPermission :userPermissionList){
-            if(userPermissions.containsKey(userPermission.getUserId())){
-                userPermissions.get(userPermission.getUserId()).add(userPermission.getPermissionCode());
-            }else{
-                Set<String> tempSet = new HashSet<>();
-                tempSet.add(userPermission.getPermissionCode());
-                userPermissions.put(userPermission.getUserId(),tempSet);
-            }
-        }
-        this.restTemplate.postForEntity(
-                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
-                        + CacheStaticURLUtil.redisController
-                        + CacheStaticURLUtil.redisController_initPermission
-                ,userPermissions,Integer.class);
-
+        this.refreshUserPermissionByIds(null);
 
 
     }
@@ -155,6 +141,54 @@ public class PermissionController extends BaseController implements IUserPermiss
             return CommonUtils.ErrorResposeJson(null);
         }
     }
+    @RequestMapping(value= UserStaticURLUtil.permissionController_refreshUserPermission,
+            method= RequestMethod.PUT)
+    //@AdminPermission(code = "user.permissionController.refreshUserPermission",name = "更新权限",description ="更新权限"
+    //    ,url=CommonStaticWord.userServices + UserStaticURLUtil.permissionController + UserStaticURLUtil.permissionController_refreshUserPermission)
+    public String refreshUserPermission( @RequestParam Map<String, String> params ) throws Exception {
+        try {
+            ResponseJson responseJson = new ResponseJson();
+            Gson gson = CommonUtils.getGson();
+            String ids = params.get("ids");
+
+            if (ids == null ) {
+                responseJson.setCode(ResponseCode.Code_Bussiness_Error);
+                responseJson.setMessage("参数不全");
+                return gson.toJson(responseJson);
+            } else {
+                List<Integer> list = Arrays.asList(gson.fromJson(ids, Integer[].class));
+                this.refreshUserPermissionByIds(list);
+                responseJson.setCode(ResponseCode.Code_200);
+                responseJson.setMessage("更新成功");
+                return gson.toJson(responseJson);
+            }
+
+        } catch (Exception e) {
+            CommonUtils.ErrorAction(LOG, e);
+            return CommonUtils.ErrorResposeJson(null);
+        }
+    }
+
+    private void refreshUserPermissionByIds(List<Integer> ids) throws Exception {
+        List<UserPermission> userPermissionList = this.permissionService.listUserPermission(ids);
+        Map<Integer,Set<String>> userPermissions = new HashMap<>();
+        for(UserPermission userPermission :userPermissionList){
+            if(userPermissions.containsKey(userPermission.getUserId())){
+                userPermissions.get(userPermission.getUserId()).add(userPermission.getPermissionCode());
+            }else{
+                Set<String> tempSet = new HashSet<>();
+                tempSet.add(userPermission.getPermissionCode());
+                userPermissions.put(userPermission.getUserId(),tempSet);
+            }
+        }
+        this.restTemplate.postForEntity(
+                CommonStaticWord.HTTP + CommonStaticWord.cacheServices
+                        + CacheStaticURLUtil.redisController
+                        + CacheStaticURLUtil.redisController_initPermission
+                ,userPermissions,Integer.class);
+
+    }
+
 
     @Override
     public Logger getLOG(){

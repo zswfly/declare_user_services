@@ -1,6 +1,7 @@
 package com.zsw.controllers;
 
 import com.google.gson.Gson;
+import com.zsw.annotations.Permission;
 import com.zsw.controller.BaseController;
 import com.zsw.entitys.UserEntity;
 import com.zsw.entitys.common.ResponseJson;
@@ -206,8 +207,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value=UserStaticURLUtil.userController_getUser+"/{userId}",
             method= RequestMethod.GET)
-//    @Permission(code = "user.userController.getUser",name = "获取用户",description ="根据id获取用户"
-//            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
+    @Permission(code = "user.userController.getUser",name = "获取用户",description ="根据id获取用户"
+            ,url=CommonStaticWord.userServices + UserStaticURLUtil.userController + UserStaticURLUtil.userController_getUser)
     public String getUser(@PathVariable Integer userId,@RequestHeader("companyId") Integer currentCompanyId) throws Exception {
         try {
             return OperationUserUtils.getUser(this.userService,userId,currentCompanyId);
